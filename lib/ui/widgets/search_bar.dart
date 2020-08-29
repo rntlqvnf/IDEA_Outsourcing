@@ -31,9 +31,9 @@ class SearchBar extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(5.0),
           ),
-          hintText: "검색하기",
+          hintText: "하재현 님은 현재 ... !",
           prefixIcon: Icon(
-            Icons.location_on,
+            Icons.person,
             color: Colors.blueGrey[300],
           ),
           hintStyle: TextStyle(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/util/places.dart';
-import 'package:python_app/widgets/horizontal_place_item.dart';
-import 'package:python_app/widgets/icon_badge.dart';
-import 'package:python_app/widgets/search_bar.dart';
-import 'package:python_app/widgets/vertical_place_item.dart';
-import 'package:camera/camera.dart';
+import 'package:python_app/ui/util/places.dart';
+import 'package:python_app/ui/widgets/horizontal_place_item.dart';
+import 'package:python_app/ui/widgets/icon_badge.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:python_app/ui/widgets/search_bar.dart';
+import 'package:python_app/ui/widgets/vertical_place_item.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -38,14 +38,19 @@ class _HomeState extends State<Home> {
           Center(
             child: Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text(
-                "지금 당신에게 맞는 노래를 추천받아보세요!",
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(60),
-                  fontFamily: 'NanumGothic',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: TyperAnimatedTextKit(
+                  speed: Duration(milliseconds: 100),
+                  isRepeatingAnimation: false,
+                  text: ['지금 당신에게 맞는 노래를 추천받아보세요!'],
+                  textStyle: TextStyle(
+                    fontSize: ScreenUtil().setSp(60),
+                    fontFamily: 'NanumGothic',
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.start,
+                  alignment:
+                      AlignmentDirectional.topStart // or Alignment.topLeft
+                  ),
             ),
           ),
           Padding(

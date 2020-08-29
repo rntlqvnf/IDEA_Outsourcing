@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/screens/home.dart';
-import 'package:python_app/widgets/icon_badge.dart';
+import 'package:python_app/ui/screens/home.dart';
+import 'package:python_app/ui/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,8 +14,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 1440, height: 2560, allowFontScaling: true);
-
     return Scaffold(
       body: PageView(
         physics: NeverScrollableScrollPhysics(),

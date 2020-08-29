@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:python_app/routes.dart';
-import 'package:python_app/screens/main_screen.dart';
-import 'package:python_app/util/const.dart';
+import 'package:python_app/ui/util/const.dart';
 
 void main() async {
   runApp(MyApp());
@@ -20,7 +19,7 @@ class _MyAppState extends State<MyApp> {
       title: Constants.appName,
       theme: Constants.lightTheme,
       darkTheme: Constants.darkTheme,
-      initialRoute: Routes.home,
+      initialRoute: Routes.initCamera,
       routes: Routes.routes,
     );
   }
