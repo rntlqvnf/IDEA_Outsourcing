@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           IconButton(
             icon: IconBadge(
-              icon: Icons.notifications_none,
+              icon: Icons.camera,
             ),
             onPressed: () {
               Navigator.pushNamed(context, '/camera');

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../screens/details.dart';
 
@@ -27,65 +28,51 @@ class VerticalPlaceItem extends StatelessWidget {
               ),
               SizedBox(width: 15.0),
               Container(
-                height: 80.0,
-                width: MediaQuery.of(context).size.width - 130.0,
-                child: ListView(
-                  primary: false,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "${place["name"]}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14.0,
-                        ),
-                        maxLines: 2,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(height: 3.0),
-                    Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.location_on,
-                          size: 13.0,
-                          color: Colors.blueGrey[300],
-                        ),
-                        SizedBox(width: 3.0),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${place["location"]}",
+                  height: 80.0,
+                  width: MediaQuery.of(context).size.width - 130.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "${place["name"]}",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13.0,
-                              color: Colors.blueGrey[300],
+                              fontFamily: 'NanumGothic',
+                              fontWeight: FontWeight.w700,
+                              fontSize: ScreenUtil().setSp(60),
+                            ),
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(35),
+                          ),
+                          Text(
+                            "${place["price"]}",
+                            style: TextStyle(
+                              fontFamily: 'NanumGothic',
+                              fontWeight: FontWeight.w600,
+                              fontSize: ScreenUtil().setSp(50),
                             ),
                             maxLines: 1,
                             textAlign: TextAlign.left,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.0),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "${place["price"]}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      Center(
+                        child: Text(
+                          '3:23',
+                          style: TextStyle(
+                            fontFamily: 'NanumGothic',
+                            fontSize: ScreenUtil().setSp(50),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
             ],
           ),
         ),

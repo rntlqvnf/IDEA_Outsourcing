@@ -1,9 +1,9 @@
 List places = [
   {
-    "name": "Hotel Dolah Amet & Suites",
+    "name": "음악1",
     "img": "assets/sample/1.jpeg",
-    "price": r"$100/night",
-    "location": "London, England",
+    "price": r"작가1",
+    "location": "팟캐스트 1",
     "details": "Pellentesque in ipsum id orci porta dapibus. "
         "Nulla porttitor accumsan tincidunt. Donec rutrum "
         "congue leo eget malesuada. "
@@ -15,10 +15,10 @@ List places = [
         "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
   },
   {
-    "name": "Beach Mauris Blandit",
+    "name": "음악2",
     "img": "assets/sample/2.jpeg",
-    "price": r"$100/night",
-    "location": "Lisbon, Portugal",
+    "price": r"작가2",
+    "location": "팟캐스트 2",
     "details": "Pellentesque in ipsum id orci porta dapibus. "
         "Nulla porttitor accumsan tincidunt. Donec rutrum "
         "congue leo eget malesuada. "
@@ -30,10 +30,10 @@ List places = [
         "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
   },
   {
-    "name": "Ipsum Restaurant",
+    "name": "음악3",
     "img": "assets/sample/3.jpeg",
-    "price": r"$100/night",
-    "location": "Paris, France",
+    "price": r"작가3",
+    "location": "팟캐스트 3",
     "details": "Pellentesque in ipsum id orci porta dapibus. "
         "Nulla porttitor accumsan tincidunt. Donec rutrum "
         "congue leo eget malesuada. "
@@ -45,10 +45,10 @@ List places = [
         "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
   },
   {
-    "name": "Curabitur Beach",
+    "name": "음악4",
     "img": "assets/sample/4.jpeg",
-    "price": r"$100/night",
-    "location": "Rome, Italy",
+    "price": r"작가4",
+    "location": "팟캐스트 4",
     "details": "Pellentesque in ipsum id orci porta dapibus. "
         "Nulla porttitor accumsan tincidunt. Donec rutrum "
         "congue leo eget malesuada. "
@@ -60,10 +60,10 @@ List places = [
         "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
   },
   {
-    "name": "Tincidunt Pool",
+    "name": "음악5",
     "img": "assets/sample/5.jpeg",
-    "price": r"$100/night",
-    "location": "Madrid, Spain",
+    "price": r"작가5",
+    "location": "팟캐스트 5",
     "details": "Pellentesque in ipsum id orci porta dapibus. "
         "Nulla porttitor accumsan tincidunt. Donec rutrum "
         "congue leo eget malesuada. "
