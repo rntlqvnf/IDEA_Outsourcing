@@ -1,16 +1,13 @@
 # python_app
 
-A new Flutter project.
+홍기석 형의 외주를 받아 만드는 앱입니다.
 
-## Getting Started
+## How app works
 
-This project is a starting point for a Flutter application.
+앱에서 사진을 파이썬 서버로 보내면
 
-A few resources to get you started if this is your first Flutter project:
+서버에서 해당 사진을 바탕으로 감정을 분석하여
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+추천하는 노래들을 보내줍니다.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+이것을 표시하는 앱입니다!
