@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:python_app/ui/camera/camera_screen.dart';
-import 'package:python_app/ui/home/init_camera_screen.dart';
-import 'package:python_app/ui/screens/main_screen.dart';
+import 'package:python_app/ui/home/screens/main_screen.dart';
+import 'package:python_app/ui/init_screen/init_camera_screen.dart';
 
 class Routes {
   Routes._();

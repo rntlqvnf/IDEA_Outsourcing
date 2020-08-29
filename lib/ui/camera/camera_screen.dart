@@ -4,17 +4,17 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
-class CameraExampleHome extends StatefulWidget {
+class CameraHome extends StatefulWidget {
   @override
-  _CameraExampleHomeState createState() {
-    return _CameraExampleHomeState();
-  }
+  _CameraHomeState createState() => _CameraHomeState();
 }
 
 /// Returns a suitable camera icon for [direction].
@@ -33,8 +33,7 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
-class _CameraExampleHomeState extends State<CameraExampleHome>
-    with WidgetsBindingObserver {
+class _CameraHomeState extends State<CameraHome> with WidgetsBindingObserver {
   CameraController controller;
   String imagePath;
   String videoPath;
@@ -46,6 +45,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    onNewCameraSelected(cameras[0]);
   }
 
   @override
@@ -75,42 +75,62 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Camera example'),
-      ),
       body: Column(
         children: <Widget>[
           Expanded(
+            flex: 6,
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
                 child: Center(
-                  child: _cameraPreviewWidget(),
-                ),
+                    child: Stack(
+                  children: <Widget>[
+                    _cameraPreviewWidget(),
+                    Align(
+                        alignment: FractionalOffset.bottomLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: ScreenUtil().setWidth(50),
+                              bottom: ScreenUtil().setHeight(50)),
+                          child: RotatedBox(
+                            quarterTurns: 1,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.loop,
+                                size: 33,
+                                color: Colors.white,
+                              ),
+                              onPressed: null,
+                            ),
+                          ),
+                        ))
+                  ],
+                )),
               ),
               decoration: BoxDecoration(
                 color: Colors.black,
-                border: Border.all(
-                  color: controller != null && controller.value.isRecordingVideo
-                      ? Colors.redAccent
-                      : Colors.grey,
-                  width: 3.0,
-                ),
               ),
             ),
           ),
-          _captureControlRowWidget(),
-          _toggleAudioWidget(),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+          Expanded(
+            flex: 5,
+            child: Column(
               children: <Widget>[
-                _cameraTogglesRowWidget(),
-                _thumbnailWidget(),
+                _captureControlRowWidget(),
+                _toggleAudioWidget(),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _cameraTogglesRowWidget(),
+                      _thumbnailWidget(),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
+          )
         ],
       ),
     );
@@ -466,21 +486,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 class CameraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    cameras = ModalRoute.of(context).settings.arguments;
     return MaterialApp(
-      home: CameraExampleHome(),
+      home: CameraHome(),
     );
   }
 }
 
 List<CameraDescription> cameras = [];
-
-Future<void> main() async {
-  // Fetch the available cameras before initializing the app.
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();
-  } on CameraException catch (e) {
-    logError(e.code, e.description);
-  }
-  runApp(CameraApp());
-}

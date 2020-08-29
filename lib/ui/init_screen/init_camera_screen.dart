@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +14,7 @@ class _InitCameraScreenState extends State<InitCameraScreen>
     with SingleTickerProviderStateMixin {
   AnimationController animationController;
   Animation<double> bottomButtonAnimation;
+  List<CameraDescription> cameras;
 
   @override
   void initState() {
@@ -24,6 +26,9 @@ class _InitCameraScreenState extends State<InitCameraScreen>
     bottomButtonAnimation =
         CurvedAnimation(curve: Curves.easeInOut, parent: animationController);
 
+    WidgetsFlutterBinding.ensureInitialized();
+    availableCameras().then((value) => cameras = value);
+
     Future.delayed(Duration(seconds: 2), () => animationController.forward());
   }
 
@@ -31,6 +36,11 @@ class _InitCameraScreenState extends State<InitCameraScreen>
   void dispose() {
     animationController.dispose();
     super.dispose();
+  }
+
+  void initCameraAndPush() {
+    if (cameras != null)
+      Navigator.pushNamed(context, Routes.camera, arguments: cameras);
   }
 
   @override
@@ -79,7 +89,7 @@ class _InitCameraScreenState extends State<InitCameraScreen>
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.black),
                   child: InkWell(
-                    onTap: () => Navigator.pushNamed(context, Routes.camera),
+                    onTap: this.initCameraAndPush,
                     child: Icon(
                       Icons.arrow_forward_ios,
                       size: 18,

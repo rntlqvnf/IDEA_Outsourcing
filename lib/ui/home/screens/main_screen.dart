@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/ui/screens/home.dart';
-import 'package:python_app/ui/widgets/icon_badge.dart';
+import 'package:python_app/ui/home/screens/home.dart';
+import 'package:python_app/ui/home/screens/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:python_app/ui/home/screens/widgets/icon_badge.dart';
 import 'package:python_app/ui/util/places.dart';
-import 'package:python_app/ui/widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
   @override
