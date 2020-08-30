@@ -59,40 +59,42 @@ class _CameraScreenState extends State<CameraScreen>
     return Scaffold(
       body: Column(
         children: <Widget>[
+          _appBar(),
           Expanded(
             flex: 6,
             child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
                 child: Center(
-                    child: Stack(
-                  children: <Widget>[
-                    _cameraPreviewWidget(),
-                    Align(
-                        alignment: FractionalOffset.bottomLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: ScreenUtil().setWidth(50),
-                              bottom: ScreenUtil().setHeight(50)),
-                          child: RotatedBox(
-                            quarterTurns: 1,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.loop,
-                                size: 33,
-                                color: Colors.white,
+                  child: Stack(
+                    children: <Widget>[
+                      Observer(builder: (_) {
+                        return cameraStore.loading
+                            ? Container()
+                            : CameraPreview(cameraStore.controller);
+                      }),
+                      Align(
+                          alignment: FractionalOffset.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: ScreenUtil().setWidth(50),
+                                bottom: ScreenUtil().setHeight(50)),
+                            child: RotatedBox(
+                              quarterTurns: 1,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.loop,
+                                  size: 33,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => cameraStore.toggleCamera(),
                               ),
-                              onPressed: () => cameraStore.toggleCamera(),
                             ),
-                          ),
-                        ))
-                  ],
+                          ))
+                    ],
+                  ),
                 )),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-              ),
-            ),
           ),
           Expanded(
               flex: 5,
@@ -121,18 +123,6 @@ class _CameraScreenState extends State<CameraScreen>
         ],
       ),
     );
-  }
-
-  /// Display the preview from the camera (or a message if the preview is not available).
-  Widget _cameraPreviewWidget() {
-    return Observer(builder: (_) {
-      return cameraStore.loading
-          ? Container()
-          : AspectRatio(
-              aspectRatio: cameraStore.controller.value.aspectRatio,
-              child: CameraPreview(cameraStore.controller),
-            );
-    });
   }
 
   /// Display the thumbnail of the captured image or video.
@@ -167,5 +157,64 @@ class _CameraScreenState extends State<CameraScreen>
         ),
       ),
     );
+  }
+
+  Widget _appBar() {
+    return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                offset: const Offset(0, 2),
+                blurRadius: 8.0),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top, left: 8, right: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.centerLeft,
+                width: AppBar().preferredSize.height + 40,
+                height: AppBar().preferredSize.height,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(32.0),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.arrow_back),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    '사진',
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(70),
+                      fontFamily: 'NanumGothic',
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: AppBar().preferredSize.height + 40,
+                height: AppBar().preferredSize.height,
+              ),
+            ],
+          ),
+        ));
   }
 }
