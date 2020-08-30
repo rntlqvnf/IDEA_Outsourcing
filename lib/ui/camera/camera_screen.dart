@@ -2,6 +2,7 @@
 
 // ignore_for_file: public_member_api_docs
 import 'dart:io';
+import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/ui/widget/toast_generator.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:video_player/video_player.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -19,13 +21,15 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen>
-    with WidgetsBindingObserver {
-  String imagePath;
-  String videoPath;
-  VideoPlayerController videoController;
-  VoidCallback videoPlayerListener;
-  bool enableAudio = true;
+    with WidgetsBindingObserver, AnimationMixin {
   CameraStore cameraStore;
+  Animation<double> toggleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    toggleAnimation = Tween<double>(begin: 0, end: 1).animate(controller);
+  }
 
   @override
   void didChangeDependencies() {
@@ -77,21 +81,28 @@ class _CameraScreenState extends State<CameraScreen>
                       Align(
                           alignment: FractionalOffset.bottomLeft,
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                left: ScreenUtil().setWidth(50),
-                                bottom: ScreenUtil().setHeight(50)),
-                            child: RotatedBox(
-                              quarterTurns: 1,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.loop,
-                                  size: 33,
-                                  color: Colors.white,
+                              padding: EdgeInsets.only(
+                                  left: ScreenUtil().setWidth(50),
+                                  bottom: ScreenUtil().setHeight(50)),
+                              child: Transform.rotate(
+                                angle: pi * toggleAnimation.value,
+                                child: RotatedBox(
+                                  quarterTurns: 2,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.loop,
+                                      size: 33,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      controller.isDismissed
+                                          ? controller.play()
+                                          : controller.playReverse();
+                                      cameraStore.toggleCamera();
+                                    },
+                                  ),
                                 ),
-                                onPressed: () => cameraStore.toggleCamera(),
-                              ),
-                            ),
-                          ))
+                              )))
                     ],
                   ),
                 )),
@@ -125,6 +136,7 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
+  /*
   /// Display the thumbnail of the captured image or video.
   Widget _thumbnailWidget() {
     return Expanded(
@@ -157,7 +169,7 @@ class _CameraScreenState extends State<CameraScreen>
         ),
       ),
     );
-  }
+  }*/
 
   Widget _appBar() {
     return Container(
