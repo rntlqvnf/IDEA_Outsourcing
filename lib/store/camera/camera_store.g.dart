@@ -17,6 +17,21 @@ mixin _$CameraStore on _CameraStore, Store {
               name: '_CameraStore.currentCamera'))
       .value;
 
+  final _$loadingAtom = Atom(name: '_CameraStore.loading');
+
+  @override
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
+  }
+
+  @override
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
+    });
+  }
+
   final _$camerasAtom = Atom(name: '_CameraStore.cameras');
 
   @override
@@ -66,7 +81,7 @@ mixin _$CameraStore on _CameraStore, Store {
       AsyncAction('_CameraStore.onNewCameraSelected');
 
   @override
-  Future onNewCameraSelected() {
+  Future<void> onNewCameraSelected() {
     return _$onNewCameraSelectedAsyncAction
         .run(() => super.onNewCameraSelected());
   }
@@ -74,7 +89,7 @@ mixin _$CameraStore on _CameraStore, Store {
   final _$takePictureAsyncAction = AsyncAction('_CameraStore.takePicture');
 
   @override
-  Future<String> takePicture() {
+  Future<void> takePicture() {
     return _$takePictureAsyncAction.run(() => super.takePicture());
   }
 
@@ -105,6 +120,7 @@ mixin _$CameraStore on _CameraStore, Store {
   @override
   String toString() {
     return '''
+loading: ${loading},
 cameras: ${cameras},
 controller: ${controller},
 currentIndex: ${currentIndex},

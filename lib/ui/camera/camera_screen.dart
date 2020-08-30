@@ -84,7 +84,7 @@ class _CameraScreenState extends State<CameraScreen>
               child: Center(
                   child: InkWell(
                       customBorder: new CircleBorder(),
-                      onTap: () => print('tab'),
+                      onTap: () => cameraStore.takePicture(),
                       child: Stack(
                         alignment: AlignmentDirectional.center,
                         children: <Widget>[
@@ -111,10 +111,12 @@ class _CameraScreenState extends State<CameraScreen>
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
     return Observer(builder: (_) {
-      return AspectRatio(
-        aspectRatio: cameraStore.controller.value.aspectRatio,
-        child: CameraPreview(cameraStore.controller),
-      );
+      return cameraStore.loading
+          ? Container()
+          : AspectRatio(
+              aspectRatio: cameraStore.controller.value.aspectRatio,
+              child: CameraPreview(cameraStore.controller),
+            );
     });
   }
 

@@ -22,10 +22,16 @@ abstract class _CameraStore with Store {
   // constructor:---------------------------------------------------------------
   _CameraStore() {
     WidgetsFlutterBinding.ensureInitialized();
-    availableCameras().then((value) => cameras = value);
+    availableCameras().then((value) {
+      cameras = value;
+      toggleCamera();
+    });
   }
 
   // store variables:-----------------------------------------------------------
+  @observable
+  bool loading = false;
+
   @observable
   List<CameraDescription> cameras;
 
@@ -33,7 +39,7 @@ abstract class _CameraStore with Store {
   CameraController controller;
 
   @observable
-  int currentIndex = 0;
+  int currentIndex = 1;
 
   @computed
   CameraDescription get currentCamera => cameras[currentIndex];
@@ -48,7 +54,9 @@ abstract class _CameraStore with Store {
   }
 
   @action
-  void onNewCameraSelected() async {
+  Future<void> onNewCameraSelected() async {
+    loading = true;
+
     if (controller != null) {
       await controller.dispose();
     }
@@ -64,15 +72,15 @@ abstract class _CameraStore with Store {
       }
     });
 
-    try {
-      await controller.initialize();
-    } on CameraException catch (e) {
-      updateOnError('Error: ${e.code}\n${e.description}');
-    }
+    await controller.initialize().catchError(
+        (e) => updateOnError('Error: ${e.code}\n${e.description}'),
+        test: (e) => e is CameraException);
+
+    loading = false;
   }
 
   @action
-  Future<String> takePicture() async {
+  Future<void> takePicture() async {
     if (!controller.value.isInitialized) {
       updateOnError('Error: select a camera first.');
       return null;
@@ -83,17 +91,15 @@ abstract class _CameraStore with Store {
     final String filePath = '$dirPath/${timestamp()}.jpg';
 
     if (controller.value.isTakingPicture) {
-      // A capture is already pending, do nothing.
-      return null;
+      return;
     }
 
     try {
       await controller.takePicture(filePath);
     } on CameraException catch (e) {
       updateOnError('Error: ${e.code}\n${e.description}');
-      return null;
     }
-    return filePath;
+    updateOnSuccess('$filePath 에 저장 완료되었습니다.');
   }
 
   // dispose:-------------------------------------------------------------------
