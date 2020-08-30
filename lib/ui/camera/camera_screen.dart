@@ -7,8 +7,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
+import 'package:python_app/ui/widget/toast_generator.dart';
 import 'package:video_player/video_player.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -31,6 +33,19 @@ class _CameraScreenState extends State<CameraScreen>
     cameraStore = Provider.of<CameraStore>(context);
     WidgetsBinding.instance.addObserver(this);
     cameraStore.onNewCameraSelected();
+    cameraStore.disposers
+      ..add(reaction((_) => cameraStore.successStore.success, (success) {
+        if (success) {
+          ToastGenerator.successToast(
+              context, cameraStore.successStore.successMessage);
+        }
+      }))
+      ..add(reaction((_) => cameraStore.errorStore.error, (error) {
+        if (error) {
+          ToastGenerator.errorToast(
+              context, cameraStore.errorStore.errorMessage);
+        }
+      }));
   }
 
   @override
