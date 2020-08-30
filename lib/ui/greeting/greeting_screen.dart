@@ -1,21 +1,20 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
 import 'package:python_app/routes.dart';
+import 'package:python_app/store/camera/camera_store.dart';
 
-class InitCameraScreen extends StatefulWidget {
-  _InitCameraScreenState createState() => _InitCameraScreenState();
+class GreetingScreen extends StatefulWidget {
+  _GreetingScreenState createState() => _GreetingScreenState();
 }
 
-class _InitCameraScreenState extends State<InitCameraScreen>
+class _GreetingScreenState extends State<GreetingScreen>
     with SingleTickerProviderStateMixin {
   AnimationController animationController;
   Animation<double> bottomButtonAnimation;
-  List<CameraDescription> cameras;
-
   @override
   void initState() {
     super.initState();
@@ -26,9 +25,6 @@ class _InitCameraScreenState extends State<InitCameraScreen>
     bottomButtonAnimation =
         CurvedAnimation(curve: Curves.easeInOut, parent: animationController);
 
-    WidgetsFlutterBinding.ensureInitialized();
-    availableCameras().then((value) => cameras = value);
-
     Future.delayed(Duration(seconds: 2), () => animationController.forward());
   }
 
@@ -36,11 +32,6 @@ class _InitCameraScreenState extends State<InitCameraScreen>
   void dispose() {
     animationController.dispose();
     super.dispose();
-  }
-
-  void initCameraAndPush() {
-    if (cameras != null)
-      Navigator.pushNamed(context, Routes.camera, arguments: cameras);
   }
 
   @override
@@ -89,7 +80,13 @@ class _InitCameraScreenState extends State<InitCameraScreen>
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.black),
                   child: InkWell(
-                    onTap: this.initCameraAndPush,
+                    onTap: () {
+                      if (Provider.of<CameraStore>(context, listen: false)
+                              .cameras !=
+                          null) {
+                        Navigator.pushNamed(context, Routes.camera);
+                      }
+                    },
                     child: Icon(
                       Icons.arrow_forward_ios,
                       size: 18,

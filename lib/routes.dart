@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:python_app/ui/camera/camera_screen.dart';
+import 'package:python_app/ui/greeting/greeting_screen.dart';
 import 'package:python_app/ui/home/screens/main_screen.dart';
-import 'package:python_app/ui/init_screen/init_camera_screen.dart';
 
 class Routes {
   Routes._();
@@ -13,7 +13,7 @@ class Routes {
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => MainScreen(),
-    camera: (BuildContext context) => CameraApp(),
-    initCamera: (BuildContext context) => InitCameraScreen()
+    camera: (BuildContext context) => CameraScreen(),
+    initCamera: (BuildContext context) => GreetingScreen()
   };
 }

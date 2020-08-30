@@ -4,17 +4,18 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:python_app/store/camera/camera_store.dart';
 import 'package:video_player/video_player.dart';
 
-class CameraHome extends StatefulWidget {
+class CameraScreen extends StatefulWidget {
   @override
-  _CameraHomeState createState() => _CameraHomeState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
 /// Returns a suitable camera icon for [direction].
@@ -33,17 +34,20 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
-class _CameraHomeState extends State<CameraHome> with WidgetsBindingObserver {
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
   CameraController controller;
   String imagePath;
   String videoPath;
   VideoPlayerController videoController;
   VoidCallback videoPlayerListener;
   bool enableAudio = true;
+  List<CameraDescription> cameras;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    cameras = Provider.of<CameraStore>(context).cameras;
     WidgetsBinding.instance.addObserver(this);
     onNewCameraSelected(cameras[0]);
   }
@@ -482,15 +486,3 @@ class _CameraHomeState extends State<CameraHome> with WidgetsBindingObserver {
     showInSnackBar('Error: ${e.code}\n${e.description}');
   }
 }
-
-class CameraApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    cameras = ModalRoute.of(context).settings.arguments;
-    return MaterialApp(
-      home: CameraHome(),
-    );
-  }
-}
-
-List<CameraDescription> cameras = [];
