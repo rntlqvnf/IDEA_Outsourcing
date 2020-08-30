@@ -32,6 +32,21 @@ mixin _$CameraStore on _CameraStore, Store {
     });
   }
 
+  final _$controllerAtom = Atom(name: '_CameraStore.controller');
+
+  @override
+  CameraController get controller {
+    _$controllerAtom.reportRead();
+    return super.controller;
+  }
+
+  @override
+  set controller(CameraController value) {
+    _$controllerAtom.reportWrite(value, super.controller, () {
+      super.controller = value;
+    });
+  }
+
   final _$currentIndexAtom = Atom(name: '_CameraStore.currentIndex');
 
   @override
@@ -45,6 +60,22 @@ mixin _$CameraStore on _CameraStore, Store {
     _$currentIndexAtom.reportWrite(value, super.currentIndex, () {
       super.currentIndex = value;
     });
+  }
+
+  final _$onNewCameraSelectedAsyncAction =
+      AsyncAction('_CameraStore.onNewCameraSelected');
+
+  @override
+  Future onNewCameraSelected() {
+    return _$onNewCameraSelectedAsyncAction
+        .run(() => super.onNewCameraSelected());
+  }
+
+  final _$takePictureAsyncAction = AsyncAction('_CameraStore.takePicture');
+
+  @override
+  Future<String> takePicture() {
+    return _$takePictureAsyncAction.run(() => super.takePicture());
   }
 
   final _$_CameraStoreActionController = ActionController(name: '_CameraStore');
@@ -75,6 +106,7 @@ mixin _$CameraStore on _CameraStore, Store {
   String toString() {
     return '''
 cameras: ${cameras},
+controller: ${controller},
 currentIndex: ${currentIndex},
 currentCamera: ${currentCamera}
     ''';
