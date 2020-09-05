@@ -93,7 +93,6 @@ abstract class _CameraStore with Store {
     if (controller.value.isTakingPicture) {
       return;
     }
-
     try {
       await controller.takePicture(filePath);
     } on CameraException catch (e) {

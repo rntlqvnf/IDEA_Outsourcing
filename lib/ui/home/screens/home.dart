@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:python_app/routes.dart';
 import 'package:python_app/ui/home/screens/widgets/horizontal_place_item.dart';
 import 'package:python_app/ui/home/screens/widgets/icon_badge.dart';
 import 'package:python_app/ui/home/screens/widgets/search_bar.dart';
@@ -22,13 +23,23 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () {
+            Navigator.popUntil(
+                context, (route) => route.settings.name == Routes.camera);
+          },
+        ),
         actions: <Widget>[
           IconButton(
-            icon: IconBadge(
-              icon: Icons.camera,
+            icon: Icon(
+              Icons.camera,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/camera');
+              Navigator.popUntil(
+                  context, (route) => route.settings.name == Routes.camera);
             },
           ),
         ],

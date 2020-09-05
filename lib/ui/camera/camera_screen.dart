@@ -1,7 +1,3 @@
-// found in the LICENSE file.
-
-// ignore_for_file: public_member_api_docs
-import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
@@ -10,10 +6,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:python_app/routes.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/ui/widget/toast_generator.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:video_player/video_player.dart';
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -42,6 +38,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (success) {
           ToastGenerator.successToast(
               context, cameraStore.successStore.successMessage);
+          Navigator.pushNamed(context, Routes.home);
         }
       }))
       ..add(reaction((_) => cameraStore.errorStore.error, (error) {
@@ -65,72 +62,85 @@ class _CameraScreenState extends State<CameraScreen>
         children: <Widget>[
           _appBar(),
           Expanded(
-            flex: 6,
-            child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                ),
-                child: Center(
-                  child: Stack(
-                    children: <Widget>[
-                      Observer(builder: (_) {
-                        return cameraStore.loading
-                            ? Container()
-                            : CameraPreview(cameraStore.controller);
-                      }),
-                      Align(
-                          alignment: FractionalOffset.bottomLeft,
-                          child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenUtil().setWidth(50),
-                                  bottom: ScreenUtil().setHeight(50)),
-                              child: Transform.rotate(
-                                angle: pi * toggleAnimation.value,
-                                child: RotatedBox(
-                                  quarterTurns: 2,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.loop,
-                                      size: 33,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      controller.isDismissed
-                                          ? controller.play()
-                                          : controller.playReverse();
-                                      cameraStore.toggleCamera();
-                                    },
-                                  ),
-                                ),
-                              )))
-                    ],
-                  ),
-                )),
-          ),
-          Expanded(
-              flex: 5,
-              child: Center(
-                  child: InkWell(
-                      customBorder: new CircleBorder(),
-                      onTap: () => cameraStore.takePicture(),
+              child: Stack(
+            children: <Widget>[
+              Observer(builder: (_) {
+                return cameraStore.loading
+                    ? Container()
+                    : AspectRatio(
+                        aspectRatio: cameraStore.controller.value.aspectRatio,
+                        child: CameraPreview(cameraStore.controller),
+                      );
+              }),
+              Positioned.fill(
+                  child: Column(
+                children: <Widget>[
+                  Expanded(
+                      flex: 6,
                       child: Stack(
-                        alignment: AlignmentDirectional.center,
                         children: <Widget>[
                           Container(
-                            width: ScreenUtil().setWidth(300),
-                            height: ScreenUtil().setWidth(300),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.withOpacity(0.5)),
+                            decoration:
+                                BoxDecoration(color: Colors.transparent),
                           ),
-                          Container(
-                            width: ScreenUtil().setWidth(180),
-                            height: ScreenUtil().setWidth(180),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.white),
-                          ),
+                          Align(
+                              alignment: FractionalOffset.bottomLeft,
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: ScreenUtil().setWidth(50),
+                                      bottom: ScreenUtil().setHeight(50)),
+                                  child: Transform.rotate(
+                                    angle: pi * toggleAnimation.value,
+                                    child: RotatedBox(
+                                      quarterTurns: 2,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.loop,
+                                          size: 33,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          controller.isDismissed
+                                              ? controller.play()
+                                              : controller.playReverse();
+                                          cameraStore.toggleCamera();
+                                        },
+                                      ),
+                                    ),
+                                  )))
                         ],
-                      ))))
+                      )),
+                  Expanded(
+                      flex: 5,
+                      child: InkWell(
+                          customBorder: new CircleBorder(),
+                          onTap: () => cameraStore.takePicture(),
+                          child: Container(
+                              decoration: BoxDecoration(color: Colors.white),
+                              child: Center(
+                                  child: Stack(
+                                alignment: AlignmentDirectional.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: ScreenUtil().setWidth(300),
+                                    height: ScreenUtil().setWidth(300),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey.withOpacity(0.5)),
+                                  ),
+                                  Container(
+                                    width: ScreenUtil().setWidth(180),
+                                    height: ScreenUtil().setWidth(180),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white),
+                                  ),
+                                ],
+                              )))))
+                ],
+              ))
+            ],
+          )),
         ],
       ),
     );
