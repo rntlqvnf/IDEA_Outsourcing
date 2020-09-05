@@ -1,10 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
-import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/ui/theme.dart';
@@ -31,9 +31,6 @@ class _CameraScreenState extends State<CameraScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     cameraStore = Provider.of<CameraStore>(context);
-    WidgetsBinding.instance.addObserver(this);
-    cameraStore.onNewCameraSelected();
-
     _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
   }
 
@@ -51,7 +48,6 @@ class _CameraScreenState extends State<CameraScreen>
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        centerTitle: true,
         title: Text(
           '사진',
           style: BaseTheme.appBarTextStyle.copyWith(
@@ -60,15 +56,12 @@ class _CameraScreenState extends State<CameraScreen>
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,
-        labelStyle: TextStyle(fontWeight: FontWeight.w700),
-        indicatorSize: TabBarIndicatorSize.label,
-        labelColor: Color(0xff1967d2),
-        unselectedLabelColor: Color(0xff5f6368),
-        isScrollable: true,
-        indicator: MD2Indicator(
-            indicatorHeight: 3,
-            indicatorColor: Color(0xff1967d2),
-            indicatorSize: MD2IndicatorSize.normal),
+        labelStyle: BaseTheme.bottomBarTextStyle,
+        unselectedLabelColor: BaseTheme.deactivatedText,
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicatorWeight: 1,
+        indicatorColor: BaseTheme.black,
+        isScrollable: false,
         tabs: <Widget>[
           Tab(
             text: "갤러리",
@@ -78,12 +71,13 @@ class _CameraScreenState extends State<CameraScreen>
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Expanded(
-              child: Stack(
-            children: <Widget>[_cameraPreviewScreen(), _takePictureScreen()],
-          )),
+          _cameraPreviewScreen(),
+          TabBarView(
+            controller: _tabController,
+            children: <Widget>[_takePictureScreen(), _takePictureScreen()],
+          )
         ],
       ),
     );
@@ -94,18 +88,17 @@ class _CameraScreenState extends State<CameraScreen>
       return cameraStore.loading
           ? Container()
           : AspectRatio(
-              aspectRatio: cameraStore.controller.value.aspectRatio,
+              aspectRatio: cameraStore.aspectRatio,
               child: CameraPreview(cameraStore.controller),
             );
     });
   }
 
   Widget _takePictureScreen() {
-    return Positioned.fill(
-        child: Column(
+    return Column(
       children: <Widget>[
-        Expanded(
-            flex: 6,
+        SizedBox(
+            height: ScreenUtil().setHeight(1200),
             child: Stack(
               children: <Widget>[
                 Container(
@@ -139,7 +132,6 @@ class _CameraScreenState extends State<CameraScreen>
               ],
             )),
         Expanded(
-            flex: 5,
             child: Container(
                 decoration: BoxDecoration(color: Colors.white),
                 child: Center(
@@ -147,6 +139,7 @@ class _CameraScreenState extends State<CameraScreen>
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
                     Material(
+                      color: Colors.transparent,
                       child: InkWell(
                         customBorder: new CircleBorder(),
                         onTap: () => cameraStore.takePicture(),
@@ -170,41 +163,24 @@ class _CameraScreenState extends State<CameraScreen>
                   ],
                 ))))
       ],
-    ));
+    );
   }
 
-  /*
-  /// Display the thumbnail of the captured image or video.
-  Widget _thumbnailWidget() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            videoController == null && imagePath == null
-                ? Container()
-                : SizedBox(
-                    child: (videoController == null)
-                        ? Image.file(File(imagePath))
-                        : Container(
-                            child: Center(
-                              child: AspectRatio(
-                                  aspectRatio:
-                                      videoController.value.size != null
-                                          ? videoController.value.aspectRatio
-                                          : 1.0,
-                                  child: VideoPlayer(videoController)),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.pink)),
-                          ),
-                    width: 64.0,
-                    height: 64.0,
-                  ),
-          ],
-        ),
+  Widget _galleryScreen() {
+    return Positioned.fill(
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: ScreenUtil().setHeight(1200),
+            child: Image.file(File(cameraStore.filePath)),
+          ),
+          Expanded(
+            child: Container(
+              child: Text('테스트'),
+            ),
+          )
+        ],
       ),
     );
-  }*/
+  }
 }

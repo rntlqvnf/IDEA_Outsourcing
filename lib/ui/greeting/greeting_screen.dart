@@ -73,26 +73,22 @@ class _GreetingScreenState extends State<GreetingScreen>
             child: Padding(
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(320)),
               child: FadeTransition(
-                opacity: bottomButtonAnimation,
-                child: Container(
-                    padding: EdgeInsets.all(27),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.black),
-                    child: Material(
+                  opacity: bottomButtonAnimation,
+                  child: Material(
                       child: InkWell(
-                        onTap: () {
-                          if (context.read<CameraStore>().cameras != null) {
+                          customBorder: new CircleBorder(),
+                          onTap: () {
                             Navigator.pushNamed(context, Routes.camera);
-                          }
-                        },
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )),
-              ),
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(27),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.black),
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 18,
+                                color: Colors.white,
+                              ))))),
             ))
       ],
     )));

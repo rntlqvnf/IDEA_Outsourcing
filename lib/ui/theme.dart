@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BaseTheme {
   static const Color notWhite = Color(0xFFEDF0F2);
@@ -22,8 +21,6 @@ class BaseTheme {
   static const Color darkBlue = Color(0xFF60a0d7);
   static const Color valueBlue = Color(0xFFcfe8ff);
   static const Color pastelBlue = Color(0xFFd1dfe8);
-  static const Color slightPurple = Color(0xFF7F7FD5);
-  static const Color purpleBlue = Color(0xFF86A8E7);
   static const Color lightBlue = Color(0xFF91EAE4);
   static const Color lightRed = Color(0xFFFF1010);
   static const Color brightRed1 = Color(0xFFC02425);
@@ -45,12 +42,12 @@ class BaseTheme {
 
   static const TextStyle appBarTextStyle = TextStyle(
       fontFamily: fontName,
-      color: Colors.black87,
+      color: darkText,
       fontWeight: FontWeight.w600,
-      fontSize: 75);
+      fontSize: 65);
 
   static const TextStyle bottomBarTextStyle = TextStyle(
-      fontFamily: fontName, color: Colors.black87, fontWeight: FontWeight.w600);
+      fontFamily: fontName, color: black, fontWeight: FontWeight.w500);
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/contants/globals.dart';
 import 'package:python_app/routes.dart';
+import 'package:python_app/service/camera_service.dart';
+import 'package:python_app/service/camera_service_impl.dart';
 import 'package:python_app/service/flush_service.dart';
 import 'package:python_app/service/flush_service_impl.dart';
 import 'package:python_app/service/navigation_service.dart';
@@ -23,6 +25,7 @@ void main() async {
 void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
+  locator.registerSingleton<CameraService>(CameraServiceImpl());
 }
 
 class MyApp extends StatefulWidget {
