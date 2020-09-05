@@ -8,7 +8,6 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/routes.dart';
 import 'package:python_app/store/camera/camera_store.dart';
-import 'package:python_app/ui/widget/toast_generator.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -36,16 +35,11 @@ class _CameraScreenState extends State<CameraScreen>
     cameraStore.disposers
       ..add(reaction((_) => cameraStore.successStore.success, (success) {
         if (success) {
-          ToastGenerator.successToast(
-              context, cameraStore.successStore.successMessage);
           Navigator.pushNamed(context, Routes.home);
         }
       }))
       ..add(reaction((_) => cameraStore.errorStore.error, (error) {
-        if (error) {
-          ToastGenerator.errorToast(
-              context, cameraStore.errorStore.errorMessage);
-        }
+        if (error) {}
       }));
   }
 

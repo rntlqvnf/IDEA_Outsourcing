@@ -12,17 +12,21 @@ dependencies:
   flutter:
     sdk: flutter
       
-  cupertino_icons: ^0.1.2
-  flutter_screenutil: ^2.3.1
-  camera: ^0.5.8+5
-  path_provider: ^1.6.14
-  video_player: ^0.10.12+2
-  animated_text_kit: ^2.2.0
-  flutter_neumorphic: ^3.0.1
+  # State Management
   provider: ^4.3.1
   mobx: ^1.2.1
   flutter_mobx: ^1.0.0
-  flutter_styled_toast: ^1.3.2
+
+  # Service
+  get_it: ^4.0.4
+  bot_toast: ^3.0.4
+  camera: ^0.5.8+5
+  path_provider: ^1.6.14
+
+  # UI
+  cupertino_icons: ^0.1.2
+  flutter_screenutil: ^2.3.1
+  animated_text_kit: ^2.2.0
   simple_animations: ^2.2.1
 
 dev_dependencies:
@@ -32,7 +36,6 @@ dev_dependencies:
 
   flutter_test:
     sdk: flutter
-
 
 flutter_icons:
   android: launcher_icon

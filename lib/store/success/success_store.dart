@@ -1,4 +1,6 @@
 import 'package:mobx/mobx.dart';
+import 'package:python_app/contants/globals.dart';
+import 'package:python_app/service/flush_service.dart';
 
 part 'success_store.g.dart';
 
@@ -11,7 +13,7 @@ abstract class _SuccessStore with Store {
   // constructor:---------------------------------------------------------------
   _SuccessStore() {
     _disposers = [
-      reaction((_) => success, reset, delay: 100),
+      reaction((_) => success, showAndReset),
     ];
   }
 
@@ -24,8 +26,9 @@ abstract class _SuccessStore with Store {
 
   // actions:-------------------------------------------------------------------
   @action
-  void reset(bool value) {
+  void showAndReset(bool value) {
     if (value) {
+      locator<FlushService>().successToast(successMessage);
       successMessage = '';
       success = false;
     }

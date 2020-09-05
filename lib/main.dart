@@ -1,11 +1,28 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:python_app/contants/globals.dart';
 import 'package:python_app/routes.dart';
+import 'package:python_app/service/flush_service.dart';
+import 'package:python_app/service/flush_service_impl.dart';
+import 'package:python_app/service/navigation_service.dart';
+import 'package:python_app/service/navigation_service_impl.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/ui/util/const.dart';
 
 void main() async {
-  runApp(MyApp());
+  setupLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]).then((_) => runApp(MyApp()));
+}
+
+void setupLocator() {
+  locator.registerSingleton<NavigationService>(NavigationServiceImpl());
+  locator.registerSingleton<FlushService>(FlushServiceImpl());
 }
 
 class MyApp extends StatefulWidget {
@@ -27,6 +44,9 @@ class _MyAppState extends State<MyApp> {
           darkTheme: Constants.darkTheme,
           initialRoute: Routes.initCamera,
           routes: Routes.routes,
+          builder: BotToastInit(),
+          navigatorObservers: [BotToastNavigatorObserver()],
+          navigatorKey: locator<NavigationService>().key,
         ));
   }
 }

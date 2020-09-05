@@ -1,4 +1,7 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:mobx/mobx.dart';
+import 'package:python_app/contants/globals.dart';
+import 'package:python_app/service/flush_service.dart';
 
 part 'error_store.g.dart';
 
@@ -11,7 +14,7 @@ abstract class _ErrorStore with Store {
   // constructor:---------------------------------------------------------------
   _ErrorStore() {
     _disposers = [
-      reaction((_) => error, reset, delay: 200),
+      reaction((_) => error, showAndReset),
     ];
   }
 
@@ -23,10 +26,10 @@ abstract class _ErrorStore with Store {
   bool error = false;
 
   // actions:-------------------------------------------------------------------
-
   @action
-  void reset(bool value) {
+  void showAndReset(bool value) {
     if (value) {
+      locator<FlushService>().errorToast(errorMessage);
       errorMessage = '';
       error = false;
     }
