@@ -35,17 +35,18 @@ abstract class _CameraStore extends BaseStore with Store {
   // actions:-------------------------------------------------------------------
   @action
   void toggleCamera() {
-    try {
-      cameraService.toggleCamera();
-    } on CameraException catch (e) {
-      error('에러: ${e.code}\n${e.description}');
-    }
+    if (loading) return;
+    loading = true;
+    cameraService.toggleCamera().then((_) => loading = false).catchError(
+        (e) => error('카메라 전환에 실패했습니다'),
+        test: (e) => e is CameraException);
   }
 
   @action
   void takePicture() {
-    cameraService.takePicture().catchError(
-        (e) => error('에러: ${e.code}\n${e.description}'),
+    cameraService.takePicture().then((path) {
+      success('$path 에 저장되었습니다.');
+    }).catchError((e) => error('에러: ${e.code}\n${e.description}'),
         test: (e) => e is CameraException);
   }
 

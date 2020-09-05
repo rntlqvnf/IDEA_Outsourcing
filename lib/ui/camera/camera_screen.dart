@@ -86,7 +86,9 @@ class _CameraScreenState extends State<CameraScreen>
   Widget _cameraPreviewScreen() {
     return Observer(builder: (_) {
       return cameraStore.loading
-          ? Container()
+          ? Container(
+              decoration: BoxDecoration(color: Colors.black),
+            )
           : AspectRatio(
               aspectRatio: cameraStore.aspectRatio,
               child: CameraPreview(cameraStore.controller),
