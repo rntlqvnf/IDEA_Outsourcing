@@ -4,17 +4,14 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:python_app/store/error/error_store.dart';
-import 'package:python_app/store/success/success_store.dart';
+import 'package:python_app/store/base_store.dart';
 
 part 'camera_store.g.dart';
 
 class CameraStore = _CameraStore with _$CameraStore;
 
-abstract class _CameraStore with Store {
+abstract class _CameraStore extends BaseStore with Store {
   // other stores:--------------------------------------------------------------
-  final ErrorStore errorStore = ErrorStore();
-  final SuccessStore successStore = SuccessStore();
 
   // disposers:-----------------------------------------------------------------
   List<ReactionDisposer> disposers = [];
@@ -68,12 +65,12 @@ abstract class _CameraStore with Store {
     // If the controller is updated then update the UI.
     controller.addListener(() {
       if (controller.value.hasError) {
-        updateOnError('Camera error ${controller.value.errorDescription}');
+        error('Camera error ${controller.value.errorDescription}');
       }
     });
 
     await controller.initialize().catchError(
-        (e) => updateOnError('Error: ${e.code}\n${e.description}'),
+        (e) => error('Error: ${e.code}\n${e.description}'),
         test: (e) => e is CameraException);
 
     loading = false;
@@ -82,7 +79,7 @@ abstract class _CameraStore with Store {
   @action
   Future<void> takePicture() async {
     if (!controller.value.isInitialized) {
-      updateOnError('Error: select a camera first.');
+      error('Error: select a camera first.');
       return null;
     }
     final Directory extDir = await getApplicationDocumentsDirectory();
@@ -96,29 +93,19 @@ abstract class _CameraStore with Store {
     try {
       await controller.takePicture(filePath);
     } on CameraException catch (e) {
-      updateOnError('Error: ${e.code}\n${e.description}');
+      error('Error: ${e.code}\n${e.description}');
     }
-    updateOnSuccess('$filePath 에 저장 완료되었습니다.');
+    success('$filePath 에 저장 완료되었습니다.');
   }
 
   // dispose:-------------------------------------------------------------------
   @action
   dispose() {
-    errorStore.dispose();
-    successStore.dispose();
+    super.dispose();
     for (final d in disposers) {
       d();
     }
   }
 
   // functions:-----------------------------------------------------------------
-  void updateOnError(String message) {
-    errorStore.errorMessage = message;
-    errorStore.error = true;
-  }
-
-  void updateOnSuccess(String message) {
-    successStore.successMessage = message;
-    successStore.success = true;
-  }
 }

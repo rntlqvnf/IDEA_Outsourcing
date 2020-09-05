@@ -4,10 +4,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
-import 'package:mobx/mobx.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:python_app/routes.dart';
 import 'package:python_app/store/camera/camera_store.dart';
+import 'package:python_app/ui/theme.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -19,6 +19,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver, AnimationMixin {
   CameraStore cameraStore;
   Animation<double> toggleAnimation;
+  TabController _tabController;
 
   @override
   void initState() {
@@ -32,15 +33,8 @@ class _CameraScreenState extends State<CameraScreen>
     cameraStore = Provider.of<CameraStore>(context);
     WidgetsBinding.instance.addObserver(this);
     cameraStore.onNewCameraSelected();
-    cameraStore.disposers
-      ..add(reaction((_) => cameraStore.successStore.success, (success) {
-        if (success) {
-          Navigator.pushNamed(context, Routes.home);
-        }
-      }))
-      ..add(reaction((_) => cameraStore.errorStore.error, (error) {
-        if (error) {}
-      }));
+
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
   }
 
   @override
@@ -52,92 +46,131 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        centerTitle: true,
+        title: Text(
+          '사진',
+          style: BaseTheme.appBarTextStyle.copyWith(
+              fontSize: ScreenUtil().setSp(BaseTheme.appBarTextStyle.fontSize)),
+        ),
+      ),
+      bottomNavigationBar: TabBar(
+        controller: _tabController,
+        labelStyle: TextStyle(fontWeight: FontWeight.w700),
+        indicatorSize: TabBarIndicatorSize.label,
+        labelColor: Color(0xff1967d2),
+        unselectedLabelColor: Color(0xff5f6368),
+        isScrollable: true,
+        indicator: MD2Indicator(
+            indicatorHeight: 3,
+            indicatorColor: Color(0xff1967d2),
+            indicatorSize: MD2IndicatorSize.normal),
+        tabs: <Widget>[
+          Tab(
+            text: "갤러리",
+          ),
+          Tab(
+            text: "촬영",
+          ),
+        ],
+      ),
       body: Column(
         children: <Widget>[
-          _appBar(),
           Expanded(
               child: Stack(
-            children: <Widget>[
-              Observer(builder: (_) {
-                return cameraStore.loading
-                    ? Container()
-                    : AspectRatio(
-                        aspectRatio: cameraStore.controller.value.aspectRatio,
-                        child: CameraPreview(cameraStore.controller),
-                      );
-              }),
-              Positioned.fill(
-                  child: Column(
-                children: <Widget>[
-                  Expanded(
-                      flex: 6,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration:
-                                BoxDecoration(color: Colors.transparent),
-                          ),
-                          Align(
-                              alignment: FractionalOffset.bottomLeft,
-                              child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: ScreenUtil().setWidth(50),
-                                      bottom: ScreenUtil().setHeight(50)),
-                                  child: Transform.rotate(
-                                    angle: pi * toggleAnimation.value,
-                                    child: RotatedBox(
-                                      quarterTurns: 2,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.loop,
-                                          size: 33,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          controller.isDismissed
-                                              ? controller.play()
-                                              : controller.playReverse();
-                                          cameraStore.toggleCamera();
-                                        },
-                                      ),
-                                    ),
-                                  )))
-                        ],
-                      )),
-                  Expanded(
-                      flex: 5,
-                      child: InkWell(
-                          customBorder: new CircleBorder(),
-                          onTap: () => cameraStore.takePicture(),
-                          child: Container(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: Center(
-                                  child: Stack(
-                                alignment: AlignmentDirectional.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: ScreenUtil().setWidth(300),
-                                    height: ScreenUtil().setWidth(300),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.grey.withOpacity(0.5)),
-                                  ),
-                                  Container(
-                                    width: ScreenUtil().setWidth(180),
-                                    height: ScreenUtil().setWidth(180),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white),
-                                  ),
-                                ],
-                              )))))
-                ],
-              ))
-            ],
+            children: <Widget>[_cameraPreviewScreen(), _takePictureScreen()],
           )),
         ],
       ),
     );
+  }
+
+  Widget _cameraPreviewScreen() {
+    return Observer(builder: (_) {
+      return cameraStore.loading
+          ? Container()
+          : AspectRatio(
+              aspectRatio: cameraStore.controller.value.aspectRatio,
+              child: CameraPreview(cameraStore.controller),
+            );
+    });
+  }
+
+  Widget _takePictureScreen() {
+    return Positioned.fill(
+        child: Column(
+      children: <Widget>[
+        Expanded(
+            flex: 6,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(color: Colors.transparent),
+                ),
+                Align(
+                    alignment: FractionalOffset.bottomLeft,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            left: ScreenUtil().setWidth(50),
+                            bottom: ScreenUtil().setHeight(50)),
+                        child: Transform.rotate(
+                          angle: pi * toggleAnimation.value,
+                          child: RotatedBox(
+                            quarterTurns: 2,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.loop,
+                                size: 33,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                controller.isDismissed
+                                    ? controller.play()
+                                    : controller.playReverse();
+                                cameraStore.toggleCamera();
+                              },
+                            ),
+                          ),
+                        )))
+              ],
+            )),
+        Expanded(
+            flex: 5,
+            child: Container(
+                decoration: BoxDecoration(color: Colors.white),
+                child: Center(
+                    child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Material(
+                      child: InkWell(
+                        customBorder: new CircleBorder(),
+                        onTap: () => cameraStore.takePicture(),
+                        child: Container(
+                          width: ScreenUtil().setWidth(300),
+                          height: ScreenUtil().setWidth(300),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey.withOpacity(0.5)),
+                        ),
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: Container(
+                        width: ScreenUtil().setWidth(180),
+                        height: ScreenUtil().setWidth(180),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white),
+                      ),
+                    )
+                  ],
+                ))))
+      ],
+    ));
   }
 
   /*
@@ -174,63 +207,4 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
   }*/
-
-  Widget _appBar() {
-    return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                offset: const Offset(0, 2),
-                blurRadius: 8.0),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top, left: 8, right: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                width: AppBar().preferredSize.height + 40,
-                height: AppBar().preferredSize.height,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(32.0),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.arrow_back),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '사진',
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(70),
-                      fontFamily: 'NanumGothic',
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: AppBar().preferredSize.height + 40,
-                height: AppBar().preferredSize.height,
-              ),
-            ],
-          ),
-        ));
-  }
 }

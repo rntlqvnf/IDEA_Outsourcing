@@ -28,6 +28,8 @@ dependencies:
   flutter_screenutil: ^2.3.1
   animated_text_kit: ^2.2.0
   simple_animations: ^2.2.1
+  md2_tab_indicator: ^1.0.2
+  
 
 dev_dependencies:
   build_runner: ^1.10.0

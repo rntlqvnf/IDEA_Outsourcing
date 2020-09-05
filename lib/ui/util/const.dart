@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-  static String appName = "파이썬 프로젝트";
-
   //Colors for theme
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;

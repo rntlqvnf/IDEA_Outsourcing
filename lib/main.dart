@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: Constants.appName,
+          title: 'Emotion Picker',
           theme: Constants.lightTheme,
           darkTheme: Constants.darkTheme,
           initialRoute: Routes.initCamera,
