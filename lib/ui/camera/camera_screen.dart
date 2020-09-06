@@ -35,15 +35,6 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     super.initState();
     _initAnimations();
-    _promptPermissionSetting().then((granted) {
-      if (granted) {
-        cameraStore = context.read<CameraStore>();
-        galleryStore = context.read<GalleryStore>();
-        galleryStore.initAlbums();
-      } else {
-        Navigator.pop(context);
-      }
-    });
   }
 
   void _initAnimations() {
@@ -73,6 +64,15 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    cameraStore = context.read<CameraStore>();
+    galleryStore = context.read<GalleryStore>();
+    _promptPermissionSetting().then((granted) {
+      if (granted) {
+        galleryStore.initAlbums();
+      } else {
+        Navigator.pop(context);
+      }
+    });
   }
 
   @override
