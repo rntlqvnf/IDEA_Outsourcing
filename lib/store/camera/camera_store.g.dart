@@ -9,6 +9,21 @@ part of 'camera_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CameraStore on _CameraStore, Store {
+  Computed<double> _$aspectRatioComputed;
+
+  @override
+  double get aspectRatio =>
+      (_$aspectRatioComputed ??= Computed<double>(() => super.aspectRatio,
+              name: '_CameraStore.aspectRatio'))
+          .value;
+  Computed<dynamic> _$controllerComputed;
+
+  @override
+  dynamic get controller =>
+      (_$controllerComputed ??= Computed<dynamic>(() => super.controller,
+              name: '_CameraStore.controller'))
+          .value;
+
   final _$loadingAtom = Atom(name: '_CameraStore.loading');
 
   @override
@@ -42,6 +57,28 @@ mixin _$CameraStore on _CameraStore, Store {
   final _$_CameraStoreActionController = ActionController(name: '_CameraStore');
 
   @override
+  void toggleCamera() {
+    final _$actionInfo = _$_CameraStoreActionController.startAction(
+        name: '_CameraStore.toggleCamera');
+    try {
+      return super.toggleCamera();
+    } finally {
+      _$_CameraStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void takePicture() {
+    final _$actionInfo = _$_CameraStoreActionController.startAction(
+        name: '_CameraStore.takePicture');
+    try {
+      return super.takePicture();
+    } finally {
+      _$_CameraStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic dispose() {
     final _$actionInfo = _$_CameraStoreActionController.startAction(
         name: '_CameraStore.dispose');
@@ -56,7 +93,9 @@ mixin _$CameraStore on _CameraStore, Store {
   String toString() {
     return '''
 loading: ${loading},
-filePath: ${filePath}
+filePath: ${filePath},
+aspectRatio: ${aspectRatio},
+controller: ${controller}
     ''';
   }
 }

@@ -36,20 +36,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          Provider<CameraStore>(create: (_) => CameraStore()),
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Emotion Picker',
-          theme: Constants.lightTheme,
-          darkTheme: Constants.darkTheme,
-          initialRoute: Routes.initCamera,
-          routes: Routes.routes,
-          builder: BotToastInit(),
-          navigatorObservers: [BotToastNavigatorObserver()],
-          navigatorKey: locator<NavigationService>().key,
-        ));
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Emotion Picker',
+      theme: Constants.lightTheme,
+      darkTheme: Constants.darkTheme,
+      initialRoute: Routes.initCamera,
+      routes: Routes.routes,
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
+      navigatorKey: locator<NavigationService>().key,
+    );
   }
 }

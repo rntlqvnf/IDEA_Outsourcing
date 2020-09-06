@@ -4,5 +4,5 @@ abstract class CameraService {
   CameraController get controller;
 
   Future<String> takePicture();
-  Future<void> toggleCamera();
+  Future<int> toggleCamera();
 }

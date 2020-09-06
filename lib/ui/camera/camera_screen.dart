@@ -5,10 +5,15 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_gallery/photo_gallery.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
+import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:python_app/ui/theme.dart';
 import 'package:simple_animations/simple_animations.dart';
+
+enum TAB { GALLERY, CAMERA }
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -18,42 +23,84 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver, AnimationMixin {
   CameraStore cameraStore;
+  GalleryStore galleryStore;
   Animation<double> toggleAnimation;
   TabController _tabController;
+  int currentIndex = 1;
 
   @override
   void initState() {
     super.initState();
+    _initAnimations();
+    _promptPermissionSetting().then((granted) {
+      if (granted) {
+        cameraStore = context.read<CameraStore>();
+        galleryStore = context.read<GalleryStore>();
+        galleryStore.initAlbums();
+      } else {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void _initAnimations() {
     toggleAnimation = Tween<double>(begin: 0, end: 1).animate(controller);
+    _tabController = TabController(
+        length: TAB.values.length, vsync: this, initialIndex: currentIndex);
+    _tabController.addListener(() {
+      setState(() {
+        currentIndex = _tabController.index;
+      });
+    });
+  }
+
+  Future<bool> _promptPermissionSetting() async {
+    if (Platform.isIOS &&
+            await Permission.storage.request().isGranted &&
+            await Permission.camera.request().isGranted &&
+            await Permission.photos.request().isGranted ||
+        Platform.isAndroid &&
+            await Permission.storage.request().isGranted &&
+            await Permission.camera.request().isGranted) {
+      return true;
+    }
+    return false;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    cameraStore = Provider.of<CameraStore>(context);
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          '사진',
-          style: BaseTheme.appBarTextStyle.copyWith(
-              fontSize: ScreenUtil().setSp(BaseTheme.appBarTextStyle.fontSize)),
-        ),
-      ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: TAB.values[currentIndex] == TAB.CAMERA
+              ? Text(
+                  '사진',
+                  style: BaseTheme.appBarTextStyle.copyWith(
+                      fontSize: ScreenUtil()
+                          .setSp(BaseTheme.appBarTextStyle.fontSize)),
+                )
+              : DropdownButton<Album>(
+                  items: galleryStore.albums.map((Album album) {
+                    return new DropdownMenuItem<Album>(
+                      value: album,
+                      child: new Text(album.name,
+                          style: BaseTheme.appBarTextStyle.copyWith(
+                              fontSize: ScreenUtil()
+                                  .setSp(BaseTheme.appBarTextStyle.fontSize))),
+                    );
+                  }).toList(),
+                  onChanged: (album) {
+                    //galleryStore.changeAlbum(album);
+                  },
+                )),
       bottomNavigationBar: TabBar(
         controller: _tabController,
         labelStyle: BaseTheme.bottomBarTextStyle,
@@ -73,7 +120,10 @@ class _CameraScreenState extends State<CameraScreen>
       ),
       body: Stack(
         children: <Widget>[
-          _cameraPreviewScreen(),
+          TabBarView(controller: _tabController, children: <Widget>[
+            Container(),
+            _cameraPreviewScreen(),
+          ]),
           TabBarView(
             controller: _tabController,
             children: <Widget>[_takePictureScreen(), _takePictureScreen()],

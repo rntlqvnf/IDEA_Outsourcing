@@ -34,9 +34,10 @@ class CameraServiceImpl extends CameraService {
   }
 
   @override
-  Future<void> toggleCamera() async {
+  Future<int> toggleCamera() async {
     _currentIndex == 0 ? _currentIndex = 1 : _currentIndex = 0;
     await _onNewCameraSelected();
+    return _currentIndex;
   }
 
   Future<void> _onNewCameraSelected() async {
