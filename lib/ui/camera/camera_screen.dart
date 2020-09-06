@@ -28,7 +28,7 @@ class _CameraScreenState extends State<CameraScreen>
   GalleryStore galleryStore;
   Animation<double> toggleAnimation;
   TabController _tabController;
-  Album currentAlbum;
+  bool onToggle = false;
   int currentIndex = 1;
 
   @override
@@ -119,7 +119,11 @@ class _CameraScreenState extends State<CameraScreen>
                             galleryStore.currentAlbum = album;
                             galleryStore.reloadMediums();
                           },
-                          onMenuButtonToggle: (_) {},
+                          onMenuButtonToggle: (toggle) {
+                            setState(() {
+                              onToggle = toggle;
+                            });
+                          },
                         );
                 })),
       bottomNavigationBar: TabBar(
@@ -160,54 +164,78 @@ class _CameraScreenState extends State<CameraScreen>
         child: SizedBox(
             height: ScreenUtil().setHeight(130),
             child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
+                padding: const EdgeInsets.only(left: 16, right: 8),
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(album.name,
-                        style: currentAlbum == album
-                            ? BaseTheme.appBarTextStyle.copyWith(
-                                color: BaseTheme.deactivatedText,
-                                fontSize: ScreenUtil()
-                                    .setSp(BaseTheme.appBarTextStyle.fontSize))
-                            : BaseTheme.appBarTextStyle.copyWith(
-                                fontSize: ScreenUtil().setSp(
-                                    BaseTheme.appBarTextStyle.fontSize)))))));
+                        style: BaseTheme.appBarTextStyle.copyWith(
+                            fontWeight: FontWeight.w100,
+                            color: galleryStore.currentAlbum == album
+                                ? BaseTheme.deactivatedText
+                                : BaseTheme.appBarTextStyle.color,
+                            fontSize: ScreenUtil().setSp(
+                              BaseTheme.appBarTextStyle.fontSize,
+                            )))))));
   }
 
   Widget _buttonChild() {
+    String longestAlbumName = galleryStore.albums[0].name;
+    galleryStore.albums.forEach((album) {
+      if (album.name.length > longestAlbumName.length)
+        longestAlbumName = album.name;
+    });
+
     return SizedBox(
         height: ScreenUtil().setHeight(130),
         child: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Observer(
-                builder: (_) {
-                  return AutoSizeText(galleryStore.currentAlbum.name,
-                      maxLines: 1,
-                      style: BaseTheme.appBarTextStyle.copyWith(
-                          fontSize: ScreenUtil()
-                              .setSp(BaseTheme.appBarTextStyle.fontSize)));
-                },
-              ),
-              SizedBox(
-                width: ScreenUtil().setWidth(50),
-              ),
-              SizedBox(
-                width: 22,
-                height: 22,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.black,
-                  ),
+            padding: const EdgeInsets.only(left: 16, right: 8),
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: <Widget>[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    AutoSizeText(longestAlbumName,
+                        maxLines: 1,
+                        style: BaseTheme.appBarTextStyle.copyWith(
+                            color: Colors.transparent,
+                            fontSize: ScreenUtil()
+                                .setSp(BaseTheme.appBarTextStyle.fontSize))),
+                    SizedBox(
+                      width: ScreenUtil().setWidth(100),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ));
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Observer(
+                      builder: (_) {
+                        return AutoSizeText(galleryStore.currentAlbum.name,
+                            maxLines: 1,
+                            style: BaseTheme.appBarTextStyle.copyWith(
+                                fontSize: ScreenUtil().setSp(
+                                    BaseTheme.appBarTextStyle.fontSize)));
+                      },
+                    ),
+                    SizedBox(
+                      width: ScreenUtil().setWidth(30),
+                    ),
+                    SizedBox(
+                      width: ScreenUtil().setWidth(70),
+                      height: ScreenUtil().setWidth(70),
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            )));
   }
 
   Widget _cameraPreviewScreen() {
