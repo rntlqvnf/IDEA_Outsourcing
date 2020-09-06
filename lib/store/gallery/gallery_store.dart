@@ -1,8 +1,5 @@
-import 'package:camera/camera.dart';
 import 'package:mobx/mobx.dart';
 import 'package:photo_gallery/photo_gallery.dart';
-import 'package:python_app/contants/globals.dart';
-import 'package:python_app/service/camera_service.dart';
 import 'package:python_app/store/base_store.dart';
 
 part 'gallery_store.g.dart';
@@ -29,19 +26,25 @@ abstract class _GalleryStore extends BaseStore with Store {
   @observable
   List<Album> albums;
 
+  @observable
+  Album currentAlbum;
+
   // actions:-------------------------------------------------------------------
   @action
   void initAlbums() {
     loading = true;
     PhotoGallery.listAlbums(mediumType: MediumType.image)
-        .then((albums) => this.albums = albums)
+        .then((albums) {
+          this.albums = albums;
+          this.currentAlbum = albums[0];
+        })
         .catchError((e) => error('앨범을 가져오는데 실패했습니다.'))
         .whenComplete(() => loading = false);
   }
 
   @action
-  Future<void> changeAlbum(Album album) async {
-    mediums = (await album.listMedia()).items;
+  Future<void> reloadMediums() async {
+    mediums = (await currentAlbum.listMedia()).items;
   }
 
   // dispose:-------------------------------------------------------------------

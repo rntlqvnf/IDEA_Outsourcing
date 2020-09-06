@@ -27,6 +27,50 @@ class BaseTheme {
   static const Color postechRed = Color(0xFFff528c);
   static const Color brightRed2 = Color(0xF5ff308c);
   static const Color green = Color(0xFF96c93d);
+  static const Color lightPrimary = Color(0xfffcfcff);
+  static const Color darkPrimary = Colors.black;
+  static Color lightAccent = Colors.blueGrey[900];
+  static const Color darkAccent = Colors.white;
+  static const Color lightBG = Color(0xfffcfcff);
+  static const Color darkBG = Colors.black;
+  static const Color badgeColor = Colors.red;
+
+  static ThemeData lightTheme = ThemeData(
+    backgroundColor: lightBG,
+    primaryColor: lightPrimary,
+    accentColor: lightAccent,
+    cursorColor: lightAccent,
+    scaffoldBackgroundColor: lightBG,
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      textTheme: TextTheme(
+        headline6: TextStyle(
+          color: darkBG,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    ),
+  );
+
+  static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    backgroundColor: darkBG,
+    primaryColor: darkPrimary,
+    accentColor: darkAccent,
+    scaffoldBackgroundColor: darkBG,
+    cursorColor: darkAccent,
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      textTheme: TextTheme(
+        headline6: TextStyle(
+          color: lightBG,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    ),
+  );
 
   static const String fontName = 'NanumGothic';
 

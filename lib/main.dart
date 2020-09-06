@@ -11,7 +11,7 @@ import 'package:python_app/service/flush_service_impl.dart';
 import 'package:python_app/service/navigation_service.dart';
 import 'package:python_app/service/navigation_service_impl.dart';
 import 'package:python_app/store/camera/camera_store.dart';
-import 'package:python_app/ui/util/const.dart';
+import 'package:python_app/ui/theme.dart';
 
 void main() async {
   setupLocator();
@@ -39,8 +39,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Emotion Picker',
-      theme: Constants.lightTheme,
-      darkTheme: Constants.darkTheme,
+      theme: BaseTheme.lightTheme,
+      darkTheme: BaseTheme.darkTheme,
       initialRoute: Routes.initCamera,
       routes: Routes.routes,
       builder: BotToastInit(),

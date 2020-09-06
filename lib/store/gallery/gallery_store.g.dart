@@ -54,11 +54,26 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
-  final _$changeAlbumAsyncAction = AsyncAction('_GalleryStore.changeAlbum');
+  final _$currentAlbumAtom = Atom(name: '_GalleryStore.currentAlbum');
 
   @override
-  Future<void> changeAlbum(Album album) {
-    return _$changeAlbumAsyncAction.run(() => super.changeAlbum(album));
+  Album get currentAlbum {
+    _$currentAlbumAtom.reportRead();
+    return super.currentAlbum;
+  }
+
+  @override
+  set currentAlbum(Album value) {
+    _$currentAlbumAtom.reportWrite(value, super.currentAlbum, () {
+      super.currentAlbum = value;
+    });
+  }
+
+  final _$reloadMediumsAsyncAction = AsyncAction('_GalleryStore.reloadMediums');
+
+  @override
+  Future<void> reloadMediums() {
+    return _$reloadMediumsAsyncAction.run(() => super.reloadMediums());
   }
 
   final _$_GalleryStoreActionController =
@@ -91,7 +106,8 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return '''
 loading: ${loading},
 mediums: ${mediums},
-albums: ${albums}
+albums: ${albums},
+currentAlbum: ${currentAlbum}
     ''';
   }
 }
