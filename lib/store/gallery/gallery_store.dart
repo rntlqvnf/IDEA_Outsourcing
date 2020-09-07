@@ -16,18 +16,23 @@ abstract class _GalleryStore extends BaseStore with Store {
   List<ReactionDisposer> disposers = [];
 
   // constructor:---------------------------------------------------------------
+  _GalleryStore() {
+    albums = locator<GalleryService>().albums;
+    changeAlbum(albums[0]);
+  }
+
   // services:------------------------------------------------------------------
   GalleryService galleryService = locator<GalleryService>();
 
   // store variables:-----------------------------------------------------------
-  @computed
-  bool get loading => locator<GalleryService>().albums == null;
+  @observable
+  bool loading = false;
 
   @observable
   List<Medium> mediums;
 
-  @computed
-  List<Album> get albums => locator<GalleryService>().albums;
+  @observable
+  List<Album> albums;
 
   @observable
   Album currentAlbum;

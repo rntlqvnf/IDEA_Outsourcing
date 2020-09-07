@@ -2,9 +2,10 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
+import 'package:python_app/contants/globals.dart';
 import 'package:python_app/routes.dart';
-import 'package:python_app/store/camera/camera_store.dart';
+import 'package:python_app/service/camera_service.dart';
+import 'package:python_app/service/gallery_service.dart';
 
 class GreetingScreen extends StatefulWidget {
   _GreetingScreenState createState() => _GreetingScreenState();
@@ -78,7 +79,9 @@ class _GreetingScreenState extends State<GreetingScreen>
                       child: InkWell(
                           customBorder: new CircleBorder(),
                           onTap: () {
-                            Navigator.pushNamed(context, Routes.camera);
+                            if (locator<CameraService>().isInitialized() &&
+                                locator<GalleryService>().isInitialized())
+                              Navigator.pushNamed(context, Routes.camera);
                           },
                           child: Container(
                               padding: EdgeInsets.all(27),

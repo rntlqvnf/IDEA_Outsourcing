@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    locator<GalleryService>().initAlbums(context);
+    locator<GalleryService>().precacheImages(context);
   }
 
   @override

@@ -55,4 +55,9 @@ class CameraServiceImpl extends CameraService {
 
     await _controller.initialize();
   }
+
+  @override
+  bool isInitialized() {
+    return _controller != null;
+  }
 }
