@@ -7,7 +7,7 @@ abstract class GalleryService with InitializableService {
 
   Future<void> initAlbums();
 
-  Future<void> precacheImages(BuildContext context);
+  Future<void> precacheImages(List<Medium> mediums, BuildContext context);
 
   Future<List<Medium>> getMediums(Album album);
 }

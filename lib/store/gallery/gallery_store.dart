@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:photo_gallery/photo_gallery.dart';
+import 'package:python_app/service/navigation_service.dart';
 
 import '../../contants/globals.dart';
 import '../../service/gallery_service.dart';
@@ -45,6 +46,8 @@ abstract class _GalleryStore extends BaseStore with Store {
   Future<void> changeAlbum(Album album) async {
     currentAlbum = album;
     mediums = await galleryService.getMediums(currentAlbum);
+    galleryService.precacheImages(
+        mediums, locator<NavigationService>().key.currentState.context);
     changeMedium(mediums[0]);
   }
 

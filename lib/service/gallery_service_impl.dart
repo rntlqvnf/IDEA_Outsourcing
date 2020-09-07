@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:python_app/service/gallery_service.dart';
 
@@ -19,13 +22,18 @@ class GalleryServiceImpl implements GalleryService {
 
   @override
   Future<void> initAlbums() async {
-    _albums = await PhotoGallery.listAlbums(mediumType: MediumType.image);
+    if (Platform.isIOS &&
+            await Permission.storage.request().isGranted &&
+            await Permission.photos.request().isGranted ||
+        Platform.isAndroid && await Permission.storage.request().isGranted) {
+      _albums = await PhotoGallery.listAlbums(mediumType: MediumType.image);
+    }
   }
 
   @override
-  Future<void> precacheImages(BuildContext context) async {
-    var mediums = await _albums[0].listMedia();
-    mediums.items.forEach((m) {
+  Future<void> precacheImages(
+      List<Medium> mediums, BuildContext context) async {
+    mediums.forEach((m) {
       precacheImage(PhotoProvider(mediumId: m.id), context);
     });
   }
