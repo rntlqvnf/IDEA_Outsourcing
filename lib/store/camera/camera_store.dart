@@ -23,9 +23,6 @@ abstract class _CameraStore extends BaseStore with Store {
   @observable
   bool loading = false;
 
-  @observable
-  String filePath = '';
-
   @computed
   double get aspectRatio => cameraService.controller.value.aspectRatio;
 
@@ -45,6 +42,7 @@ abstract class _CameraStore extends BaseStore with Store {
   @action
   void takePicture() {
     cameraService.takePicture().then((path) {
+      //TODO: move to next
       success('$path 에 저장되었습니다.');
     }).catchError((e) => error('에러: ${e.code}\n${e.description}'),
         test: (e) => e is CameraException);

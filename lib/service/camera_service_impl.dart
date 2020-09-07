@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:python_app/service/camera_service.dart';
 
@@ -24,13 +25,16 @@ class CameraServiceImpl extends CameraService {
 
   @override
   Future<String> takePicture() async {
-    final Directory extDir = await getApplicationDocumentsDirectory();
-    final String dirPath = '${extDir.path}/Pictures/flutter_test';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${_timestamp()}.jpg';
+    final String albumnName = 'idea';
+    final Directory tempDir = await getTemporaryDirectory();
+    final String filePath = '$tempDir/img_${_timestamp()}.jpg';
 
     await _controller.takePicture(filePath);
-    return filePath;
+    if (await GallerySaver.saveImage(filePath, albumName: albumnName)) {
+      return filePath;
+    } else {
+      return Future.error(CameraException('-1', '사진 저장 실패'));
+    }
   }
 
   @override

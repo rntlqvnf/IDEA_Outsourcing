@@ -69,11 +69,34 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
-  final _$reloadMediumsAsyncAction = AsyncAction('_GalleryStore.reloadMediums');
+  final _$currentMediumAtom = Atom(name: '_GalleryStore.currentMedium');
 
   @override
-  Future<void> reloadMediums() {
-    return _$reloadMediumsAsyncAction.run(() => super.reloadMediums());
+  Medium get currentMedium {
+    _$currentMediumAtom.reportRead();
+    return super.currentMedium;
+  }
+
+  @override
+  set currentMedium(Medium value) {
+    _$currentMediumAtom.reportWrite(value, super.currentMedium, () {
+      super.currentMedium = value;
+    });
+  }
+
+  final _$changeAlbumAsyncAction = AsyncAction('_GalleryStore.changeAlbum');
+
+  @override
+  Future<void> changeAlbum(Album album) {
+    return _$changeAlbumAsyncAction.run(() => super.changeAlbum(album));
+  }
+
+  final _$_reloadMediumsAsyncAction =
+      AsyncAction('_GalleryStore._reloadMediums');
+
+  @override
+  Future<void> _reloadMediums(Album album) {
+    return _$_reloadMediumsAsyncAction.run(() => super._reloadMediums(album));
   }
 
   final _$_GalleryStoreActionController =
@@ -85,6 +108,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.initAlbums');
     try {
       return super.initAlbums();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changeMedium(Medium medium) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.changeMedium');
+    try {
+      return super.changeMedium(medium);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -107,7 +141,8 @@ mixin _$GalleryStore on _GalleryStore, Store {
 loading: ${loading},
 mediums: ${mediums},
 albums: ${albums},
-currentAlbum: ${currentAlbum}
+currentAlbum: ${currentAlbum},
+currentMedium: ${currentMedium}
     ''';
   }
 }

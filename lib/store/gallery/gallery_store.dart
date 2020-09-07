@@ -29,22 +29,36 @@ abstract class _GalleryStore extends BaseStore with Store {
   @observable
   Album currentAlbum;
 
+  @observable
+  Medium currentMedium;
+
   // actions:-------------------------------------------------------------------
   @action
   void initAlbums() {
     loading = true;
     PhotoGallery.listAlbums(mediumType: MediumType.image).then((albums) {
       this.albums = albums;
-      this.currentAlbum = albums[0];
-      reloadMediums()
+      changeAlbum(albums[0])
           .then((_) => loading = false)
           .catchError((e) => error('사진들을 가져오는데 실패했습니다.'));
     }).catchError((e) => error('앨범을 가져오는데 실패했습니다.'));
   }
 
   @action
-  Future<void> reloadMediums() async {
-    mediums = (await currentAlbum.listMedia()).items;
+  Future<void> changeAlbum(Album album) async {
+    currentAlbum = album;
+    await _reloadMediums(currentAlbum);
+    changeMedium(mediums[0]);
+  }
+
+  @action
+  Future<void> _reloadMediums(Album album) async {
+    mediums = (await album.listMedia()).items;
+  }
+
+  @action
+  void changeMedium(Medium medium) {
+    currentMedium = medium;
   }
 
   // dispose:-------------------------------------------------------------------

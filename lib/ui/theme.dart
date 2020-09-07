@@ -91,7 +91,7 @@ class BaseTheme {
       fontSize: 65);
 
   static const TextStyle bottomBarTextStyle = TextStyle(
-      fontFamily: fontName, color: black, fontWeight: FontWeight.w500);
+      fontFamily: fontName, color: darkText, fontWeight: FontWeight.w600);
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1

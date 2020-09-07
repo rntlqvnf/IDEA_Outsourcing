@@ -39,21 +39,6 @@ mixin _$CameraStore on _CameraStore, Store {
     });
   }
 
-  final _$filePathAtom = Atom(name: '_CameraStore.filePath');
-
-  @override
-  String get filePath {
-    _$filePathAtom.reportRead();
-    return super.filePath;
-  }
-
-  @override
-  set filePath(String value) {
-    _$filePathAtom.reportWrite(value, super.filePath, () {
-      super.filePath = value;
-    });
-  }
-
   final _$_CameraStoreActionController = ActionController(name: '_CameraStore');
 
   @override
@@ -93,7 +78,6 @@ mixin _$CameraStore on _CameraStore, Store {
   String toString() {
     return '''
 loading: ${loading},
-filePath: ${filePath},
 aspectRatio: ${aspectRatio},
 controller: ${controller}
     ''';

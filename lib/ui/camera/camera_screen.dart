@@ -14,11 +14,18 @@ import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:python_app/ui/theme.dart';
-import 'package:python_app/ui/widget/main.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 enum TAB { GALLERY, CAMERA }
+
+/*
+ *  FadeInImage(
+ * fit: BoxFit.cover,
+ * placeholder: MemoryImage(kTransparentImage),
+ * image: PhotoProvider(mediumId: medium.id),
+ * ) 
+ * */
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -31,7 +38,6 @@ class _CameraScreenState extends State<CameraScreen>
   GalleryStore galleryStore;
   Animation<double> toggleAnimation;
   TabController _tabController;
-  bool onToggle = false;
   int currentIndex = 1;
 
   @override
@@ -86,6 +92,23 @@ class _CameraScreenState extends State<CameraScreen>
               icon: Icon(Icons.arrow_back),
               onPressed: () => Navigator.of(context).pop(),
             ),
+            actions: <Widget>[
+              if (TAB.values[currentIndex] != TAB.CAMERA)
+                Material(
+                    color: Colors.transparent,
+                    child: Center(
+                        child: InkWell(
+                            onTap: () => print('tab'),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 20, right: 20),
+                              child: Text('다음',
+                                  style: BaseTheme.appBarTextStyle.copyWith(
+                                      color: BaseTheme.darkBlue,
+                                      fontSize: ScreenUtil().setSp(
+                                          BaseTheme.appBarTextStyle.fontSize))),
+                            ))))
+            ],
             title: TAB.values[currentIndex] == TAB.CAMERA
                 ? Padding(
                     padding: const EdgeInsets.only(left: 8),
@@ -120,15 +143,9 @@ class _CameraScreenState extends State<CameraScreen>
                               height: 1,
                               color: Colors.transparent,
                             ),
-                            onItemSelected: (album) {
-                              galleryStore.currentAlbum = album;
-                              galleryStore.reloadMediums();
-                            },
-                            onMenuButtonToggle: (toggle) {
-                              setState(() {
-                                onToggle = toggle;
-                              });
-                            },
+                            onItemSelected: (album) =>
+                                galleryStore.changeAlbum(album),
+                            onMenuButtonToggle: (_) {},
                           );
                   })),
         bottomNavigationBar: TabBar(
@@ -151,9 +168,7 @@ class _CameraScreenState extends State<CameraScreen>
         body: TabBarView(
           controller: _tabController,
           children: <Widget>[
-            Stack(
-              children: <Widget>[Container(), _galleryGridView()],
-            ),
+            _galleryGridView(),
             Stack(
               children: <Widget>[_cameraPreviewScreen(), _takePictureScreen()],
             )
@@ -347,6 +362,7 @@ class _CameraScreenState extends State<CameraScreen>
                       SliverPadding(
                         padding: EdgeInsets.only(top: 3, bottom: 3),
                         sliver: SliverAppBar(
+                          leading: Container(),
                           expandedHeight: ScreenUtil().setHeight(1200),
                           floating: true,
                           pinned: true,
@@ -354,9 +370,11 @@ class _CameraScreenState extends State<CameraScreen>
                           flexibleSpace: Stack(
                             children: <Widget>[
                               Positioned.fill(
-                                  child: Image.network(
-                                "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                  child: FadeInImage(
                                 fit: BoxFit.cover,
+                                placeholder: MemoryImage(kTransparentImage),
+                                image: PhotoProvider(
+                                    mediumId: galleryStore.currentMedium.id),
                               ))
                             ],
                           ),
@@ -377,26 +395,31 @@ class _CameraScreenState extends State<CameraScreen>
                                 alignment: Alignment.center,
                                 child: Stack(
                                   children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Image(
-                                            fit: BoxFit.cover,
-                                            image: PhotoProvider(
-                                                mediumId: medium.id),
-                                          ),
-                                        )
-                                      ],
+                                    Positioned.fill(
+                                      child: FadeInImage(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            MemoryImage(kTransparentImage),
+                                        image: ThumbnailProvider(
+                                          mediumId: medium.id,
+                                          mediumType: medium.mediumType,
+                                          highQuality: true,
+                                        ),
+                                      ),
                                     ),
                                     Material(
                                       color: Colors.transparent,
                                       child: InkWell(
-                                        onTap: () => print('tab'),
+                                        onTap: () =>
+                                            galleryStore.changeMedium(medium),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: Colors.transparent),
+                                              color:
+                                                  galleryStore.currentMedium ==
+                                                          medium
+                                                      ? Colors.white
+                                                          .withOpacity(0.3)
+                                                      : Colors.transparent),
                                         ),
                                       ),
                                     )

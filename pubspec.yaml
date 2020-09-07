@@ -25,7 +25,7 @@ dependencies:
   photo_gallery: ^0.2.5
   transparent_image: ^1.0.0
   permission_handler: ^5.0.1+1
-  video_player: ^0.10.12
+  gallery_saver: ^2.0.1
 
   # UI
   cupertino_icons: ^0.1.2
