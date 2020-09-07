@@ -167,10 +167,10 @@ class _CameraScreenState extends State<CameraScreen>
         child: SizedBox(
             height: ScreenUtil().setHeight(130),
             child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(album.name,
+                    child: Text(album.name == 'All' ? '갤러리' : album.name,
                         style: BaseTheme.appBarTextStyle.copyWith(
                             fontWeight: FontWeight.w100,
                             color: galleryStore.currentAlbum == album
@@ -184,14 +184,18 @@ class _CameraScreenState extends State<CameraScreen>
   Widget _buttonChild() {
     String longestAlbumName = galleryStore.albums[0].name;
     galleryStore.albums.forEach((album) {
-      if (album.name.length > longestAlbumName.length)
-        longestAlbumName = album.name;
+      if (album.name == 'All') {
+        if ('갤러리'.length > longestAlbumName.length) longestAlbumName = '갤러리';
+      } else {
+        if (album.name.length > longestAlbumName.length)
+          longestAlbumName = album.name;
+      }
     });
 
     return SizedBox(
         height: ScreenUtil().setHeight(130),
         child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 8),
+            padding: const EdgeInsets.only(left: 8),
             child: Stack(
               alignment: Alignment.centerLeft,
               children: <Widget>[
@@ -214,7 +218,10 @@ class _CameraScreenState extends State<CameraScreen>
                   children: <Widget>[
                     Observer(
                       builder: (_) {
-                        return AutoSizeText(galleryStore.currentAlbum.name,
+                        return AutoSizeText(
+                            galleryStore.currentAlbum.name == 'All'
+                                ? '갤러리'
+                                : galleryStore.currentAlbum.name,
                             maxLines: 1,
                             style: BaseTheme.appBarTextStyle.copyWith(
                                 fontSize: ScreenUtil().setSp(
@@ -348,39 +355,33 @@ class _CameraScreenState extends State<CameraScreen>
                             var medium = galleryStore.mediums[index];
                             return Container(
                               alignment: Alignment.center,
-                              child: medium.mediumType == MediumType.image
-                                  ? Stack(
-                                      children: <Widget>[
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: FadeInImage(
-                                                fit: BoxFit.cover,
-                                                placeholder: MemoryImage(
-                                                    kTransparentImage),
-                                                image: PhotoProvider(
-                                                    mediumId: medium.id),
-                                              ),
-                                            )
-                                          ],
+                              child: Stack(
+                                children: <Widget>[
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Image(
+                                          fit: BoxFit.cover,
+                                          image: PhotoProvider(
+                                              mediumId: medium.id),
                                         ),
-                                        Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () => print('tab'),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.transparent),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  : VideoProvider(
-                                      mediumId: medium.id,
+                                      )
+                                    ],
+                                  ),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () => print('tab'),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.transparent),
+                                      ),
                                     ),
+                                  )
+                                ],
+                              ),
                             );
                           },
                           childCount: galleryStore.mediums.length,
