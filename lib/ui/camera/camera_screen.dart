@@ -81,84 +81,84 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: TAB.values[currentIndex] == TAB.CAMERA
-              ? Text(
-                  '사진',
-                  style: BaseTheme.appBarTextStyle.copyWith(
-                      fontSize: ScreenUtil()
-                          .setSp(BaseTheme.appBarTextStyle.fontSize)),
-                )
-              : Observer(builder: (_) {
-                  return galleryStore.loading
-                      ? Text(
-                          '갤러리',
-                          style: BaseTheme.appBarTextStyle.copyWith(
-                              fontSize: ScreenUtil()
-                                  .setSp(BaseTheme.appBarTextStyle.fontSize)),
-                        )
-                      : MenuButton(
-                          child: _buttonChild(),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.transparent),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(3.0),
-                              ),
-                              color: Theme.of(context).primaryColor),
-                          toggledChild: _buttonChild(),
-                          items: galleryStore.albums,
-                          dontShowTheSameItemSelected: false,
-                          topDivider: true,
-                          itemBuilder: (album) => _buttonItem(album),
-                          divider: Container(
-                            height: 1,
-                            color: Colors.transparent,
-                          ),
-                          onItemSelected: (album) {
-                            galleryStore.currentAlbum = album;
-                            galleryStore.reloadMediums();
-                          },
-                          onMenuButtonToggle: (toggle) {
-                            setState(() {
-                              onToggle = toggle;
-                            });
-                          },
-                        );
-                })),
-      bottomNavigationBar: TabBar(
-        controller: _tabController,
-        labelStyle: BaseTheme.bottomBarTextStyle,
-        unselectedLabelColor: BaseTheme.deactivatedText,
-        indicatorSize: TabBarIndicatorSize.tab,
-        indicatorWeight: 1,
-        indicatorColor: BaseTheme.black,
-        isScrollable: false,
-        tabs: <Widget>[
-          Tab(
-            text: "갤러리",
-          ),
-          Tab(
-            text: "촬영",
-          ),
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          TabBarView(controller: _tabController, children: <Widget>[
-            Container(),
-            _cameraPreviewScreen(),
-          ]),
-          TabBarView(
-            controller: _tabController,
-            children: <Widget>[_galleryScreen(), _takePictureScreen()],
-          )
-        ],
-      ),
-    );
+        appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: TAB.values[currentIndex] == TAB.CAMERA
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      '사진',
+                      style: BaseTheme.appBarTextStyle.copyWith(
+                          fontSize: ScreenUtil()
+                              .setSp(BaseTheme.appBarTextStyle.fontSize)),
+                    ))
+                : Observer(builder: (_) {
+                    return galleryStore.loading
+                        ? Text(
+                            '갤러리',
+                            style: BaseTheme.appBarTextStyle.copyWith(
+                                fontSize: ScreenUtil()
+                                    .setSp(BaseTheme.appBarTextStyle.fontSize)),
+                          )
+                        : MenuButton(
+                            child: _buttonChild(),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.transparent),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(3.0),
+                                ),
+                                color: Theme.of(context).primaryColor),
+                            toggledChild: _buttonChild(),
+                            items: galleryStore.albums,
+                            dontShowTheSameItemSelected: false,
+                            topDivider: true,
+                            itemBuilder: (album) => _buttonItem(album),
+                            divider: Container(
+                              height: 1,
+                              color: Colors.transparent,
+                            ),
+                            onItemSelected: (album) {
+                              galleryStore.currentAlbum = album;
+                              galleryStore.reloadMediums();
+                            },
+                            onMenuButtonToggle: (toggle) {
+                              setState(() {
+                                onToggle = toggle;
+                              });
+                            },
+                          );
+                  })),
+        bottomNavigationBar: TabBar(
+          controller: _tabController,
+          labelStyle: BaseTheme.bottomBarTextStyle,
+          unselectedLabelColor: BaseTheme.deactivatedText,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 1,
+          indicatorColor: BaseTheme.black,
+          isScrollable: false,
+          tabs: <Widget>[
+            Tab(
+              text: "갤러리",
+            ),
+            Tab(
+              text: "촬영",
+            ),
+          ],
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+            Stack(
+              children: <Widget>[Container(), _galleryGridView()],
+            ),
+            Stack(
+              children: <Widget>[_cameraPreviewScreen(), _takePictureScreen()],
+            )
+          ],
+        ));
   }
 
   Widget _buttonItem(Album album) {
@@ -333,60 +333,81 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Widget _galleryScreen() {
-    return Container(
-        child: galleryStore.loading
-            ? LoadingIndicator(
-                indicatorType: Indicator.lineScalePulseOutRapid,
-                color: Colors.grey.withOpacity(0.5))
-            : Padding(
-                padding: const EdgeInsets.only(left: 3, right: 3),
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverGrid(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisSpacing: 3.0,
-                          crossAxisSpacing: 3.0,
-                          childAspectRatio: 1,
+  Widget _galleryGridView() {
+    return Observer(builder: (_) {
+      return Container(
+          child: galleryStore.loading
+              ? LoadingIndicator(
+                  indicatorType: Indicator.lineScalePulseOutRapid,
+                  color: Colors.grey.withOpacity(0.5))
+              : Padding(
+                  padding: const EdgeInsets.only(left: 3, right: 3),
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverPadding(
+                        padding: EdgeInsets.only(top: 3, bottom: 3),
+                        sliver: SliverAppBar(
+                          expandedHeight: ScreenUtil().setHeight(1200),
+                          floating: true,
+                          pinned: true,
+                          snap: true,
+                          flexibleSpace: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                  child: Image.network(
+                                "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                fit: BoxFit.cover,
+                              ))
+                            ],
+                          ),
                         ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            var medium = galleryStore.mediums[index];
-                            return Container(
-                              alignment: Alignment.center,
-                              child: Stack(
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Image(
-                                          fit: BoxFit.cover,
-                                          image: PhotoProvider(
-                                              mediumId: medium.id),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () => print('tab'),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.transparent),
-                                      ),
+                      ),
+                      SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            mainAxisSpacing: 3.0,
+                            crossAxisSpacing: 3.0,
+                            childAspectRatio: 1,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              var medium = galleryStore.mediums[index];
+                              return Container(
+                                alignment: Alignment.center,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Image(
+                                            fit: BoxFit.cover,
+                                            image: PhotoProvider(
+                                                mediumId: medium.id),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                          childCount: galleryStore.mediums.length,
-                        ))
-                  ],
-                )));
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () => print('tab'),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.transparent),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                            childCount: galleryStore.mediums.length,
+                          ))
+                    ],
+                  )));
+    });
   }
 }
