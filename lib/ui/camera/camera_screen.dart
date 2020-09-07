@@ -341,83 +341,84 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Widget _galleryGridView() {
-    return Observer(builder: (_) {
-      return Container(
-          child: galleryStore.loading
-              ? LoadingIndicator(
-                  indicatorType: Indicator.lineScalePulseOutRapid,
-                  color: Colors.grey.withOpacity(0.5))
-              : CustomScrollView(
-                  slivers: <Widget>[
-                    SliverPadding(
-                      padding: EdgeInsets.only(top: 3, bottom: 3),
-                      sliver: SliverAppBar(
-                        leading: Container(),
-                        expandedHeight: ScreenUtil().setHeight(1200),
-                        floating: true,
-                        pinned: true,
-                        snap: true,
-                        flexibleSpace: Stack(
-                          children: <Widget>[
-                            Positioned.fill(
-                                child: FadeInImage(
-                              fit: BoxFit.cover,
-                              placeholder: MemoryImage(kTransparentImage),
-                              image: PhotoProvider(
-                                  mediumId: galleryStore.currentMedium.id),
-                            ))
-                          ],
+    return Container(
+        child: CustomScrollView(
+      slivers: <Widget>[
+        SliverPadding(
+          padding: EdgeInsets.only(top: 3, bottom: 3),
+          sliver: SliverAppBar(
+            leading: Container(),
+            expandedHeight: ScreenUtil().setHeight(1200),
+            floating: true,
+            pinned: true,
+            snap: true,
+            flexibleSpace: Stack(
+              children: <Widget>[
+                Positioned.fill(child: Observer(builder: (_) {
+                  return galleryStore.loading
+                      ? Center(
+                          child: SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: LoadingIndicator(
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  color: Colors.grey.withOpacity(0.5))))
+                      : FadeInImage(
+                          fit: BoxFit.cover,
+                          placeholder: MemoryImage(kTransparentImage),
+                          image: PhotoProvider(
+                              mediumId: galleryStore.currentMedium.id),
+                        );
+                }))
+              ],
+            ),
+          ),
+        ),
+        Observer(builder: (_) {
+          return SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 3.0,
+                crossAxisSpacing: 3.0,
+                childAspectRatio: 1,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  var medium = galleryStore.mediums[index];
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: FadeInImage(
+                            fit: BoxFit.cover,
+                            placeholder: MemoryImage(kTransparentImage),
+                            image: PhotoProvider(mediumId: medium.id),
+                          ),
                         ),
-                      ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => galleryStore.changeMedium(medium),
+                            child: Observer(builder: (_) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: galleryStore.currentMedium == medium
+                                        ? Colors.white.withOpacity(0.3)
+                                        : Colors.transparent),
+                              );
+                            }),
+                          ),
+                        )
+                      ],
                     ),
-                    SliverGrid(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisSpacing: 3.0,
-                          crossAxisSpacing: 3.0,
-                          childAspectRatio: 1,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            var medium = galleryStore.mediums[index];
-                            return Container(
-                              alignment: Alignment.center,
-                              child: Stack(
-                                children: <Widget>[
-                                  Positioned.fill(
-                                    child: FadeInImage(
-                                      fit: BoxFit.cover,
-                                      placeholder:
-                                          MemoryImage(kTransparentImage),
-                                      image: ThumbnailProvider(
-                                        mediumId: medium.id,
-                                        mediumType: medium.mediumType,
-                                        highQuality: true,
-                                      ),
-                                    ),
-                                  ),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () =>
-                                          galleryStore.changeMedium(medium),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: galleryStore.currentMedium ==
-                                                    medium
-                                                ? Colors.white.withOpacity(0.3)
-                                                : Colors.transparent),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                          childCount: galleryStore.mediums.length,
-                        ))
-                  ],
-                ));
-    });
+                  );
+                },
+                childCount:
+                    galleryStore.loading ? 0 : galleryStore.mediums.length,
+              ));
+        })
+      ],
+    ));
   }
 }
