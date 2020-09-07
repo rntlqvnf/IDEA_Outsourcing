@@ -27,7 +27,7 @@ class CameraServiceImpl extends CameraService {
   Future<String> takePicture() async {
     final String albumnName = 'idea';
     final Directory tempDir = await getTemporaryDirectory();
-    final String filePath = '$tempDir/img_${_timestamp()}.jpg';
+    final String filePath = '${tempDir.path}/img_${_timestamp()}.jpg';
 
     await _controller.takePicture(filePath);
     if (await GallerySaver.saveImage(filePath, albumName: albumnName)) {
