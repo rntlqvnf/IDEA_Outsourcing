@@ -1,6 +1,9 @@
 import 'package:mobx/mobx.dart';
 import 'package:photo_gallery/photo_gallery.dart';
-import 'package:python_app/store/base_store.dart';
+
+import '../../contants/globals.dart';
+import '../../service/gallery_service.dart';
+import '../base_store.dart';
 
 part 'gallery_store.g.dart';
 
@@ -13,18 +16,18 @@ abstract class _GalleryStore extends BaseStore with Store {
   List<ReactionDisposer> disposers = [];
 
   // constructor:---------------------------------------------------------------
-
   // services:------------------------------------------------------------------
+  GalleryService galleryService = locator<GalleryService>();
 
   // store variables:-----------------------------------------------------------
-  @observable
-  bool loading = true;
+  @computed
+  bool get loading => locator<GalleryService>().albums == null;
 
   @observable
   List<Medium> mediums;
 
-  @observable
-  List<Album> albums;
+  @computed
+  List<Album> get albums => locator<GalleryService>().albums;
 
   @observable
   Album currentAlbum;
@@ -34,26 +37,10 @@ abstract class _GalleryStore extends BaseStore with Store {
 
   // actions:-------------------------------------------------------------------
   @action
-  void initAlbums() {
-    loading = true;
-    PhotoGallery.listAlbums(mediumType: MediumType.image).then((albums) {
-      this.albums = albums;
-      changeAlbum(albums[0])
-          .then((_) => loading = false)
-          .catchError((e) => error('사진들을 가져오는데 실패했습니다.'));
-    }).catchError((e) => error('앨범을 가져오는데 실패했습니다.'));
-  }
-
-  @action
   Future<void> changeAlbum(Album album) async {
     currentAlbum = album;
-    await _reloadMediums(currentAlbum);
+    mediums = await galleryService.getMediums(currentAlbum);
     changeMedium(mediums[0]);
-  }
-
-  @action
-  Future<void> _reloadMediums(Album album) async {
-    mediums = (await album.listMedia()).items;
   }
 
   @action

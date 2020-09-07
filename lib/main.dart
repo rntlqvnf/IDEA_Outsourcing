@@ -8,9 +8,10 @@ import 'package:python_app/service/camera_service.dart';
 import 'package:python_app/service/camera_service_impl.dart';
 import 'package:python_app/service/flush_service.dart';
 import 'package:python_app/service/flush_service_impl.dart';
+import 'package:python_app/service/gallery_service.dart';
+import 'package:python_app/service/gallery_service_impl.dart';
 import 'package:python_app/service/navigation_service.dart';
 import 'package:python_app/service/navigation_service_impl.dart';
-import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/ui/theme.dart';
 
 void main() async {
@@ -26,6 +27,7 @@ void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
   locator.registerSingleton<CameraService>(CameraServiceImpl());
+  locator.registerSingleton<GalleryService>(GalleryServiceImpl());
 }
 
 class MyApp extends StatefulWidget {
@@ -34,6 +36,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    locator<GalleryService>().initAlbums(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -69,7 +69,7 @@ class _CameraScreenState extends State<CameraScreen>
     galleryStore = context.read<GalleryStore>();
     _promptPermissionSetting().then((granted) {
       if (granted) {
-        galleryStore.initAlbums();
+        // galleryStore.initAlbums();
       } else {
         Navigator.pop(context);
       }
