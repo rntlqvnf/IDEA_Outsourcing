@@ -18,7 +18,7 @@ abstract class _GalleryStore extends BaseStore with Store {
 
   // store variables:-----------------------------------------------------------
   @observable
-  bool loading = false;
+  bool loading = true;
 
   @observable
   List<Medium> mediums;
@@ -33,13 +33,13 @@ abstract class _GalleryStore extends BaseStore with Store {
   @action
   void initAlbums() {
     loading = true;
-    PhotoGallery.listAlbums(mediumType: MediumType.image)
-        .then((albums) {
-          this.albums = albums;
-          this.currentAlbum = albums[0];
-        })
-        .catchError((e) => error('앨범을 가져오는데 실패했습니다.'))
-        .whenComplete(() => loading = false);
+    PhotoGallery.listAlbums(mediumType: MediumType.image).then((albums) {
+      this.albums = albums;
+      this.currentAlbum = albums[0];
+      reloadMediums()
+          .then((_) => loading = false)
+          .catchError((e) => error('사진들을 가져오는데 실패했습니다.'));
+    }).catchError((e) => error('앨범을 가져오는데 실패했습니다.'));
   }
 
   @action

@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
@@ -13,7 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:python_app/ui/theme.dart';
+import 'package:python_app/ui/widget/main.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 enum TAB { GALLERY, CAMERA }
 
@@ -151,7 +154,7 @@ class _CameraScreenState extends State<CameraScreen>
           ]),
           TabBarView(
             controller: _tabController,
-            children: <Widget>[_takePictureScreen(), _takePictureScreen()],
+            children: <Widget>[_galleryScreen(), _takePictureScreen()],
           )
         ],
       ),
@@ -324,20 +327,65 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Widget _galleryScreen() {
-    return Positioned.fill(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: ScreenUtil().setHeight(1200),
-            child: Image.file(File(cameraStore.filePath)),
-          ),
-          Expanded(
-            child: Container(
-              child: Text('테스트'),
-            ),
-          )
-        ],
-      ),
-    );
+    return Container(
+        child: galleryStore.loading
+            ? LoadingIndicator(
+                indicatorType: Indicator.lineScalePulseOutRapid,
+                color: Colors.grey.withOpacity(0.5))
+            : Padding(
+                padding: const EdgeInsets.only(left: 3, right: 3),
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 3.0,
+                          crossAxisSpacing: 3.0,
+                          childAspectRatio: 1,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            var medium = galleryStore.mediums[index];
+                            return Container(
+                              alignment: Alignment.center,
+                              child: medium.mediumType == MediumType.image
+                                  ? Stack(
+                                      children: <Widget>[
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: FadeInImage(
+                                                fit: BoxFit.cover,
+                                                placeholder: MemoryImage(
+                                                    kTransparentImage),
+                                                image: PhotoProvider(
+                                                    mediumId: medium.id),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () => print('tab'),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.transparent),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : VideoProvider(
+                                      mediumId: medium.id,
+                                    ),
+                            );
+                          },
+                          childCount: galleryStore.mediums.length,
+                        ))
+                  ],
+                )));
   }
 }
