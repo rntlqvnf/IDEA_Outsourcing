@@ -28,6 +28,9 @@ dependencies:
   gallery_saver: ^2.0.1
   flutter_image_compress: ^0.7.0
 
+  ## Testing!!!
+  photo_manager: ^0.5.8
+
   # UI
   cupertino_icons: ^0.1.2
   flutter_screenutil: ^2.3.1
@@ -37,7 +40,7 @@ dependencies:
   menu_button: ^1.2.1
   auto_size_text: ^2.1.0
   loading_indicator: ^1.2.0
-  
+
 dev_dependencies:
   build_runner: ^1.10.0
   mobx_codegen: ^1.1.0+1

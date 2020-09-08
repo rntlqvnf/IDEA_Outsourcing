@@ -386,17 +386,6 @@ class _CameraScreenState extends State<CameraScreen>
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   var medium = galleryStore.mediums[index];
-                  var thumbnail = galleryStore?.thumbnails[medium?.id];
-
-                  if (thumbnail == null)
-                    return Center(
-                        child: SizedBox(
-                            height: 30,
-                            width: 30,
-                            child: LoadingIndicator(
-                                indicatorType: Indicator.lineSpinFadeLoader,
-                                color: Colors.grey.withOpacity(0.5))));
-
                   return Container(
                     alignment: Alignment.center,
                     child: Stack(
@@ -405,7 +394,12 @@ class _CameraScreenState extends State<CameraScreen>
                           child: FadeInImage(
                             fit: BoxFit.cover,
                             placeholder: MemoryImage(kTransparentImage),
-                            image: MemoryImage(thumbnail),
+                            image: ThumbnailProvider(
+                                width: MediaQuery.of(context).size.width ~/ 4,
+                                height: MediaQuery.of(context).size.width ~/ 4,
+                                mediumId: medium.id,
+                                mediumType: medium.mediumType,
+                                highQuality: true),
                           ),
                         ),
                         Material(

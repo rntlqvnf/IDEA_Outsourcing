@@ -8,7 +8,7 @@ part 'camera_store.g.dart';
 
 class CameraStore = _CameraStore with _$CameraStore;
 
-abstract class _CameraStore extends BaseStore with Store {
+abstract class _CameraStore with Store, BaseStore {
   // other stores:--------------------------------------------------------------
 
   // disposers:-----------------------------------------------------------------

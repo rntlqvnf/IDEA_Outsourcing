@@ -1,7 +1,8 @@
+import 'package:mobx/mobx.dart';
 import 'package:python_app/store/error/error_store.dart';
 import 'package:python_app/store/success/success_store.dart';
 
-class BaseStore {
+abstract class BaseStore {
   // other stores:--------------------------------------------------------------
   final ErrorStore _errorStore = ErrorStore();
   final SuccessStore _successStore = SuccessStore();
