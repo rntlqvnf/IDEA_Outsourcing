@@ -10,10 +10,12 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:python_app/ui/theme.dart';
+import 'package:python_app/ui/widget/loading_widget.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -69,7 +71,7 @@ class _CameraScreenState extends State<CameraScreen>
     galleryStore = context.read<GalleryStore>();
     _promptPermissionSetting().then((granted) {
       if (granted) {
-        galleryStore.initAlbum();
+        galleryStore.initGallery();
       } else {
         Navigator.pop(context);
       }
@@ -94,11 +96,8 @@ class _CameraScreenState extends State<CameraScreen>
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 10, bottom: 10, left: 20, right: 20),
-                              child: Text('다음',
-                                  style: BaseTheme.appBarTextStyle.copyWith(
-                                      color: BaseTheme.darkBlue,
-                                      fontSize: ScreenUtil().setSp(
-                                          BaseTheme.appBarTextStyle.fontSize))),
+                              child:
+                                  Text('다음', style: BaseTheme.appBarTextStyle),
                             ))))
             ],
             title: TAB.values[currentIndex] == TAB.CAMERA
@@ -106,17 +105,13 @@ class _CameraScreenState extends State<CameraScreen>
                     padding: const EdgeInsets.only(left: 8),
                     child: Text(
                       '사진',
-                      style: BaseTheme.appBarTextStyle.copyWith(
-                          fontSize: ScreenUtil()
-                              .setSp(BaseTheme.appBarTextStyle.fontSize)),
+                      style: BaseTheme.appBarTextStyle,
                     ))
                 : Observer(builder: (_) {
                     return galleryStore.loading
                         ? Text(
                             '갤러리',
-                            style: BaseTheme.appBarTextStyle.copyWith(
-                                fontSize: ScreenUtil()
-                                    .setSp(BaseTheme.appBarTextStyle.fontSize)),
+                            style: BaseTheme.appBarTextStyle,
                           )
                         : MenuButton(
                             child: _buttonChild(),
@@ -127,16 +122,16 @@ class _CameraScreenState extends State<CameraScreen>
                                 ),
                                 color: Theme.of(context).primaryColor),
                             toggledChild: _buttonChild(),
-                            items: galleryStore.albums,
+                            items: galleryStore.galleries,
                             dontShowTheSameItemSelected: false,
                             topDivider: true,
-                            itemBuilder: (album) => _buttonItem(album),
+                            itemBuilder: (gallery) => _buttonItem(gallery),
                             divider: Container(
                               height: 1,
                               color: Colors.transparent,
                             ),
-                            onItemSelected: (album) =>
-                                galleryStore.changeAlbum(album),
+                            onItemSelected: (gallery) =>
+                                galleryStore.changeGallery(gallery),
                             onMenuButtonToggle: (_) {},
                           );
                   })),
@@ -168,7 +163,7 @@ class _CameraScreenState extends State<CameraScreen>
         ));
   }
 
-  Widget _buttonItem(Album album) {
+  Widget _buttonItem(AssetPathEntity gallery) {
     return Container(
         color: Theme.of(context).primaryColor,
         child: SizedBox(
@@ -177,28 +172,16 @@ class _CameraScreenState extends State<CameraScreen>
                 padding: const EdgeInsets.only(left: 8),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(album.name == 'All' ? '갤러리' : album.name,
+                    child: Text(gallery.name == 'Recent' ? '갤러리' : gallery.name,
                         style: BaseTheme.appBarTextStyle.copyWith(
-                            fontWeight: FontWeight.w100,
-                            color: galleryStore.currentAlbum == album
-                                ? BaseTheme.deactivatedText
-                                : BaseTheme.appBarTextStyle.color,
-                            fontSize: ScreenUtil().setSp(
-                              BaseTheme.appBarTextStyle.fontSize,
-                            )))))));
+                          fontWeight: FontWeight.w100,
+                          color: galleryStore.currentGallery == gallery
+                              ? BaseTheme.deactivatedText
+                              : BaseTheme.appBarTextStyle.color,
+                        ))))));
   }
 
   Widget _buttonChild() {
-    String longestAlbumName = galleryStore.albums[0].name;
-    galleryStore.albums.forEach((album) {
-      if (album.name == 'All') {
-        if ('갤러리'.length > longestAlbumName.length) longestAlbumName = '갤러리';
-      } else {
-        if (album.name.length > longestAlbumName.length)
-          longestAlbumName = album.name;
-      }
-    });
-
     return SizedBox(
         height: ScreenUtil().setHeight(130),
         child: Padding(
@@ -209,12 +192,12 @@ class _CameraScreenState extends State<CameraScreen>
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    AutoSizeText(longestAlbumName,
-                        maxLines: 1,
-                        style: BaseTheme.appBarTextStyle.copyWith(
-                            color: Colors.transparent,
-                            fontSize: ScreenUtil()
-                                .setSp(BaseTheme.appBarTextStyle.fontSize))),
+                    Observer(builder: (_) {
+                      return AutoSizeText(galleryStore.longestGalleryName,
+                          maxLines: 1,
+                          style: BaseTheme.appBarTextStyle
+                              .copyWith(color: Colors.transparent));
+                    }),
                     SizedBox(
                       width: ScreenUtil().setWidth(100),
                     ),
@@ -226,13 +209,11 @@ class _CameraScreenState extends State<CameraScreen>
                     Observer(
                       builder: (_) {
                         return AutoSizeText(
-                            galleryStore.currentAlbum.name == 'All'
+                            galleryStore.currentGallery.name == 'Current'
                                 ? '갤러리'
-                                : galleryStore.currentAlbum.name,
+                                : galleryStore.currentGallery.name,
                             maxLines: 1,
-                            style: BaseTheme.appBarTextStyle.copyWith(
-                                fontSize: ScreenUtil().setSp(
-                                    BaseTheme.appBarTextStyle.fontSize)));
+                            style: BaseTheme.appBarTextStyle);
                       },
                     ),
                     SizedBox(
@@ -357,13 +338,7 @@ class _CameraScreenState extends State<CameraScreen>
               children: <Widget>[
                 Positioned.fill(child: Observer(builder: (_) {
                   return galleryStore.loading
-                      ? Center(
-                          child: SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: LoadingIndicator(
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  color: Colors.grey.withOpacity(0.5))))
+                      ? LoadingWidget()
                       : FadeInImage(
                           fit: BoxFit.cover,
                           placeholder: MemoryImage(kTransparentImage),
@@ -385,6 +360,12 @@ class _CameraScreenState extends State<CameraScreen>
               ),
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
+                  if (index == galleryStore.images.length) {
+                    galleryStore.loadMoreImages();
+                    return LoadingWidget();
+                  } else if (index > galleryStore.images.length) {
+                    return LoadingWidget();
+                  }
                   var medium = galleryStore.mediums[index];
                   return Container(
                     alignment: Alignment.center,
@@ -421,7 +402,7 @@ class _CameraScreenState extends State<CameraScreen>
                   );
                 },
                 childCount:
-                    galleryStore.loading ? 0 : galleryStore.mediums.length,
+                    galleryStore.loading ? 0 : galleryStore.totalImageCount,
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: true,

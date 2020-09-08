@@ -7,8 +7,13 @@ abstract class GalleryStore {
   AssetEntity get currentImage;
   int get totalImageCount;
   bool get loading;
+  String get longestGalleryName;
+  ThumbFormat get format;
 
-  void initGallery();
-  void changeGallery(AssetPathEntity gallery);
+  Future<void> initGallery();
+  Future<void> changeGallery(AssetPathEntity gallery);
   void changeImage(AssetEntity image);
+  Future<void> refreshGalleryList();
+  Future<void> refreshImages();
+  Future<void> loadMoreImages();
 }

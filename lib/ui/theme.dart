@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BaseTheme {
   static const Color notWhite = Color(0xFFEDF0F2);
@@ -84,14 +85,20 @@ class BaseTheme {
     caption: caption,
   );
 
-  static const TextStyle appBarTextStyle = TextStyle(
+  static TextStyle appBarTextStyle = TextStyle(
       fontFamily: fontName,
       color: darkText,
       fontWeight: FontWeight.w600,
-      fontSize: 65);
+      fontSize: ScreenUtil().setSp(65));
 
   static const TextStyle bottomBarTextStyle = TextStyle(
       fontFamily: fontName, color: darkText, fontWeight: FontWeight.w600);
+
+  static TextStyle imageErrorTextStyle = TextStyle(
+      fontFamily: fontName,
+      color: lightRed,
+      fontWeight: FontWeight.w600,
+      fontSize: ScreenUtil().setSp(65));
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1

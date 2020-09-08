@@ -1,14 +1,8 @@
-import 'dart:typed_data';
-
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mobx/mobx.dart';
-import 'package:photo_gallery/photo_gallery.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:python_app/store/base_store.dart';
-import 'package:python_app/store/gallery/gallery_store.dart';
 
-import '../../contants/globals.dart';
-import '../../service/gallery_service.dart';
+import '../base_store.dart';
+import 'gallery_store.dart';
 
 part 'gallery_store_impl.g.dart';
 
@@ -24,52 +18,138 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
   // services:------------------------------------------------------------------
 
   // store variables:-----------------------------------------------------------
-  List<AssetPathEntity> _galleries;
+  static const _loadCount = 50;
+
+  @observable
+  List<AssetPathEntity> _galleries = [];
+
+  @observable
+  AssetPathEntity _currentGallery;
+
+  @observable
+  Map<AssetPathEntity, GalleryData> _galleryMap = {};
+
+  @observable
+  bool _loadingGalleries = true;
+
+  @observable
+  bool _loadingImages = true;
 
   @override
   @computed
   get galleries => _galleries;
 
-  AssetPathEntity _currentGallery;
-
   @override
   @computed
   get currentGallery => _currentGallery;
 
-  List<AssetEntity> _images;
+  @override
+  @computed
+  get images => _galleryMap[_currentGallery]?.images;
 
   @override
   @computed
-  get images => _images;
-
-  AssetEntity _currentImage;
-
-  @override
-  @computed
-  get currentImage => _currentImage;
+  get currentImage => _galleryMap[_currentGallery]?.currentImage;
 
   @override
   @computed
   get totalImageCount => _currentGallery.assetCount;
 
-  bool _loading = true;
+  @override
+  @computed
+  get loading => _loadingGalleries || _loadingImages;
 
   @override
   @computed
-  get loading => _loading;
+  get longestGalleryName => _findLongtestGalleryName();
+
+  @override
+  @computed
+  get format => ThumbFormat.jpeg;
 
   // actions:-------------------------------------------------------------------
   @override
   @action
-  void initGallery() {}
+  Future<void> initGallery() async {
+    _loadingGalleries = true;
+    _loadingImages = true;
+    await refreshGalleryList();
+    await changeGallery(_galleries[0]);
+    changeImage(images[0]);
+  }
 
   @override
   @action
-  void changeGallery(AssetPathEntity gallery) {}
+  Future<void> changeGallery(AssetPathEntity gallery) async {
+    _currentGallery = gallery;
+    refreshImages();
+  }
 
   @override
   @action
-  void changeImage(AssetEntity image) {}
+  void changeImage(AssetEntity image) {
+    _galleryMap[_currentGallery].currentImage = image;
+  }
+
+  @override
+  @action
+  Future<void> refreshGalleryList() async {
+    _loadingGalleries = true;
+
+    final option = _makeOption();
+
+    _reset();
+    var list = await PhotoManager.getAssetPathList(
+      type: RequestType.image,
+      hasAll: true,
+      onlyAll: false,
+      filterOption: option,
+    );
+
+    list.sort((s1, s2) {
+      return s2.assetCount.compareTo(s1.assetCount);
+    });
+
+    _galleries.addAll(list);
+
+    _loadingGalleries = false;
+  }
+
+  @override
+  @action
+  Future<void> refreshImages() async {
+    _loadingImages = true;
+
+    await _currentGallery.refreshPathProperties();
+    final list = await _currentGallery.getAssetListPaged(0, _loadCount);
+
+    _galleryMap[_currentGallery]
+      ..page = 0
+      ..images.clear()
+      ..images.addAll(list)
+      ..isInit = true;
+
+    _loadingImages = false;
+  }
+
+  @override
+  @action
+  Future<void> loadMoreImages() async {
+    _loadingImages = true;
+
+    var galleryData = _galleryMap[_currentGallery];
+
+    if (galleryData.images.length < totalImageCount) {
+      final list = await _currentGallery.getAssetListPaged(
+          galleryData.page + 1, _loadCount);
+
+      galleryData
+        ..page += 1
+        ..images.addAll(list);
+    }
+
+    _loadingImages = false;
+  }
 
   // dispose:-------------------------------------------------------------------
   @action
@@ -81,4 +161,42 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
   }
 
   // functions:-----------------------------------------------------------------
+  FilterOptionGroup _makeOption() {
+    SizeConstraint sizeConstraint = SizeConstraint(
+      minWidth: 0,
+      maxWidth: 10000,
+      minHeight: 0,
+      maxHeight: 10000,
+      ignoreSize: false,
+    );
+
+    final option = FilterOption(
+      sizeConstraint: sizeConstraint,
+    );
+
+    return FilterOptionGroup()..setOption(AssetType.image, option);
+  }
+
+  void _reset() {
+    _galleries.clear();
+    _galleryMap.clear();
+  }
+
+  String _findLongtestGalleryName() {
+    if (_loadingGalleries) return '';
+    String longestGalleryName = '갤러리';
+    for (int i = 1; i < _galleries.length; i++) {
+      var gallery = galleries[i];
+      if (gallery.name.length > longestGalleryName.length)
+        longestGalleryName = gallery.name;
+    }
+    return longestGalleryName;
+  }
+}
+
+class GalleryData {
+  List<AssetEntity> images = [];
+  AssetEntity currentImage;
+  int page = 0;
+  bool isInit = false;
 }
