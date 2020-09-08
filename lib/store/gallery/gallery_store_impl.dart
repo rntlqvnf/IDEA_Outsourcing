@@ -152,8 +152,8 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
   }
 
   // dispose:-------------------------------------------------------------------
-  @action
-  dispose() {
+  @override
+  void dispose() {
     super.dispose();
     for (final d in disposers) {
       d();

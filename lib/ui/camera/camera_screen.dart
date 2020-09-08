@@ -1,23 +1,23 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_gallery/photo_gallery.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:python_app/store/camera/camera_store.dart';
-import 'package:python_app/store/gallery/gallery_store.dart';
-import 'package:python_app/ui/theme.dart';
-import 'package:python_app/ui/widget/loading_widget.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:transparent_image/transparent_image.dart';
+
+import '../../store/camera/camera_store.dart';
+import '../../store/gallery/gallery_store.dart';
+import '../theme.dart';
+import '../widget/loading_widget.dart';
+import 'grid_image.dart';
 
 enum TAB { GALLERY, CAMERA }
 
@@ -76,6 +76,13 @@ class _CameraScreenState extends State<CameraScreen>
         Navigator.pop(context);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cameraStore.dispose();
+    galleryStore.dispose();
   }
 
   @override
@@ -339,11 +346,17 @@ class _CameraScreenState extends State<CameraScreen>
                 Positioned.fill(child: Observer(builder: (_) {
                   return galleryStore.loading
                       ? LoadingWidget()
-                      : FadeInImage(
-                          fit: BoxFit.cover,
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: PhotoProvider(
-                              mediumId: galleryStore.currentMedium.id),
+                      : FutureBuilder<Uint8List>(
+                          future: galleryStore.currentImage.originBytes,
+                          builder: (BuildContext context, snapshot) {
+                            if (snapshot.hasError) {
+                              return ErrorWidget(snapshot.error);
+                            } else if (snapshot.hasData) {
+                              return Image.memory(snapshot.data);
+                            } else {
+                              return LoadingWidget();
+                            }
+                          },
                         );
                 }))
               ],
@@ -366,31 +379,27 @@ class _CameraScreenState extends State<CameraScreen>
                   } else if (index > galleryStore.images.length) {
                     return LoadingWidget();
                   }
-                  var medium = galleryStore.mediums[index];
+                  var image = galleryStore.images[index];
+
                   return Container(
                     alignment: Alignment.center,
                     child: Stack(
                       children: <Widget>[
                         Positioned.fill(
-                          child: FadeInImage(
-                            fit: BoxFit.cover,
-                            placeholder: MemoryImage(kTransparentImage),
-                            image: ThumbnailProvider(
-                                width: MediaQuery.of(context).size.width ~/ 4,
-                                height: MediaQuery.of(context).size.width ~/ 4,
-                                mediumId: medium.id,
-                                mediumType: medium.mediumType,
-                                highQuality: true),
+                          child: GridImage(
+                            key: ValueKey(image),
+                            image: image,
+                            format: galleryStore.format,
                           ),
                         ),
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () => galleryStore.changeMedium(medium),
+                            onTap: () => galleryStore.changeImage(image),
                             child: Observer(builder: (_) {
                               return Container(
                                 decoration: BoxDecoration(
-                                    color: galleryStore.currentMedium == medium
+                                    color: galleryStore.currentImage == image
                                         ? Colors.white.withOpacity(0.4)
                                         : Colors.transparent),
                               );

@@ -16,4 +16,5 @@ abstract class GalleryStore {
   Future<void> refreshGalleryList();
   Future<void> refreshImages();
   Future<void> loadMoreImages();
+  void dispose();
 }
