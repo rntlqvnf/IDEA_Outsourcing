@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mobx/mobx.dart';
 import 'package:photo_gallery/photo_gallery.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:python_app/store/base_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 
@@ -21,70 +22,54 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
 
   // constructor:---------------------------------------------------------------
   // services:------------------------------------------------------------------
-  GalleryService galleryService = locator<GalleryService>();
 
   // store variables:-----------------------------------------------------------
-  @observable
-  bool loading = true;
+  List<AssetPathEntity> _galleries;
 
-  @observable
-  List<Medium> mediums;
+  @override
+  @computed
+  get galleries => _galleries;
 
-  @observable
-  Map<String, Uint8List> thumbnails = {};
+  AssetPathEntity _currentGallery;
 
-  @observable
-  List<Album> albums;
+  @override
+  @computed
+  get currentGallery => _currentGallery;
 
-  @observable
-  Album currentAlbum;
+  List<AssetEntity> _images;
 
-  @observable
-  Medium currentMedium;
+  @override
+  @computed
+  get images => _images;
+
+  AssetEntity _currentImage;
+
+  @override
+  @computed
+  get currentImage => _currentImage;
+
+  @override
+  @computed
+  get totalImageCount => _currentGallery.assetCount;
+
+  bool _loading = true;
+
+  @override
+  @computed
+  get loading => _loading;
 
   // actions:-------------------------------------------------------------------
+  @override
   @action
-  void initAlbum() {
-    loading = true;
-    galleryService.getAlbums().then((value) {
-      albums = value;
-      changeAlbum(albums[0]);
-    });
-  }
+  void initGallery() {}
 
+  @override
   @action
-  Future<void> changeAlbum(Album album) async {
-    loading = true;
-    currentAlbum = album;
-    mediums = await galleryService.getMediums(currentAlbum);
-    changeMedium(mediums[0]);
-    loading = false;
-  }
+  void changeGallery(AssetPathEntity gallery) {}
 
+  @override
   @action
-  void compressImages(List<Medium> _mediums) {
-    loading = true;
-    _mediums.forEach((m) async {
-      var file = await m.getFile();
-      FlutterImageCompress.compressWithFile(
-        file.uri.toFilePath(),
-        format: CompressFormat.jpeg,
-        minHeight: m.height ~/ 8,
-        minWidth: m.width ~/ 8,
-        quality: 70,
-      ).then((compressed) {
-        thumbnails.putIfAbsent(m.id, () => compressed);
-        if (thumbnails.length == mediums.length) {
-          loading = false;
-        }
-      });
-    });
-  }
-
-  @action
-  void changeMedium(Medium medium) {
-    currentMedium = medium;
-  }
+  void changeImage(AssetEntity image) {}
 
   // dispose:-------------------------------------------------------------------
   @action
