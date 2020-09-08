@@ -9,19 +9,20 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
-  Computed<bool> _$loadingComputed;
+  final _$loadingAtom = Atom(name: '_GalleryStore.loading');
 
   @override
-  bool get loading => (_$loadingComputed ??=
-          Computed<bool>(() => super.loading, name: '_GalleryStore.loading'))
-      .value;
-  Computed<List<Album>> _$albumsComputed;
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
+  }
 
   @override
-  List<Album> get albums =>
-      (_$albumsComputed ??= Computed<List<Album>>(() => super.albums,
-              name: '_GalleryStore.albums'))
-          .value;
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
+    });
+  }
 
   final _$mediumsAtom = Atom(name: '_GalleryStore.mediums');
 
@@ -35,6 +36,36 @@ mixin _$GalleryStore on _GalleryStore, Store {
   set mediums(List<Medium> value) {
     _$mediumsAtom.reportWrite(value, super.mediums, () {
       super.mediums = value;
+    });
+  }
+
+  final _$thumbnailsAtom = Atom(name: '_GalleryStore.thumbnails');
+
+  @override
+  Map<String, Uint8List> get thumbnails {
+    _$thumbnailsAtom.reportRead();
+    return super.thumbnails;
+  }
+
+  @override
+  set thumbnails(Map<String, Uint8List> value) {
+    _$thumbnailsAtom.reportWrite(value, super.thumbnails, () {
+      super.thumbnails = value;
+    });
+  }
+
+  final _$albumsAtom = Atom(name: '_GalleryStore.albums');
+
+  @override
+  List<Album> get albums {
+    _$albumsAtom.reportRead();
+    return super.albums;
+  }
+
+  @override
+  set albums(List<Album> value) {
+    _$albumsAtom.reportWrite(value, super.albums, () {
+      super.albums = value;
     });
   }
 
@@ -79,6 +110,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
       ActionController(name: '_GalleryStore');
 
   @override
+  void initAlbum() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.initAlbum');
+    try {
+      return super.initAlbum();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changeMedium(Medium medium) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.changeMedium');
@@ -103,11 +145,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
   @override
   String toString() {
     return '''
-mediums: ${mediums},
-currentAlbum: ${currentAlbum},
-currentMedium: ${currentMedium},
 loading: ${loading},
-albums: ${albums}
+mediums: ${mediums},
+thumbnails: ${thumbnails},
+albums: ${albums},
+currentAlbum: ${currentAlbum},
+currentMedium: ${currentMedium}
     ''';
   }
 }

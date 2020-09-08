@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:photo_gallery/photo_gallery.dart';
-import 'package:python_app/service/initializable_service.dart';
 
-abstract class GalleryService with InitializableService {
-  List<Album> get albums;
-
-  Future<void> initAlbums();
+abstract class GalleryService {
+  Future<List<Album>> getAlbums();
 
   Future<void> precacheImages(List<Medium> mediums, BuildContext context);
 

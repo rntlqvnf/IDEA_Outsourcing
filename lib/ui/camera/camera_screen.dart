@@ -68,7 +68,9 @@ class _CameraScreenState extends State<CameraScreen>
     cameraStore = context.read<CameraStore>();
     galleryStore = context.read<GalleryStore>();
     _promptPermissionSetting().then((granted) {
-      if (!granted) {
+      if (granted) {
+        galleryStore.initAlbum();
+      } else {
         Navigator.pop(context);
       }
     });
@@ -341,6 +343,7 @@ class _CameraScreenState extends State<CameraScreen>
   Widget _galleryGridView() {
     return Container(
         child: CustomScrollView(
+      shrinkWrap: false,
       slivers: <Widget>[
         SliverPadding(
           padding: EdgeInsets.only(top: 3, bottom: 3),
@@ -383,6 +386,17 @@ class _CameraScreenState extends State<CameraScreen>
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   var medium = galleryStore.mediums[index];
+                  var thumbnail = galleryStore?.thumbnails[medium?.id];
+
+                  if (thumbnail == null)
+                    return Center(
+                        child: SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: LoadingIndicator(
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                color: Colors.grey.withOpacity(0.5))));
+
                   return Container(
                     alignment: Alignment.center,
                     child: Stack(
@@ -391,7 +405,7 @@ class _CameraScreenState extends State<CameraScreen>
                           child: FadeInImage(
                             fit: BoxFit.cover,
                             placeholder: MemoryImage(kTransparentImage),
-                            image: PhotoProvider(mediumId: medium.id),
+                            image: MemoryImage(thumbnail),
                           ),
                         ),
                         Material(
@@ -402,7 +416,7 @@ class _CameraScreenState extends State<CameraScreen>
                               return Container(
                                 decoration: BoxDecoration(
                                     color: galleryStore.currentMedium == medium
-                                        ? Colors.white.withOpacity(0.3)
+                                        ? Colors.white.withOpacity(0.4)
                                         : Colors.transparent),
                               );
                             }),
@@ -414,6 +428,9 @@ class _CameraScreenState extends State<CameraScreen>
                 },
                 childCount:
                     galleryStore.loading ? 0 : galleryStore.mediums.length,
+                addAutomaticKeepAlives: true,
+                addRepaintBoundaries: true,
+                addSemanticIndexes: true,
               ));
         })
       ],

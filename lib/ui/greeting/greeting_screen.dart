@@ -79,8 +79,7 @@ class _GreetingScreenState extends State<GreetingScreen>
                       child: InkWell(
                           customBorder: new CircleBorder(),
                           onTap: () {
-                            if (locator<CameraService>().isInitialized() &&
-                                locator<GalleryService>().isInitialized())
+                            if (locator<CameraService>().isInitialized())
                               Navigator.pushNamed(context, Routes.camera);
                           },
                           child: Container(
