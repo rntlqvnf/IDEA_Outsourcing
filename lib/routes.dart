@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
-import 'package:python_app/store/gallery/gallery_store_impl.dart';
 import 'package:python_app/ui/camera/camera_screen.dart';
 import 'package:python_app/ui/greeting/greeting_screen.dart';
 import 'package:python_app/ui/home/screens/main_screen.dart';
@@ -20,7 +19,7 @@ class Routes {
     camera: (BuildContext context) => MultiProvider(
           providers: [
             Provider<CameraStore>(create: (_) => CameraStore()),
-            Provider<GalleryStore>(create: (_) => GalleryStoreImpl()),
+            Provider<GalleryStore>(create: (_) => GalleryStore()),
           ],
           child: CameraScreen(),
         ),

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:python_app/contants/globals.dart';
 import 'package:python_app/routes.dart';
-import 'package:python_app/service/camera_service.dart';
-import 'package:python_app/service/gallery_service.dart';
 
 class GreetingScreen extends StatefulWidget {
   _GreetingScreenState createState() => _GreetingScreenState();

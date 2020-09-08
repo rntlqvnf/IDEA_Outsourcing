@@ -11,10 +11,11 @@ import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 import '../../store/camera/camera_store.dart';
-import '../../store/gallery/gallery_store.dart';
+import '../../store/gallery/gallery_store_intf.dart';
 import '../theme.dart';
 import '../widget/loading_widget.dart';
 import 'grid_image.dart';
@@ -352,7 +353,11 @@ class _CameraScreenState extends State<CameraScreen>
                             if (snapshot.hasError) {
                               return ErrorWidget(snapshot.error);
                             } else if (snapshot.hasData) {
-                              return Image.memory(snapshot.data);
+                              return Container(
+                                  child: Image.memory(
+                                snapshot.data,
+                                fit: BoxFit.cover,
+                              ));
                             } else {
                               return LoadingWidget();
                             }
@@ -410,8 +415,7 @@ class _CameraScreenState extends State<CameraScreen>
                     ),
                   );
                 },
-                childCount:
-                    galleryStore.loading ? 0 : galleryStore.totalImageCount,
+                childCount: galleryStore.totalImageCount,
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: true,

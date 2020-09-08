@@ -27,7 +27,6 @@ void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
   locator.registerSingleton<CameraService>(CameraServiceImpl());
-  locator.registerSingleton<GalleryService>(GalleryServiceImpl());
 }
 
 class MyApp extends StatefulWidget {
