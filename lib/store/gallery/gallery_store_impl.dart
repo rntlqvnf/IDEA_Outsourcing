@@ -82,7 +82,7 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
   @action
   Future<void> changeGallery(AssetPathEntity gallery) async {
     _currentGallery = gallery;
-    refreshImages();
+    await refreshImages();
   }
 
   @override
@@ -123,7 +123,7 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
     await _currentGallery.refreshPathProperties();
     final list = await _currentGallery.getAssetListPaged(0, _loadCount);
 
-    _galleryMap[_currentGallery]
+    _getOrCreateGalleryData(_currentGallery)
       ..page = 0
       ..images.clear()
       ..images.addAll(list)
@@ -137,7 +137,7 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
   Future<void> loadMoreImages() async {
     _loadingImages = true;
 
-    var galleryData = _galleryMap[_currentGallery];
+    var galleryData = _getOrCreateGalleryData(_currentGallery);
 
     if (galleryData.images.length < totalImageCount) {
       final list = await _currentGallery.getAssetListPaged(
@@ -191,6 +191,11 @@ abstract class _GalleryStoreImpl with BaseStore, Store implements GalleryStore {
         longestGalleryName = gallery.name;
     }
     return longestGalleryName;
+  }
+
+  GalleryData _getOrCreateGalleryData(AssetPathEntity pathEntity) {
+    _galleryMap[pathEntity] ??= GalleryData();
+    return _galleryMap[pathEntity];
   }
 }
 
