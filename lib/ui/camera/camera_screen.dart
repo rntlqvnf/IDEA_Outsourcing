@@ -15,7 +15,6 @@ import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 import '../../store/camera/camera_store.dart';
-import '../../store/gallery/gallery_store_intf.dart';
 import '../theme.dart';
 import '../widget/loading_widget.dart';
 import 'grid_image.dart';
@@ -104,8 +103,9 @@ class _CameraScreenState extends State<CameraScreen>
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 10, bottom: 10, left: 20, right: 20),
-                              child:
-                                  Text('다음', style: BaseTheme.appBarTextStyle),
+                              child: Text('다음',
+                                  style: BaseTheme.appBarTextStyle
+                                      .copyWith(color: BaseTheme.darkBlue)),
                             ))))
             ],
             title: TAB.values[currentIndex] == TAB.CAMERA
@@ -116,7 +116,7 @@ class _CameraScreenState extends State<CameraScreen>
                       style: BaseTheme.appBarTextStyle,
                     ))
                 : Observer(builder: (_) {
-                    return galleryStore.loading
+                    return !galleryStore.isInit
                         ? Text(
                             '갤러리',
                             style: BaseTheme.appBarTextStyle,
@@ -217,7 +217,7 @@ class _CameraScreenState extends State<CameraScreen>
                     Observer(
                       builder: (_) {
                         return AutoSizeText(
-                            galleryStore.currentGallery.name == 'Current'
+                            galleryStore.currentGallery.name == 'Recent'
                                 ? '갤러리'
                                 : galleryStore.currentGallery.name,
                             maxLines: 1,
@@ -345,10 +345,11 @@ class _CameraScreenState extends State<CameraScreen>
             flexibleSpace: Stack(
               children: <Widget>[
                 Positioned.fill(child: Observer(builder: (_) {
-                  return galleryStore.loading
+                  return !galleryStore.isInit
                       ? LoadingWidget()
                       : FutureBuilder<Uint8List>(
-                          future: galleryStore.currentImage.originBytes,
+                          future: galleryStore
+                              .currentGalleryData.currentImage.originBytes,
                           builder: (BuildContext context, snapshot) {
                             if (snapshot.hasError) {
                               return ErrorWidget(snapshot.error);
@@ -378,13 +379,16 @@ class _CameraScreenState extends State<CameraScreen>
               ),
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (index == galleryStore.images.length) {
-                    galleryStore.loadMoreImages();
+                  var galleryData = galleryStore.currentGalleryData;
+
+                  if (index == galleryData.images.length) {
+                    galleryData.loadMoreImages();
                     return LoadingWidget();
-                  } else if (index > galleryStore.images.length) {
+                  } else if (index > galleryData.images.length) {
                     return LoadingWidget();
                   }
-                  var image = galleryStore.images[index];
+
+                  var image = galleryData.images[index];
 
                   return Container(
                     alignment: Alignment.center,
@@ -394,17 +398,17 @@ class _CameraScreenState extends State<CameraScreen>
                           child: GridImage(
                             key: ValueKey(image),
                             image: image,
-                            format: galleryStore.format,
+                            format: galleryData.format,
                           ),
                         ),
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () => galleryStore.changeImage(image),
+                            onTap: () => galleryData.changeImage(image),
                             child: Observer(builder: (_) {
                               return Container(
                                 decoration: BoxDecoration(
-                                    color: galleryStore.currentImage == image
+                                    color: galleryData.currentImage == image
                                         ? Colors.white.withOpacity(0.4)
                                         : Colors.transparent),
                               );
@@ -415,7 +419,9 @@ class _CameraScreenState extends State<CameraScreen>
                     ),
                   );
                 },
-                childCount: galleryStore.totalImageCount,
+                childCount: !galleryStore.isInit
+                    ? 0
+                    : galleryStore.currentGalleryData.totalImageCount,
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: true,

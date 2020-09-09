@@ -1,16 +1,13 @@
 import 'package:mobx/mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import 'gallery_data_store.dart';
 import '../base_store.dart';
-import 'gallery_store_intf.dart';
-
 part 'gallery_store.g.dart';
 
 class GalleryStore = _GalleryStore with _$GalleryStore;
 
-abstract class _GalleryStore
-    with BaseStore, Store
-    implements GalleryStoreInterface {
+abstract class _GalleryStore with BaseStore, Store {
   // other stores:--------------------------------------------------------------
 
   // disposers:-----------------------------------------------------------------
@@ -20,8 +17,6 @@ abstract class _GalleryStore
   // services:------------------------------------------------------------------
 
   // store variables:-----------------------------------------------------------
-  static const _loadCount = 50;
-
   @observable
   List<AssetPathEntity> galleries = [];
 
@@ -29,58 +24,37 @@ abstract class _GalleryStore
   AssetPathEntity currentGallery;
 
   @observable
-  Map<AssetPathEntity, GalleryData> _galleryMap = {};
+  Map<AssetPathEntity, GalleryDataStore> _galleryMap = {};
 
   @observable
-  GalleryData currentGalleryData;
-
-  @observable
-  ThumbFormat format = ThumbFormat.jpeg;
-
-  @observable
-  bool _loadingGalleries = true;
-
-  @observable
-  bool _loadingImages = true;
+  bool _isInitGallery = false;
 
   @computed
-  get loading => _loadingGalleries || _loadingImages;
+  String get longestGalleryName => _findLongtestGalleryName();
 
   @computed
-  get totalImageCount => currentGallery.assetCount;
+  GalleryDataStore get currentGalleryData =>
+      _getOrCreateGalleryData(currentGallery);
 
   @computed
-  get longestGalleryName => _findLongtestGalleryName();
+  bool get isInit => _isInitGallery && currentGalleryData.isInit;
 
   // actions:-------------------------------------------------------------------
-  @override
   @action
   Future<void> initGallery() async {
-    _loadingGalleries = true;
-    _loadingImages = true;
     await refreshGalleryList();
     await changeGallery(galleries[0]);
-    changeImage(currentGalleryData.images[0]);
+    _isInitGallery = true;
   }
 
-  @override
   @action
   Future<void> changeGallery(AssetPathEntity gallery) async {
     currentGallery = gallery;
-    await refreshImages();
+    if (!currentGalleryData.isInit) await currentGalleryData.refreshImages();
   }
 
-  @override
-  @action
-  void changeImage(AssetEntity image) {
-    currentGalleryData.currentImage = image;
-  }
-
-  @override
   @action
   Future<void> refreshGalleryList() async {
-    _loadingGalleries = true;
-
     final option = _makeOption();
 
     _reset();
@@ -96,43 +70,6 @@ abstract class _GalleryStore
     });
 
     galleries.addAll(list);
-
-    _loadingGalleries = false;
-  }
-
-  @override
-  @action
-  Future<void> refreshImages() async {
-    _loadingImages = true;
-
-    await currentGallery.refreshPathProperties();
-    final list = await currentGallery.getAssetListPaged(0, _loadCount);
-
-    currentGalleryData = _getOrCreateGalleryData(currentGallery);
-    currentGalleryData
-      ..page = 0
-      ..images.clear()
-      ..images.addAll(list)
-      ..isInit = true;
-
-    _loadingImages = false;
-  }
-
-  @override
-  @action
-  Future<void> loadMoreImages() async {
-    _loadingImages = true;
-
-    if (currentGalleryData.images.length < totalImageCount) {
-      final list = await currentGallery.getAssetListPaged(
-          currentGalleryData.page + 1, _loadCount);
-
-      currentGalleryData
-        ..page += 1
-        ..images.addAll(list);
-    }
-
-    _loadingImages = false;
   }
 
   // dispose:-------------------------------------------------------------------
@@ -167,7 +104,6 @@ abstract class _GalleryStore
   }
 
   String _findLongtestGalleryName() {
-    if (_loadingGalleries) return '';
     String longestGalleryName = '갤러리';
     for (int i = 1; i < galleries.length; i++) {
       var gallery = galleries[i];
@@ -177,15 +113,9 @@ abstract class _GalleryStore
     return longestGalleryName;
   }
 
-  GalleryData _getOrCreateGalleryData(AssetPathEntity pathEntity) {
-    _galleryMap[pathEntity] ??= GalleryData();
-    return _galleryMap[pathEntity];
+  GalleryDataStore _getOrCreateGalleryData(AssetPathEntity gallery) {
+    _galleryMap[gallery] ??= GalleryDataStore();
+    _galleryMap[gallery].gallery ??= gallery;
+    return _galleryMap[gallery];
   }
-}
-
-class GalleryData {
-  List<AssetEntity> images = [];
-  AssetEntity currentImage;
-  int page = 0;
-  bool isInit = false;
 }
