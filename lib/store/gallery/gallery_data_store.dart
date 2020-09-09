@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:mobx/mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
-
+import 'dart:async';
 part 'gallery_data_store.g.dart';
 
 class GalleryDataStore = _GalleryDataStore with _$GalleryDataStore;
@@ -35,7 +37,7 @@ abstract class _GalleryDataStore with Store {
   ThumbFormat format = ThumbFormat.jpeg;
 
   @computed
-  get totalImageCount => gallery.assetCount;
+  get totalImagesCount => gallery.assetCount;
 
   // actions:-------------------------------------------------------------------
   @action
@@ -46,13 +48,13 @@ abstract class _GalleryDataStore with Store {
     page = 0;
     images.clear();
     images.addAll(list);
-    currentImage = images[0];
+    changeImage(images[0]);
     isInit = true;
   }
 
   @action
   Future<void> loadMoreImages() async {
-    if (images.length < totalImageCount) {
+    if (images.length < totalImagesCount) {
       final list = await gallery.getAssetListPaged(page + 1, _loadCount);
 
       page += 1;
@@ -62,6 +64,7 @@ abstract class _GalleryDataStore with Store {
 
   @action
   void changeImage(AssetEntity image) {
+    if (currentImage == image) return;
     currentImage = image;
   }
 

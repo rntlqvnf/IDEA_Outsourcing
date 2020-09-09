@@ -9,12 +9,12 @@ part of 'gallery_data_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryDataStore on _GalleryDataStore, Store {
-  Computed<dynamic> _$totalImageCountComputed;
+  Computed<dynamic> _$totalImagesCountComputed;
 
   @override
-  dynamic get totalImageCount => (_$totalImageCountComputed ??=
-          Computed<dynamic>(() => super.totalImageCount,
-              name: '_GalleryDataStore.totalImageCount'))
+  dynamic get totalImagesCount => (_$totalImagesCountComputed ??=
+          Computed<dynamic>(() => super.totalImagesCount,
+              name: '_GalleryDataStore.totalImagesCount'))
       .value;
 
   final _$galleryAtom = Atom(name: '_GalleryDataStore.gallery');
@@ -146,7 +146,7 @@ currentImage: ${currentImage},
 page: ${page},
 isInit: ${isInit},
 format: ${format},
-totalImageCount: ${totalImageCount}
+totalImagesCount: ${totalImagesCount}
     ''';
   }
 }

@@ -13,6 +13,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../../store/camera/camera_store.dart';
 import '../theme.dart';
@@ -339,37 +340,51 @@ class _CameraScreenState extends State<CameraScreen>
           sliver: SliverAppBar(
             leading: Container(),
             expandedHeight: ScreenUtil().setHeight(1200),
-            floating: true,
+            floating: false,
             pinned: true,
-            snap: true,
             flexibleSpace: Stack(
               children: <Widget>[
                 Positioned.fill(child: Observer(builder: (_) {
+                  Uint8List previousImage = kTransparentImage;
                   return !galleryStore.isInit
                       ? LoadingWidget()
-                      : FutureBuilder<Uint8List>(
-                          future: galleryStore
-                              .currentGalleryData.currentImage.originBytes,
-                          builder: (BuildContext context, snapshot) {
-                            if (snapshot.hasError) {
-                              return ErrorWidget(snapshot.error);
-                            } else if (snapshot.hasData) {
-                              return Container(
-                                  child: Image.memory(
-                                snapshot.data,
-                                fit: BoxFit.cover,
-                              ));
-                            } else {
-                              return LoadingWidget();
-                            }
-                          },
-                        );
+                      : Observer(builder: (_) {
+                          return StreamBuilder(
+                            initialData: previousImage,
+                            stream: Stream.fromFuture(galleryStore
+                                .currentGalleryData.currentImage.originBytes),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return ErrorWidget(snapshot.error);
+                              } else {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.waiting:
+                                    previousImage = snapshot.data;
+                                    return Image.memory(
+                                      previousImage,
+                                      fit: BoxFit.cover,
+                                    );
+                                    break;
+                                  default:
+                                    return FadeInImage(
+                                        fadeInDuration:
+                                            Duration(milliseconds: 300),
+                                        fit: BoxFit.cover,
+                                        placeholder: MemoryImage(previousImage),
+                                        image: MemoryImage(snapshot.data));
+                                    break;
+                                }
+                              }
+                            },
+                          );
+                        });
                 }))
               ],
             ),
           ),
         ),
         Observer(builder: (_) {
+          var galleryData = galleryStore.currentGalleryData;
           return SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
@@ -379,49 +394,44 @@ class _CameraScreenState extends State<CameraScreen>
               ),
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  var galleryData = galleryStore.currentGalleryData;
-
                   if (index == galleryData.images.length) {
-                    galleryData.loadMoreImages();
+                    galleryData.loadMoreImages().then((_) => setState(() {}));
                     return LoadingWidget();
                   } else if (index > galleryData.images.length) {
                     return LoadingWidget();
                   }
-
                   var image = galleryData.images[index];
 
                   return Container(
-                    alignment: Alignment.center,
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned.fill(
-                          child: GridImage(
-                            key: ValueKey(image),
-                            image: image,
-                            format: galleryData.format,
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: GridImage(
+                              key: ValueKey(image),
+                              image: image,
+                              format: galleryData.format,
+                            ),
                           ),
-                        ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => galleryData.changeImage(image),
-                            child: Observer(builder: (_) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    color: galleryData.currentImage == image
-                                        ? Colors.white.withOpacity(0.4)
-                                        : Colors.transparent),
-                              );
-                            }),
-                          ),
-                        )
-                      ],
-                    ),
-                  );
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => galleryData.changeImage(image),
+                              child: Observer(builder: (_) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      color: galleryData.currentImage == image
+                                          ? Colors.white.withOpacity(0.4)
+                                          : Colors.transparent),
+                                );
+                              }),
+                            ),
+                          )
+                        ],
+                      ));
                 },
-                childCount: !galleryStore.isInit
-                    ? 0
-                    : galleryStore.currentGalleryData.totalImageCount,
+                childCount:
+                    !galleryStore.isInit ? 0 : galleryData.totalImagesCount,
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: true,

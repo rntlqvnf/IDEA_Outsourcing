@@ -22,14 +22,10 @@ dependencies:
   bot_toast: ^3.0.4
   camera: ^0.5.8+5
   path_provider: ^1.6.14
-  photo_gallery: ^0.2.5
   transparent_image: ^1.0.0
   permission_handler: ^5.0.1+1
-  gallery_saver: ^2.0.1
-  flutter_image_compress: ^0.7.0
-
-  ## Testing!!!
   photo_manager: ^0.5.8
+  gallery_saver: ^2.0.1
 
   # UI
   cupertino_icons: ^0.1.2

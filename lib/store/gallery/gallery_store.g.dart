@@ -23,6 +23,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
           Computed<GalleryDataStore>(() => super.currentGalleryData,
               name: '_GalleryStore.currentGalleryData'))
       .value;
+  Computed<bool> _$isInitComputed;
+
+  @override
+  bool get isInit => (_$isInitComputed ??=
+          Computed<bool>(() => super.isInit, name: '_GalleryStore.isInit'))
+      .value;
 
   final _$galleriesAtom = Atom(name: '_GalleryStore.galleries');
 
@@ -69,6 +75,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$_isInitGalleryAtom = Atom(name: '_GalleryStore._isInitGallery');
+
+  @override
+  bool get _isInitGallery {
+    _$_isInitGalleryAtom.reportRead();
+    return super._isInitGallery;
+  }
+
+  @override
+  set _isInitGallery(bool value) {
+    _$_isInitGalleryAtom.reportWrite(value, super._isInitGallery, () {
+      super._isInitGallery = value;
+    });
+  }
+
   final _$initGalleryAsyncAction = AsyncAction('_GalleryStore.initGallery');
 
   @override
@@ -98,7 +119,8 @@ mixin _$GalleryStore on _GalleryStore, Store {
 galleries: ${galleries},
 currentGallery: ${currentGallery},
 longestGalleryName: ${longestGalleryName},
-currentGalleryData: ${currentGalleryData}
+currentGalleryData: ${currentGalleryData},
+isInit: ${isInit}
     ''';
   }
 }
