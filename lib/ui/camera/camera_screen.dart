@@ -352,7 +352,7 @@ class _CameraScreenState extends State<CameraScreen>
                           return StreamBuilder(
                             initialData: previousImage,
                             stream: Stream.fromFuture(galleryStore
-                                .currentGalleryData.currentImage.originBytes),
+                                .currentGalleryData.titleImage.originBytes),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return ErrorWidget(snapshot.error);
@@ -420,7 +420,7 @@ class _CameraScreenState extends State<CameraScreen>
                               child: Observer(builder: (_) {
                                 return Container(
                                   decoration: BoxDecoration(
-                                      color: galleryData.currentImage == image
+                                      color: galleryData.titleImage == image
                                           ? Colors.white.withOpacity(0.4)
                                           : Colors.transparent),
                                 );
@@ -430,8 +430,7 @@ class _CameraScreenState extends State<CameraScreen>
                         ],
                       ));
                 },
-                childCount:
-                    !galleryStore.isInit ? 0 : galleryData.totalImagesCount,
+                childCount: !galleryStore.isInit ? 0 : galleryData.assetCount,
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: true,

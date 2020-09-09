@@ -9,13 +9,13 @@ part of 'gallery_data_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryDataStore on _GalleryDataStore, Store {
-  Computed<dynamic> _$totalImagesCountComputed;
+  Computed<dynamic> _$assetCountComputed;
 
   @override
-  dynamic get totalImagesCount => (_$totalImagesCountComputed ??=
-          Computed<dynamic>(() => super.totalImagesCount,
-              name: '_GalleryDataStore.totalImagesCount'))
-      .value;
+  dynamic get assetCount =>
+      (_$assetCountComputed ??= Computed<dynamic>(() => super.assetCount,
+              name: '_GalleryDataStore.assetCount'))
+          .value;
 
   final _$galleryAtom = Atom(name: '_GalleryDataStore.gallery');
 
@@ -47,18 +47,18 @@ mixin _$GalleryDataStore on _GalleryDataStore, Store {
     });
   }
 
-  final _$currentImageAtom = Atom(name: '_GalleryDataStore.currentImage');
+  final _$titleImageAtom = Atom(name: '_GalleryDataStore.titleImage');
 
   @override
-  AssetEntity get currentImage {
-    _$currentImageAtom.reportRead();
-    return super.currentImage;
+  AssetEntity get titleImage {
+    _$titleImageAtom.reportRead();
+    return super.titleImage;
   }
 
   @override
-  set currentImage(AssetEntity value) {
-    _$currentImageAtom.reportWrite(value, super.currentImage, () {
-      super.currentImage = value;
+  set titleImage(AssetEntity value) {
+    _$titleImageAtom.reportWrite(value, super.titleImage, () {
+      super.titleImage = value;
     });
   }
 
@@ -142,11 +142,11 @@ mixin _$GalleryDataStore on _GalleryDataStore, Store {
     return '''
 gallery: ${gallery},
 images: ${images},
-currentImage: ${currentImage},
+titleImage: ${titleImage},
 page: ${page},
 isInit: ${isInit},
 format: ${format},
-totalImagesCount: ${totalImagesCount}
+assetCount: ${assetCount}
     ''';
   }
 }
