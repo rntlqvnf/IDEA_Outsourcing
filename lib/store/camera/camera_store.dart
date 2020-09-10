@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,13 +46,13 @@ abstract class _CameraStore with Store, BaseStore {
   }
 
   @action
-  void takePicture() {
-    cameraService.takePicture().then((path) {
-      File file = File(path);
-      locator<NavigationService>()
-          .pushNamed(Routes.editing, arguments: file.readAsBytesSync());
-    }).catchError((e) => error('에러: ${e.code}\n${e.description}'),
+  Future<Uint8List> takePicture() async {
+    final path = await cameraService.takePicture().catchError(
+        (e) => error('에러: ${e.code}\n${e.description}'),
         test: (e) => e is CameraException);
+
+    File file = File(path);
+    return file.readAsBytesSync();
   }
 
   // dispose:-------------------------------------------------------------------

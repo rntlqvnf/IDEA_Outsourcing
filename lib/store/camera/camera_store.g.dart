@@ -39,6 +39,13 @@ mixin _$CameraStore on _CameraStore, Store {
     });
   }
 
+  final _$takePictureAsyncAction = AsyncAction('_CameraStore.takePicture');
+
+  @override
+  Future<Uint8List> takePicture() {
+    return _$takePictureAsyncAction.run(() => super.takePicture());
+  }
+
   final _$_CameraStoreActionController = ActionController(name: '_CameraStore');
 
   @override
@@ -47,17 +54,6 @@ mixin _$CameraStore on _CameraStore, Store {
         name: '_CameraStore.toggleCamera');
     try {
       return super.toggleCamera();
-    } finally {
-      _$_CameraStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void takePicture() {
-    final _$actionInfo = _$_CameraStoreActionController.startAction(
-        name: '_CameraStore.takePicture');
-    try {
-      return super.takePicture();
     } finally {
       _$_CameraStoreActionController.endAction(_$actionInfo);
     }

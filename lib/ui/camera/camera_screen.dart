@@ -313,7 +313,15 @@ class _CameraScreenState extends State<CameraScreen>
                       color: Colors.transparent,
                       child: InkWell(
                         customBorder: new CircleBorder(),
-                        onTap: () => cameraStore.takePicture(),
+                        onTap: () => cameraStore.takePicture().then((image) {
+                          final previousGallery =
+                              galleryStore.currentGallery.name;
+                          galleryStore.refreshGalleryList().then((_) =>
+                              galleryStore
+                                  .changeGalleryByName(previousGallery));
+                          Navigator.of(context)
+                              .pushNamed(Routes.editing, arguments: image);
+                        }),
                         child: Container(
                           width: ScreenUtil().setWidth(300),
                           height: ScreenUtil().setWidth(300),

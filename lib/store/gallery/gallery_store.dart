@@ -54,6 +54,13 @@ abstract class _GalleryStore with BaseStore, Store {
   }
 
   @action
+  Future<void> changeGalleryByName(String name) async {
+    final gallery =
+        galleries.firstWhere((e) => e.name == name, orElse: () => galleries[0]);
+    changeGallery(gallery);
+  }
+
+  @action
   Future<void> refreshGalleryList() async {
     final option = _makeOption();
 

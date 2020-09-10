@@ -104,6 +104,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$changeGalleryAsyncAction.run(() => super.changeGallery(gallery));
   }
 
+  final _$changeGalleryByNameAsyncAction =
+      AsyncAction('_GalleryStore.changeGalleryByName');
+
+  @override
+  Future<void> changeGalleryByName(String name) {
+    return _$changeGalleryByNameAsyncAction
+        .run(() => super.changeGalleryByName(name));
+  }
+
   final _$refreshGalleryListAsyncAction =
       AsyncAction('_GalleryStore.refreshGalleryList');
 
