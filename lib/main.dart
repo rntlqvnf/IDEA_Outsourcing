@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Emotion Picker',
       theme: BaseTheme.lightTheme,
       darkTheme: BaseTheme.darkTheme,
-      initialRoute: Routes.initCamera,
+      initialRoute: Routes.greeting,
       routes: Routes.routes,
       builder: BotToastInit(),
       navigatorObservers: [BotToastNavigatorObserver()],

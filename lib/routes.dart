@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:python_app/ui/camera/camera_screen.dart';
+import 'package:python_app/ui/editing/editing_screen.dart';
 import 'package:python_app/ui/greeting/greeting_screen.dart';
 import 'package:python_app/ui/home/screens/main_screen.dart';
 
@@ -12,7 +13,8 @@ class Routes {
   //static variables
   static const String home = '/home';
   static const String camera = '/camera';
-  static const String initCamera = '/homescreen';
+  static const String editing = '/camera/editing';
+  static const String greeting = '/homescreen';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => MainScreen(),
@@ -23,6 +25,7 @@ class Routes {
           ],
           child: CameraScreen(),
         ),
-    initCamera: (BuildContext context) => GreetingScreen()
+    editing: (BuildContext context) => EditingScreen(),
+    greeting: (BuildContext context) => GreetingScreen()
   };
 }

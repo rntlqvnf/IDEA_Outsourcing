@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:python_app/contants/globals.dart';
+import 'package:python_app/routes.dart';
 import 'package:python_app/service/camera_service.dart';
+import 'package:python_app/service/navigation_service.dart';
 import 'package:python_app/store/base_store.dart';
 
 part 'camera_store.g.dart';
@@ -42,8 +47,9 @@ abstract class _CameraStore with Store, BaseStore {
   @action
   void takePicture() {
     cameraService.takePicture().then((path) {
-      //TODO: move to next
-      success('$path 에 저장되었습니다.');
+      File file = File(path);
+      locator<NavigationService>()
+          .pushNamed(Routes.editing, arguments: file.readAsBytesSync());
     }).catchError((e) => error('에러: ${e.code}\n${e.description}'),
         test: (e) => e is CameraException);
   }

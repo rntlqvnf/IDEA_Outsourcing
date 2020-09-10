@@ -25,7 +25,7 @@ class _GridImageState extends State<GridImage> {
 
   Widget buildContent(ThumbFormat format) {
     final item = widget.image;
-    final size = 130;
+    final size = MediaQuery.of(context).size.width ~/ 4;
     final u8List = ImageLruCache.getData(item, size, format);
 
     if (u8List != null) {

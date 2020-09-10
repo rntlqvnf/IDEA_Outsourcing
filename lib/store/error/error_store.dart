@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:python_app/contants/globals.dart';
 import 'package:python_app/service/flush_service.dart';

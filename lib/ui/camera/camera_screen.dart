@@ -11,6 +11,7 @@ import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:python_app/routes.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -100,7 +101,13 @@ class _CameraScreenState extends State<CameraScreen>
                     color: Colors.transparent,
                     child: Center(
                         child: InkWell(
-                            onTap: () => print('tab'),
+                            onTap: () {
+                              galleryStore
+                                  .currentGalleryData.titleImage.originBytes
+                                  .then((bytes) => Navigator.of(context)
+                                      .pushNamed(Routes.editing,
+                                          arguments: bytes));
+                            },
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 10, bottom: 10, left: 20, right: 20),
