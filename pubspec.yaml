@@ -36,6 +36,8 @@ dependencies:
   menu_button: ^1.2.1
   auto_size_text: ^2.1.0
   loading_indicator: ^1.2.0
+  extended_image: ^1.1.1
+  font_awesome_flutter: ^8.8.1
 
   #etc
   characters: ^1.0.0

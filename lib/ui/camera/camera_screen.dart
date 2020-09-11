@@ -314,11 +314,7 @@ class _CameraScreenState extends State<CameraScreen>
                       child: InkWell(
                         customBorder: new CircleBorder(),
                         onTap: () => cameraStore.takePicture().then((image) {
-                          final previousGallery =
-                              galleryStore.currentGallery.name;
-                          galleryStore.refreshGalleryList().then((_) =>
-                              galleryStore
-                                  .changeGalleryByName(previousGallery));
+                          //TODO : 이전 갤러리 저장.
                           Navigator.of(context)
                               .pushNamed(Routes.editing, arguments: image);
                         }),
