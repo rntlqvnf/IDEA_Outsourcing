@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:python_app/store/camera/camera_store.dart';
 import 'package:python_app/store/gallery/gallery_store.dart';
-import 'package:python_app/ui/camera/camera_screen.dart';
+import 'package:python_app/ui/camera/gallery_camera_screen.dart';
 import 'package:python_app/ui/editing/editing_screen.dart';
 import 'package:python_app/ui/greeting/greeting_screen.dart';
 import 'package:python_app/ui/home/screens/main_screen.dart';
@@ -13,7 +13,8 @@ class Routes {
   //static variables
   static const String home = '/home';
   static const String camera = '/camera';
-  static const String editing = '/camera/editing';
+  static const String image = '/camera/image';
+  static const String editing = '/camera/image/editing';
   static const String greeting = '/homescreen';
 
   static final routes = <String, WidgetBuilder>{
@@ -23,8 +24,9 @@ class Routes {
             Provider<CameraStore>(create: (_) => CameraStore()),
             Provider<GalleryStore>(create: (_) => GalleryStore()),
           ],
-          child: CameraScreen(),
+          child: GalleryCameraScreen(),
         ),
+    image: (BuildContext context) => ImageScreen(),
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen()
   };

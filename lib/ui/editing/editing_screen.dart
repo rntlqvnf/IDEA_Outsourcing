@@ -1,8 +1,87 @@
+import 'dart:typed_data';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:python_app/routes.dart';
 import 'package:python_app/ui/theme.dart';
+
+class ImageScreen extends StatefulWidget {
+  ImageScreen({Key key}) : super(key: key);
+
+  @override
+  _ImageScreenState createState() => _ImageScreenState();
+}
+
+class _ImageScreenState extends State<ImageScreen> {
+  Uint8List image;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    image = ModalRoute.of(context).settings.arguments;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("rebuild");
+    return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: <Widget>[
+            Material(
+                color: Colors.transparent,
+                child: Center(
+                    child: InkWell(
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(Routes.editing, arguments: image)
+                            .then(
+                                (newImage) => setState(() => image = newImage)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 20, right: 20),
+                          child: Text('편집',
+                              style: BaseTheme.appBarTextStyle
+                                  .copyWith(color: BaseTheme.darkBlue)),
+                        )))),
+            Material(
+                color: Colors.transparent,
+                child: Center(
+                    child: InkWell(
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 20, right: 20),
+                          child: Text('전송',
+                              style: BaseTheme.appBarTextStyle
+                                  .copyWith(color: BaseTheme.darkBlue)),
+                        ))))
+          ],
+        ),
+        body: ExtendedImage.memory(
+          image,
+          fit: BoxFit.contain,
+          mode: ExtendedImageMode.gesture,
+          initGestureConfigHandler: (state) {
+            return GestureConfig(
+              minScale: 0.9,
+              animationMinScale: 0.7,
+              maxScale: 3.0,
+              animationMaxScale: 3.5,
+              speed: 1.0,
+              inertialSpeed: 100.0,
+              initialScale: 1.0,
+              inPageView: false,
+              initialAlignment: InitialAlignment.center,
+            );
+          },
+        ));
+    ;
+  }
+}
 
 class EditingScreen extends StatelessWidget {
   final GlobalKey<ExtendedImageEditorState> editorKey =
@@ -31,11 +110,12 @@ class EditingScreen extends StatelessWidget {
               color: Colors.transparent,
               child: Center(
                   child: InkWell(
-                      onTap: () {},
+                      onTap: () => Navigator.of(context)
+                          .pop(editorKey.currentState.rawImageData),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             top: 10, bottom: 10, left: 20, right: 20),
-                        child: Text('전송',
+                        child: Text('확인',
                             style: BaseTheme.appBarTextStyle
                                 .copyWith(color: BaseTheme.darkBlue)),
                       ))))

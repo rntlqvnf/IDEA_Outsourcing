@@ -23,12 +23,12 @@ import 'grid_image.dart';
 
 enum TAB { GALLERY, CAMERA }
 
-class CameraScreen extends StatefulWidget {
+class GalleryCameraScreen extends StatefulWidget {
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  _GalleryCameraScreenState createState() => _GalleryCameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen>
+class _GalleryCameraScreenState extends State<GalleryCameraScreen>
     with WidgetsBindingObserver, AnimationMixin {
   CameraStore cameraStore;
   GalleryStore galleryStore;
@@ -105,7 +105,7 @@ class _CameraScreenState extends State<CameraScreen>
                               galleryStore
                                   .currentGalleryData.titleImage.originBytes
                                   .then((bytes) => Navigator.of(context)
-                                      .pushNamed(Routes.editing,
+                                      .pushNamed(Routes.image,
                                           arguments: bytes));
                             },
                             child: Padding(
@@ -316,7 +316,7 @@ class _CameraScreenState extends State<CameraScreen>
                         onTap: () => cameraStore.takePicture().then((image) {
                           //TODO : 이전 갤러리 저장.
                           Navigator.of(context)
-                              .pushNamed(Routes.editing, arguments: image);
+                              .pushNamed(Routes.image, arguments: image);
                         }),
                         child: Container(
                           width: ScreenUtil().setWidth(300),
@@ -407,9 +407,9 @@ class _CameraScreenState extends State<CameraScreen>
                 (BuildContext context, int index) {
                   if (index == galleryData.images.length) {
                     galleryData.loadMoreImages().then((_) => setState(() {}));
-                    return LoadingWidget();
+                    return Container();
                   } else if (index > galleryData.images.length) {
-                    return LoadingWidget();
+                    return Container();
                   }
                   var image = galleryData.images[index];
 
