@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:camera/camera.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/screenutil.dart';
@@ -18,7 +19,6 @@ import 'package:transparent_image/transparent_image.dart';
 
 import '../../store/camera/camera_store.dart';
 import '../theme.dart';
-import '../widget/loading_widget.dart';
 import 'grid_image.dart';
 
 enum TAB { GALLERY, CAMERA }
@@ -356,35 +356,35 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
             flexibleSpace: Stack(
               children: <Widget>[
                 Positioned.fill(child: Observer(builder: (_) {
-                  Uint8List previousImage = kTransparentImage;
                   return !galleryStore.isInit
-                      ? LoadingWidget()
+                      ? Container()
                       : Observer(builder: (_) {
                           return StreamBuilder(
-                            initialData: previousImage,
+                            initialData: kTransparentImage,
                             stream: Stream.fromFuture(galleryStore
                                 .currentGalleryData.titleImage.originBytes),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return ErrorWidget(snapshot.error);
                               } else {
-                                switch (snapshot.connectionState) {
-                                  case ConnectionState.waiting:
-                                    previousImage = snapshot.data;
-                                    return Image.memory(
-                                      previousImage,
-                                      fit: BoxFit.cover,
+                                return ExtendedImage.memory(
+                                  snapshot.data,
+                                  fit: BoxFit.cover,
+                                  mode: ExtendedImageMode.gesture,
+                                  initGestureConfigHandler: (state) {
+                                    return GestureConfig(
+                                      minScale: 0.2,
+                                      animationMinScale: 0.1,
+                                      maxScale: 3.0,
+                                      animationMaxScale: 3.5,
+                                      speed: 1.0,
+                                      inertialSpeed: 100.0,
+                                      initialScale: 1.0,
+                                      inPageView: false,
+                                      initialAlignment: InitialAlignment.center,
                                     );
-                                    break;
-                                  default:
-                                    return FadeInImage(
-                                        fadeInDuration:
-                                            Duration(milliseconds: 300),
-                                        fit: BoxFit.cover,
-                                        placeholder: MemoryImage(previousImage),
-                                        image: MemoryImage(snapshot.data));
-                                    break;
-                                }
+                                  },
+                                );
                               }
                             },
                           );
@@ -394,59 +394,66 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
             ),
           ),
         ),
-        Observer(builder: (_) {
-          var galleryData = galleryStore.currentGalleryData;
-          return SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 3.0,
-                crossAxisSpacing: 3.0,
-                childAspectRatio: 1,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  if (index == galleryData.images.length) {
-                    galleryData.loadMoreImages().then((_) => setState(() {}));
-                    return Container();
-                  } else if (index > galleryData.images.length) {
-                    return Container();
-                  }
-                  var image = galleryData.images[index];
+        StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return Observer(builder: (_) {
+              var galleryData = galleryStore.currentGalleryData;
+              return SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 3.0,
+                    crossAxisSpacing: 3.0,
+                    childAspectRatio: 1,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      if (index == galleryData.images.length) {
+                        galleryData
+                            .loadMoreImages()
+                            .then((_) => setState(() {}));
+                        return Container();
+                      } else if (index > galleryData.images.length) {
+                        return Container();
+                      }
+                      var image = galleryData.images[index];
 
-                  return Container(
-                      alignment: Alignment.center,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: GridImage(
-                              key: ValueKey(image),
-                              image: image,
-                              format: galleryData.format,
-                            ),
-                          ),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => galleryData.changeImage(image),
-                              child: Observer(builder: (_) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      color: galleryData.titleImage == image
-                                          ? Colors.white.withOpacity(0.4)
-                                          : Colors.transparent),
-                                );
-                              }),
-                            ),
-                          )
-                        ],
-                      ));
-                },
-                childCount: !galleryStore.isInit ? 0 : galleryData.assetCount,
-                addAutomaticKeepAlives: true,
-                addRepaintBoundaries: true,
-                addSemanticIndexes: true,
-              ));
-        })
+                      return Container(
+                          alignment: Alignment.center,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: GridImage(
+                                  key: ValueKey(image),
+                                  image: image,
+                                  format: galleryData.format,
+                                ),
+                              ),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () => galleryData.changeImage(image),
+                                  child: Observer(builder: (_) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          color: galleryData.titleImage == image
+                                              ? Colors.white.withOpacity(0.4)
+                                              : Colors.transparent),
+                                    );
+                                  }),
+                                ),
+                              )
+                            ],
+                          ));
+                    },
+                    childCount:
+                        !galleryStore.isInit ? 0 : galleryData.assetCount,
+                    addAutomaticKeepAlives: true,
+                    addRepaintBoundaries: true,
+                    addSemanticIndexes: true,
+                  ));
+            });
+          },
+        )
       ],
     ));
   }

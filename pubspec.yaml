@@ -26,6 +26,7 @@ dependencies:
   permission_handler: ^5.0.1+1
   photo_manager: ^0.5.8
   gallery_saver: ^2.0.1
+  image_editor: ^0.1.2
 
   # UI
   cupertino_icons: ^0.1.2

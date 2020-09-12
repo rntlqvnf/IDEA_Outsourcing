@@ -45,7 +45,7 @@ class _GridImageState extends State<GridImage> {
             ImageLruCache.setData(item, size, format, snapshot.data);
             return _buildImageWidget(item, snapshot.data, size);
           } else {
-            return LoadingWidget();
+            return Container();
           }
         },
       );

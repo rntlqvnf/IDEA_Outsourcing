@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:python_app/routes.dart';
 import 'package:python_app/ui/theme.dart';
+import 'package:python_app/ui/util/crop_editor_helper.dart';
 
 class ImageScreen extends StatefulWidget {
   ImageScreen({Key key}) : super(key: key);
@@ -24,7 +25,6 @@ class _ImageScreenState extends State<ImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -42,7 +42,7 @@ class _ImageScreenState extends State<ImageScreen> {
                                 (newImage) => setState(() => image = newImage)),
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 10, bottom: 10, left: 20, right: 20),
+                              top: 10, bottom: 10, left: 15, right: 15),
                           child: Text('편집',
                               style: BaseTheme.appBarTextStyle
                                   .copyWith(color: BaseTheme.darkBlue)),
@@ -54,30 +54,37 @@ class _ImageScreenState extends State<ImageScreen> {
                         onTap: () {},
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 10, bottom: 10, left: 20, right: 20),
+                              top: 10, bottom: 10, left: 15, right: 20),
                           child: Text('전송',
                               style: BaseTheme.appBarTextStyle
                                   .copyWith(color: BaseTheme.darkBlue)),
                         ))))
           ],
         ),
-        body: ExtendedImage.memory(
-          image,
-          fit: BoxFit.contain,
-          mode: ExtendedImageMode.gesture,
-          initGestureConfigHandler: (state) {
-            return GestureConfig(
-              minScale: 0.9,
-              animationMinScale: 0.7,
-              maxScale: 3.0,
-              animationMaxScale: 3.5,
-              speed: 1.0,
-              inertialSpeed: 100.0,
-              initialScale: 1.0,
-              inPageView: false,
-              initialAlignment: InitialAlignment.center,
-            );
-          },
+        body: Row(
+          children: [
+            Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ExtendedImage.memory(
+                      image,
+                      fit: BoxFit.contain,
+                      mode: ExtendedImageMode.gesture,
+                      initGestureConfigHandler: (state) {
+                        return GestureConfig(
+                          minScale: 0.9,
+                          animationMinScale: 0.7,
+                          maxScale: 3.0,
+                          animationMaxScale: 3.5,
+                          speed: 1.0,
+                          inertialSpeed: 100.0,
+                          initialScale: 1.0,
+                          inPageView: false,
+                          initialAlignment: InitialAlignment.center,
+                        );
+                      },
+                    )))
+          ],
         ));
     ;
   }
@@ -97,7 +104,7 @@ class EditingScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(image),
         ),
         title: Padding(
             padding: const EdgeInsets.only(left: 8),
@@ -110,8 +117,12 @@ class EditingScreen extends StatelessWidget {
               color: Colors.transparent,
               child: Center(
                   child: InkWell(
-                      onTap: () => Navigator.of(context)
-                          .pop(editorKey.currentState.rawImageData),
+                      onTap: () async {
+                        Uint8List editedImage = Uint8List.fromList(
+                            await editImageDataWithNativeLibrary(
+                                state: editorKey.currentState));
+                        Navigator.of(context).pop(editedImage);
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(
                             top: 10, bottom: 10, left: 20, right: 20),
