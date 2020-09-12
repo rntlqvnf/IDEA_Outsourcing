@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:python_app/routes.dart';
+import 'package:python_app/ui/editing/widget/aspect_items.dart';
 import 'package:python_app/ui/theme.dart';
 import 'package:python_app/ui/util/crop_editor_helper.dart';
 
@@ -66,35 +68,57 @@ class _ImageScreenState extends State<ImageScreen> {
             Expanded(
                 child: Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: ExtendedImage.memory(
-                      image,
-                      fit: BoxFit.contain,
-                      mode: ExtendedImageMode.gesture,
-                      initGestureConfigHandler: (state) {
-                        return GestureConfig(
-                          minScale: 0.9,
-                          animationMinScale: 0.7,
-                          maxScale: 3.0,
-                          animationMaxScale: 3.5,
-                          speed: 1.0,
-                          inertialSpeed: 100.0,
-                          initialScale: 1.0,
-                          inPageView: false,
-                          initialAlignment: InitialAlignment.center,
-                        );
-                      },
-                    )))
+                    child: Center(
+                        //TODO : 앱에서 찍은 사진의 경우 이미지가 축소되어서 표시됨.
+                        child: Hero(
+                            tag: 'image',
+                            child: ExtendedImage.memory(
+                              image,
+                              fit: BoxFit.contain,
+                              mode: ExtendedImageMode.gesture,
+                              initGestureConfigHandler: (state) {
+                                return GestureConfig(
+                                  minScale: 0.9,
+                                  animationMinScale: 0.7,
+                                  maxScale: 3.0,
+                                  animationMaxScale: 3.5,
+                                  speed: 1.0,
+                                  inertialSpeed: 100.0,
+                                  initialScale: 1.0,
+                                  inPageView: false,
+                                  initialAlignment: InitialAlignment.center,
+                                );
+                              },
+                            )))))
           ],
         ));
-    ;
   }
 }
 
-class EditingScreen extends StatelessWidget {
+class EditingScreen extends StatefulWidget {
+  EditingScreen({Key key}) : super(key: key);
+
+  @override
+  _EditingScreenState createState() => _EditingScreenState();
+}
+
+class _EditingScreenState extends State<EditingScreen> {
   final GlobalKey<ExtendedImageEditorState> editorKey =
       GlobalKey<ExtendedImageEditorState>();
+  final List<AspectRatioItem> _aspectRatios = <AspectRatioItem>[
+    AspectRatioItem(text: '자유롭게', value: CropAspectRatios.custom),
+    AspectRatioItem(text: '1*1', value: CropAspectRatios.ratio1_1),
+    AspectRatioItem(text: '4*3', value: CropAspectRatios.ratio4_3),
+    AspectRatioItem(text: '3*4', value: CropAspectRatios.ratio3_4),
+    AspectRatioItem(text: '화면 맞춤', value: CropAspectRatios.original),
+  ];
+  AspectRatioItem _aspectRatio;
 
-  EditingScreen({Key key}) : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+    _aspectRatio = _aspectRatios.first;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,21 +156,23 @@ class EditingScreen extends StatelessWidget {
                       ))))
         ],
       ),
-      body: ExtendedImage.memory(
-        image,
-        fit: BoxFit.contain,
-        mode: ExtendedImageMode.editor,
-        enableLoadState: true,
-        extendedImageEditorKey: editorKey,
-        initEditorConfigHandler: (ExtendedImageState state) {
-          return EditorConfig(
-              cornerColor: BaseTheme.black,
-              maxScale: 8.0,
-              cropRectPadding: const EdgeInsets.all(20.0),
-              initCropRectType: InitCropRectType.imageRect,
-              cropAspectRatio: CropAspectRatios.custom);
-        },
-      ),
+      body: Hero(
+          tag: 'image',
+          child: ExtendedImage.memory(
+            image,
+            fit: BoxFit.contain,
+            mode: ExtendedImageMode.editor,
+            enableLoadState: true,
+            extendedImageEditorKey: editorKey,
+            initEditorConfigHandler: (ExtendedImageState state) {
+              return EditorConfig(
+                  cornerColor: BaseTheme.black,
+                  maxScale: 8.0,
+                  cropRectPadding: const EdgeInsets.all(20.0),
+                  initCropRectType: InitCropRectType.imageRect,
+                  cropAspectRatio: CropAspectRatios.custom);
+            },
+          )),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Row(
@@ -155,7 +181,43 @@ class EditingScreen extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: const Icon(Icons.crop),
-              onPressed: () {},
+              onPressed: () => showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Column(
+                      children: <Widget>[
+                        const Expanded(
+                          child: SizedBox(),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setWidth(200.0),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.all(20.0),
+                            itemBuilder: (_, int index) {
+                              final AspectRatioItem item = _aspectRatios[index];
+                              return GestureDetector(
+                                child: AspectRatioWidget(
+                                  aspectRatio: item.value,
+                                  aspectRatioS: item.text,
+                                  isSelected: item == _aspectRatio,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _aspectRatio = item;
+                                  });
+                                },
+                              );
+                            },
+                            itemCount: _aspectRatios.length,
+                          ),
+                        ),
+                        SizedBox(height: 40)
+                      ],
+                    );
+                  }),
             ),
             IconButton(
               icon: const Icon(Icons.flip),

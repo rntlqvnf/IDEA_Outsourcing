@@ -2,13 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
-import 'package:python_app/contants/globals.dart';
-import 'package:python_app/routes.dart';
-import 'package:python_app/service/camera_service.dart';
-import 'package:python_app/service/navigation_service.dart';
-import 'package:python_app/store/base_store.dart';
+
+import '../../contants/globals.dart';
+import '../../service/camera_service.dart';
+import '../base_store.dart';
 
 part 'camera_store.g.dart';
 

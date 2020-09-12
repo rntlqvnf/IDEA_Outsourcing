@@ -5,7 +5,6 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../theme.dart';
 import '../util/lru_map.dart';
-import '../widget/loading_widget.dart';
 
 class GridImage extends StatefulWidget {
   final AssetEntity image;

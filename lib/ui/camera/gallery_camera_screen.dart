@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:camera/camera.dart';
@@ -12,12 +11,12 @@ import 'package:menu_button/menu_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:python_app/routes.dart';
-import 'package:python_app/store/gallery/gallery_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../../routes.dart';
 import '../../store/camera/camera_store.dart';
+import '../../store/gallery/gallery_store.dart';
 import '../theme.dart';
 import 'grid_image.dart';
 
