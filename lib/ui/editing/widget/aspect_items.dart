@@ -36,8 +36,7 @@ class AspectRatioPainter extends CustomPainter {
   final bool isSelected;
   @override
   void paint(Canvas canvas, Size size) {
-    final Color color =
-        isSelected ? BaseTheme.deactivatedText : BaseTheme.nearlyWhite;
+    final Color color = isSelected ? BaseTheme.darkBlue : BaseTheme.nearlyWhite;
     final Rect rect = Offset.zero & size;
     final Paint paint = Paint()
       ..strokeWidth = 2

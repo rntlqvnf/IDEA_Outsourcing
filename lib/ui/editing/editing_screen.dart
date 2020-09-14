@@ -66,29 +66,30 @@ class _ImageScreenState extends State<ImageScreen> {
         body: Row(
           children: [
             Expanded(
-                child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Center(
-                        child: Hero(
-                            tag: 'image',
-                            child: ExtendedImage.memory(
-                              image,
-                              fit: BoxFit.contain,
-                              mode: ExtendedImageMode.gesture,
-                              initGestureConfigHandler: (state) {
-                                return GestureConfig(
-                                  minScale: 0.9,
-                                  animationMinScale: 0.7,
-                                  maxScale: 3.0,
-                                  animationMaxScale: 3.5,
-                                  speed: 1.0,
-                                  inertialSpeed: 100.0,
-                                  initialScale: 1.0,
-                                  inPageView: false,
-                                  initialAlignment: InitialAlignment.center,
-                                );
-                              },
-                            )))))
+              child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                      child: Hero(
+                          tag: 'image',
+                          child: ExtendedImage.memory(
+                            image,
+                            fit: BoxFit.contain,
+                            mode: ExtendedImageMode.gesture,
+                            initGestureConfigHandler: (state) {
+                              return GestureConfig(
+                                minScale: 0.9,
+                                animationMinScale: 0.7,
+                                maxScale: 3.0,
+                                animationMaxScale: 3.5,
+                                speed: 1.0,
+                                inertialSpeed: 100.0,
+                                initialScale: 1.0,
+                                inPageView: false,
+                                initialAlignment: InitialAlignment.center,
+                              );
+                            },
+                          )))),
+            )
           ],
         ));
   }
@@ -106,9 +107,9 @@ class _EditingScreenState extends State<EditingScreen> {
       GlobalKey<ExtendedImageEditorState>();
   final List<AspectRatioItem> _aspectRatios = <AspectRatioItem>[
     AspectRatioItem(text: '자유롭게', value: CropAspectRatios.custom),
-    AspectRatioItem(text: '1*1', value: CropAspectRatios.ratio1_1),
-    AspectRatioItem(text: '4*3', value: CropAspectRatios.ratio4_3),
-    AspectRatioItem(text: '3*4', value: CropAspectRatios.ratio3_4),
+    AspectRatioItem(text: '1:1', value: CropAspectRatios.ratio1_1),
+    AspectRatioItem(text: '4:3', value: CropAspectRatios.ratio4_3),
+    AspectRatioItem(text: '3:4', value: CropAspectRatios.ratio3_4),
     AspectRatioItem(text: '화면 맞춤', value: CropAspectRatios.original),
   ];
   AspectRatioItem _aspectRatio;
@@ -180,12 +181,18 @@ class _EditingScreenState extends State<EditingScreen> {
           children: <Widget>[
             IconButton(
               icon: const Icon(Icons.crop),
-              onPressed: () => showDialog<void>(
+              onPressed: () => showGeneralDialog<void>(
                   context: context,
-                  builder: (BuildContext context) {
+                  barrierDismissible: true,
+                  barrierLabel: MaterialLocalizations.of(context)
+                      .modalBarrierDismissLabel,
+                  barrierColor: Colors.black45,
+                  transitionDuration: const Duration(milliseconds: 200),
+                  pageBuilder: (BuildContext context, Animation animation,
+                      Animation secondaryAnimation) {
                     return Column(
                       children: <Widget>[
-                        const Expanded(
+                        Expanded(
                           child: SizedBox(),
                         ),
                         SizedBox(
@@ -211,7 +218,7 @@ class _EditingScreenState extends State<EditingScreen> {
                                             .copyWith(
                                                 color: item.value ==
                                                         _aspectRatio.value
-                                                    ? BaseTheme.deactivatedText
+                                                    ? BaseTheme.darkBlue
                                                     : BaseTheme.nearlyWhite),
                                       )
                                     ],
@@ -224,10 +231,13 @@ class _EditingScreenState extends State<EditingScreen> {
                                   },
                                 )));
                               });
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: options,
+                              return Material(
+                                type: MaterialType.transparency,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: options,
+                                ),
                               );
                             },
                           ),
