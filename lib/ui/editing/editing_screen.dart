@@ -69,7 +69,6 @@ class _ImageScreenState extends State<ImageScreen> {
                 child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Center(
-                        //TODO : 앱에서 찍은 사진의 경우 이미지가 축소되어서 표시됨.
                         child: Hero(
                             tag: 'image',
                             child: ExtendedImage.memory(
@@ -170,7 +169,7 @@ class _EditingScreenState extends State<EditingScreen> {
                   maxScale: 8.0,
                   cropRectPadding: const EdgeInsets.all(20.0),
                   initCropRectType: InitCropRectType.imageRect,
-                  cropAspectRatio: CropAspectRatios.custom);
+                  cropAspectRatio: _aspectRatio.value);
             },
           )),
       bottomNavigationBar: BottomAppBar(
@@ -198,10 +197,20 @@ class _EditingScreenState extends State<EditingScreen> {
                             itemBuilder: (_, int index) {
                               final AspectRatioItem item = _aspectRatios[index];
                               return GestureDetector(
-                                child: AspectRatioWidget(
-                                  aspectRatio: item.value,
-                                  aspectRatioS: item.text,
-                                  isSelected: item == _aspectRatio,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: AspectRatioWidget(
+                                        aspectRatio: item.value,
+                                        isSelected:
+                                            item.value == _aspectRatio.value,
+                                      ),
+                                    ),
+                                    Text(
+                                      item.text,
+                                      style: BaseTheme.cropOptionTextStyle,
+                                    )
+                                  ],
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);

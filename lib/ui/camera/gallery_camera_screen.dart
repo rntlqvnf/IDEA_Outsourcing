@@ -348,50 +348,47 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
         SliverPadding(
           padding: EdgeInsets.only(top: 3, bottom: 3),
           sliver: SliverAppBar(
-            leading: Container(),
-            expandedHeight: ScreenUtil().setHeight(1200),
-            floating: false,
-            pinned: true,
-            flexibleSpace: Stack(
-              children: <Widget>[
-                Positioned.fill(child: Observer(builder: (_) {
-                  return !galleryStore.isInit
-                      ? Container()
-                      : Observer(builder: (_) {
-                          return StreamBuilder(
-                            initialData: kTransparentImage,
-                            stream: Stream.fromFuture(galleryStore
-                                .currentGalleryData.titleImage.originBytes),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return ErrorWidget(snapshot.error);
-                              } else {
-                                return ExtendedImage.memory(
-                                  snapshot.data,
-                                  fit: BoxFit.cover,
-                                  mode: ExtendedImageMode.gesture,
-                                  initGestureConfigHandler: (state) {
-                                    return GestureConfig(
-                                      minScale: 0.2,
-                                      animationMinScale: 0.1,
-                                      maxScale: 3.0,
-                                      animationMaxScale: 3.5,
-                                      speed: 1.0,
-                                      inertialSpeed: 100.0,
-                                      initialScale: 1.0,
-                                      inPageView: false,
-                                      initialAlignment: InitialAlignment.center,
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                          );
-                        });
-                }))
-              ],
-            ),
-          ),
+              leading: Container(),
+              expandedHeight: ScreenUtil().setHeight(1200),
+              floating: false,
+              pinned: true,
+              flexibleSpace: Observer(builder: (_) {
+                return !galleryStore.isInit
+                    ? Container()
+                    : Observer(builder: (_) {
+                        return StreamBuilder(
+                          initialData: kTransparentImage,
+                          stream: Stream.fromFuture(galleryStore
+                              .currentGalleryData.titleImage.originBytes),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return ErrorWidget(snapshot.error);
+                            } else {
+                              //TODO : Java.lang.UnsuppotedOperaionException
+                              // Caller must hold ACCESS_MEDIA_LOCATION permission to access
+                              return ExtendedImage.memory(
+                                snapshot.data,
+                                fit: BoxFit.cover,
+                                mode: ExtendedImageMode.gesture,
+                                initGestureConfigHandler: (state) {
+                                  return GestureConfig(
+                                    minScale: 0.2,
+                                    animationMinScale: 0.1,
+                                    maxScale: 3.0,
+                                    animationMaxScale: 3.5,
+                                    speed: 1.0,
+                                    inertialSpeed: 100.0,
+                                    initialScale: 1.0,
+                                    inPageView: false,
+                                    initialAlignment: InitialAlignment.center,
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        );
+                      });
+              })),
         ),
         StatefulBuilder(
           builder: (BuildContext context, setState) {

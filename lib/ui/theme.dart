@@ -100,6 +100,12 @@ class BaseTheme {
       fontWeight: FontWeight.w600,
       fontSize: ScreenUtil().setSp(65));
 
+  static TextStyle cropOptionTextStyle = TextStyle(
+      fontFamily: fontName,
+      color: nearlyWhite,
+      fontWeight: FontWeight.w600,
+      fontSize: ScreenUtil().setSp(30));
+
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
     fontFamily: fontName,
