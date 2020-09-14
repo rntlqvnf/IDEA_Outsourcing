@@ -19,7 +19,7 @@ class AspectRatioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(ScreenUtil().setWidth(250.0), ScreenUtil().setWidth(250.0)),
+      size: Size(ScreenUtil().setWidth(150.0), ScreenUtil().setHeight(150.0)),
       painter: AspectRatioPainter(
           aspectRatio: aspectRatio,
           aspectRatioS: aspectRatioS,
@@ -36,32 +36,22 @@ class AspectRatioPainter extends CustomPainter {
   final bool isSelected;
   @override
   void paint(Canvas canvas, Size size) {
-    final Color color = isSelected ? Colors.black : Colors.white;
+    final Color color =
+        isSelected ? BaseTheme.deactivatedText : BaseTheme.nearlyWhite;
     final Rect rect = Offset.zero & size;
     final Paint paint = Paint()
+      ..strokeWidth = 2
       ..color = color
       ..style = PaintingStyle.stroke;
     final double aspectRatioResult =
         (aspectRatio != null && aspectRatio > 0.0) ? aspectRatio : 1.0;
     canvas.drawRect(
         getDestinationRect(
-            rect: const EdgeInsets.all(1.0).deflateRect(rect),
-            inputSize: Size(aspectRatioResult * 100, 100.0),
+            rect: const EdgeInsets.all(6.0).deflateRect(rect),
+            scale: 100,
+            inputSize: Size(aspectRatioResult, 1),
             fit: BoxFit.contain),
         paint);
-
-    final TextPainter textPainter = TextPainter(
-        text: TextSpan(
-            text: aspectRatioS,
-            style: BaseTheme.bottomBarTextStyle.copyWith(color: Colors.white)),
-        textDirection: TextDirection.ltr,
-        maxLines: 1);
-    textPainter.layout(maxWidth: rect.width);
-
-    textPainter.paint(
-        canvas,
-        rect.center -
-            Offset(textPainter.width / 2.0, textPainter.height / 2.0));
   }
 
   @override

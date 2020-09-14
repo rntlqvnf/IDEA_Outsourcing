@@ -189,41 +189,50 @@ class _EditingScreenState extends State<EditingScreen> {
                           child: SizedBox(),
                         ),
                         SizedBox(
-                          height: ScreenUtil().setWidth(200.0),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.all(20.0),
-                            itemBuilder: (_, int index) {
-                              final AspectRatioItem item = _aspectRatios[index];
-                              return GestureDetector(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: AspectRatioWidget(
-                                        aspectRatio: item.value,
-                                        isSelected:
-                                            item.value == _aspectRatio.value,
+                          height: ScreenUtil().setHeight(300),
+                          child: StatefulBuilder(
+                            builder: (context, setState2) {
+                              List<Widget> options = [];
+                              _aspectRatios.forEach((item) {
+                                options.add(Expanded(
+                                    child: GestureDetector(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: AspectRatioWidget(
+                                          aspectRatio: item.value,
+                                          isSelected:
+                                              item.value == _aspectRatio.value,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      item.text,
-                                      style: BaseTheme.cropOptionTextStyle,
-                                    )
-                                  ],
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    _aspectRatio = item;
-                                  });
-                                },
+                                      Text(
+                                        item.text,
+                                        style: BaseTheme.cropOptionTextStyle
+                                            .copyWith(
+                                                color: item.value ==
+                                                        _aspectRatio.value
+                                                    ? BaseTheme.deactivatedText
+                                                    : BaseTheme.nearlyWhite),
+                                      )
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      _aspectRatio = item;
+                                    });
+                                    setState2(() {});
+                                  },
+                                )));
+                              });
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: options,
                               );
                             },
-                            itemCount: _aspectRatios.length,
                           ),
                         ),
-                        SizedBox(height: 40)
+                        SizedBox(height: 50)
                       ],
                     );
                   }),
