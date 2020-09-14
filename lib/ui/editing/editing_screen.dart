@@ -69,23 +69,11 @@ class _ImageScreenState extends State<ImageScreen> {
               child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
-                      child: ExtendedImage.memory(
-                    image,
-                    fit: BoxFit.contain,
-                    mode: ExtendedImageMode.gesture,
-                    initGestureConfigHandler: (state) {
-                      return GestureConfig(
-                        minScale: 0.9,
-                        animationMinScale: 0.7,
-                        maxScale: 3.0,
-                        animationMaxScale: 3.5,
-                        speed: 1.0,
-                        inertialSpeed: 100.0,
-                        initialScale: 1.0,
-                        inPageView: false,
-                        initialAlignment: InitialAlignment.center,
-                      );
-                    },
+                      child: SizedBox.expand(
+                    child: Image.memory(
+                      image,
+                      fit: BoxFit.contain,
+                    ),
                   ))),
             )
           ],
