@@ -22,7 +22,7 @@ class BaseTheme {
   static const Color darkBlue = Color(0xFF60a0d7);
   static const Color valueBlue = Color(0xFFcfe8ff);
   static const Color pastelBlue = Color(0xFFd1dfe8);
-  static const Color lightBlue = Color(0xFF91EAE4);
+  static const Color lightBlue = Color(0xE700B3DB);
   static const Color lightRed = Color(0xFFFF1010);
   static const Color brightRed1 = Color(0xFFC02425);
   static const Color postechRed = Color(0xFFff528c);

@@ -12,17 +12,17 @@ class AspectRatioItem {
 
 class AspectRatioWidget extends StatelessWidget {
   const AspectRatioWidget(
-      {this.aspectRatioS, this.aspectRatio, this.isSelected = false});
-  final String aspectRatioS;
+      {this.aspectRatio, this.isSelected = false, this.drawVertexCircle});
   final double aspectRatio;
+  final bool drawVertexCircle;
   final bool isSelected;
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(ScreenUtil().setWidth(150.0), ScreenUtil().setHeight(150.0)),
+      size: Size(ScreenUtil().setWidth(150.0), ScreenUtil().setHeight(200.0)),
       painter: AspectRatioPainter(
           aspectRatio: aspectRatio,
-          aspectRatioS: aspectRatioS,
+          drawVertexCircle: drawVertexCircle,
           isSelected: isSelected),
     );
   }
@@ -30,13 +30,16 @@ class AspectRatioWidget extends StatelessWidget {
 
 class AspectRatioPainter extends CustomPainter {
   AspectRatioPainter(
-      {this.aspectRatioS, this.aspectRatio, this.isSelected = false});
-  final String aspectRatioS;
+      {this.aspectRatio,
+      this.isSelected = false,
+      this.drawVertexCircle = false});
   final double aspectRatio;
+  final bool drawVertexCircle;
   final bool isSelected;
   @override
   void paint(Canvas canvas, Size size) {
-    final Color color = isSelected ? BaseTheme.darkBlue : BaseTheme.nearlyWhite;
+    final Color color =
+        isSelected ? BaseTheme.lightBlue : BaseTheme.nearlyWhite;
     final Rect rect = Offset.zero & size;
     final Paint paint = Paint()
       ..strokeWidth = 2
@@ -44,20 +47,28 @@ class AspectRatioPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
     final double aspectRatioResult =
         (aspectRatio != null && aspectRatio > 0.0) ? aspectRatio : 1.0;
-    canvas.drawRect(
-        getDestinationRect(
-            rect: const EdgeInsets.all(6.0).deflateRect(rect),
-            scale: 100,
-            inputSize: Size(aspectRatioResult, 1),
-            fit: BoxFit.contain),
-        paint);
+
+    var rectToDraw = getDestinationRect(
+        rect: const EdgeInsets.all(6.0).deflateRect(rect),
+        scale: 10,
+        inputSize: Size(aspectRatioResult, 1),
+        fit: BoxFit.contain);
+    canvas.drawRect(rectToDraw, paint);
+
+    if (drawVertexCircle) {
+      paint.style = PaintingStyle.fill;
+      double radius = 4;
+      canvas.drawCircle(rectToDraw.bottomLeft, radius, paint);
+      canvas.drawCircle(rectToDraw.bottomRight, radius, paint);
+      canvas.drawCircle(rectToDraw.topLeft, radius, paint);
+      canvas.drawCircle(rectToDraw.topRight, radius, paint);
+    }
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return oldDelegate is AspectRatioPainter &&
         (oldDelegate.isSelected != isSelected ||
-            oldDelegate.aspectRatioS != aspectRatioS ||
             oldDelegate.aspectRatio != aspectRatio);
   }
 }

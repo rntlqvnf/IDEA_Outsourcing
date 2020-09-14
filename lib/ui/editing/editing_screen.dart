@@ -208,6 +208,8 @@ class _EditingScreenState extends State<EditingScreen> {
                                       Expanded(
                                         child: AspectRatioWidget(
                                           aspectRatio: item.value,
+                                          drawVertexCircle: item.value ==
+                                              CropAspectRatios.custom,
                                           isSelected:
                                               item.value == _aspectRatio.value,
                                         ),
@@ -218,7 +220,7 @@ class _EditingScreenState extends State<EditingScreen> {
                                             .copyWith(
                                                 color: item.value ==
                                                         _aspectRatio.value
-                                                    ? BaseTheme.darkBlue
+                                                    ? BaseTheme.lightBlue
                                                     : BaseTheme.nearlyWhite),
                                       )
                                     ],
@@ -242,7 +244,7 @@ class _EditingScreenState extends State<EditingScreen> {
                             },
                           ),
                         ),
-                        SizedBox(height: 50)
+                        SizedBox(height: 55)
                       ],
                     );
                   }),
