@@ -69,26 +69,24 @@ class _ImageScreenState extends State<ImageScreen> {
               child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
-                      child: Hero(
-                          tag: 'image',
-                          child: ExtendedImage.memory(
-                            image,
-                            fit: BoxFit.contain,
-                            mode: ExtendedImageMode.gesture,
-                            initGestureConfigHandler: (state) {
-                              return GestureConfig(
-                                minScale: 0.9,
-                                animationMinScale: 0.7,
-                                maxScale: 3.0,
-                                animationMaxScale: 3.5,
-                                speed: 1.0,
-                                inertialSpeed: 100.0,
-                                initialScale: 1.0,
-                                inPageView: false,
-                                initialAlignment: InitialAlignment.center,
-                              );
-                            },
-                          )))),
+                      child: ExtendedImage.memory(
+                    image,
+                    fit: BoxFit.contain,
+                    mode: ExtendedImageMode.gesture,
+                    initGestureConfigHandler: (state) {
+                      return GestureConfig(
+                        minScale: 0.9,
+                        animationMinScale: 0.7,
+                        maxScale: 3.0,
+                        animationMaxScale: 3.5,
+                        speed: 1.0,
+                        inertialSpeed: 100.0,
+                        initialScale: 1.0,
+                        inPageView: false,
+                        initialAlignment: InitialAlignment.center,
+                      );
+                    },
+                  ))),
             )
           ],
         ));
@@ -156,23 +154,21 @@ class _EditingScreenState extends State<EditingScreen> {
                       ))))
         ],
       ),
-      body: Hero(
-          tag: 'image',
-          child: ExtendedImage.memory(
-            image,
-            fit: BoxFit.contain,
-            mode: ExtendedImageMode.editor,
-            enableLoadState: true,
-            extendedImageEditorKey: editorKey,
-            initEditorConfigHandler: (ExtendedImageState state) {
-              return EditorConfig(
-                  cornerColor: BaseTheme.black,
-                  maxScale: 8.0,
-                  cropRectPadding: const EdgeInsets.all(20.0),
-                  initCropRectType: InitCropRectType.imageRect,
-                  cropAspectRatio: _aspectRatio.value);
-            },
-          )),
+      body: ExtendedImage.memory(
+        image,
+        fit: BoxFit.contain,
+        mode: ExtendedImageMode.editor,
+        enableLoadState: true,
+        extendedImageEditorKey: editorKey,
+        initEditorConfigHandler: (ExtendedImageState state) {
+          return EditorConfig(
+              cornerColor: BaseTheme.black,
+              maxScale: 8.0,
+              cropRectPadding: const EdgeInsets.all(20.0),
+              initCropRectType: InitCropRectType.imageRect,
+              cropAspectRatio: _aspectRatio.value);
+        },
+      ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Row(
