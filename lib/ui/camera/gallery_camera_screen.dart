@@ -346,7 +346,7 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
       shrinkWrap: false,
       slivers: <Widget>[
         SliverPadding(
-          padding: EdgeInsets.only(top: 3, bottom: 3),
+          padding: EdgeInsets.only(top: 3, bottom: 1.5),
           sliver: SliverAppBar(
               leading: Container(),
               expandedHeight: ScreenUtil().setHeight(1200),
@@ -397,8 +397,8 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
               return SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
-                    mainAxisSpacing: 3.0,
-                    crossAxisSpacing: 3.0,
+                    mainAxisSpacing: 1.5,
+                    crossAxisSpacing: 1.5,
                     childAspectRatio: 1,
                   ),
                   delegate: SliverChildBuilderDelegate(
