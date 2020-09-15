@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:python_app/service/camera_service.dart';
+import 'package:emusic/service/camera_service.dart';
 
 class CameraServiceImpl extends CameraService {
   CameraController _controller;
@@ -25,7 +25,7 @@ class CameraServiceImpl extends CameraService {
 
   @override
   Future<String> takePicture() async {
-    final String albumnName = 'idea';
+    final String albumnName = 'emusic';
     final Directory dir = await getApplicationDocumentsDirectory();
     final String filePath = '${dir.path}/img_${_timestamp()}.jpg';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:python_app/service/navigation_service.dart';
+import 'package:emusic/service/navigation_service.dart';
 
 class NavigationServiceImpl implements NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

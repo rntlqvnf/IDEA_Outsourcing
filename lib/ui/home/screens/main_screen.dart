@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:python_app/ui/home/screens/home.dart';
-import 'package:python_app/ui/home/screens/widgets/icon_badge.dart';
+import 'package:emusic/ui/home/screens/home.dart';
+import 'package:emusic/ui/home/screens/widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
   @override

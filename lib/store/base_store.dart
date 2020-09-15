@@ -1,5 +1,5 @@
-import 'package:python_app/store/error/error_store.dart';
-import 'package:python_app/store/success/success_store.dart';
+import 'package:emusic/store/error/error_store.dart';
+import 'package:emusic/store/success/success_store.dart';
 
 mixin BaseStore {
   // other stores:--------------------------------------------------------------

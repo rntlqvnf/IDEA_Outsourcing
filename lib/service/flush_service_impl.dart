@@ -1,5 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
-import 'package:python_app/service/flush_service.dart';
+import 'package:emusic/service/flush_service.dart';
 
 class FlushServiceImpl implements FlushService {
   @override

@@ -1,4 +1,4 @@
-package com.example.python_app
+package com.postech.emusic
 
 import io.flutter.embedding.android.FlutterActivity
 

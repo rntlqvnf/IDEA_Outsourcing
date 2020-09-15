@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:python_app/ui/home/screens/widgets/icon_badge.dart';
-import 'package:python_app/ui/util/places.dart';
+import 'package:emusic/ui/home/screens/widgets/icon_badge.dart';
+import 'package:emusic/ui/util/places.dart';
 
 class Details extends StatelessWidget {
   @override

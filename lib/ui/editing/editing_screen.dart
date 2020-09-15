@@ -4,10 +4,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/routes.dart';
-import 'package:python_app/ui/editing/widget/aspect_items.dart';
-import 'package:python_app/ui/theme.dart';
-import 'package:python_app/ui/util/crop_editor_helper.dart';
+import 'package:emusic/routes.dart';
+import 'package:emusic/ui/editing/widget/aspect_items.dart';
+import 'package:emusic/ui/theme.dart';
+import 'package:emusic/ui/util/crop_editor_helper.dart';
 
 class ImageScreen extends StatefulWidget {
   ImageScreen({Key key}) : super(key: key);
@@ -53,7 +53,9 @@ class _ImageScreenState extends State<ImageScreen> {
                 color: Colors.transparent,
                 child: Center(
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed(Routes.home);
+                        },
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 15, right: 20),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:python_app/store/camera/camera_store.dart';
-import 'package:python_app/store/gallery/gallery_store.dart';
-import 'package:python_app/ui/camera/gallery_camera_screen.dart';
-import 'package:python_app/ui/editing/editing_screen.dart';
-import 'package:python_app/ui/greeting/greeting_screen.dart';
-import 'package:python_app/ui/home/screens/main_screen.dart';
+import 'package:emusic/store/camera/camera_store.dart';
+import 'package:emusic/store/gallery/gallery_store.dart';
+import 'package:emusic/ui/camera/gallery_camera_screen.dart';
+import 'package:emusic/ui/editing/editing_screen.dart';
+import 'package:emusic/ui/greeting/greeting_screen.dart';
+import 'package:emusic/ui/home/screens/main_screen.dart';
 
 class Routes {
   Routes._();

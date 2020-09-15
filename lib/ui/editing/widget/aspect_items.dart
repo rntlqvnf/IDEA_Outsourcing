@@ -2,7 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/ui/theme.dart';
+import 'package:emusic/ui/theme.dart';
 
 class AspectRatioItem {
   AspectRatioItem({this.value, this.text});

@@ -1,6 +1,6 @@
 import 'package:mobx/mobx.dart';
-import 'package:python_app/contants/globals.dart';
-import 'package:python_app/service/flush_service.dart';
+import 'package:emusic/contants/globals.dart';
+import 'package:emusic/service/flush_service.dart';
 
 part 'error_store.g.dart';
 

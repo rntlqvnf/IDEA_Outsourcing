@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:python_app/ui/home/screens/details.dart';
+import 'package:emusic/ui/home/screens/details.dart';
 
 class VerticalPlaceItem extends StatelessWidget {
   final Map place;
