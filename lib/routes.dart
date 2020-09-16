@@ -5,7 +5,7 @@ import 'package:emusic/store/gallery/gallery_store.dart';
 import 'package:emusic/ui/camera/gallery_camera_screen.dart';
 import 'package:emusic/ui/editing/editing_screen.dart';
 import 'package:emusic/ui/greeting/greeting_screen.dart';
-import 'package:emusic/ui/home/screens/main_screen.dart';
+import 'package:emusic/ui/home/main_screen.dart';
 
 class Routes {
   Routes._();

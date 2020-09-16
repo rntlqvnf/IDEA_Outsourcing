@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:emusic/ui/home/screens/details.dart';
+import 'package:emusic/ui/home/details.dart';
 
 class HorizontalPlaceItem extends StatelessWidget {
   final Map place;

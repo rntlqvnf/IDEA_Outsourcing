@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Emotion Picker',
+      title: 'eMusic',
       theme: BaseTheme.lightTheme,
       darkTheme: BaseTheme.darkTheme,
       initialRoute: Routes.greeting,

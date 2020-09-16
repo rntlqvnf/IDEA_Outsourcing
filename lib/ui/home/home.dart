@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:emusic/routes.dart';
-import 'package:emusic/ui/home/screens/widgets/horizontal_place_item.dart';
-import 'package:emusic/ui/home/screens/widgets/search_bar.dart';
-import 'package:emusic/ui/home/screens/widgets/vertical_place_item.dart';
+import 'package:emusic/ui/home/widgets/horizontal_place_item.dart';
+import 'package:emusic/ui/home/widgets/search_bar.dart';
+import 'package:emusic/ui/home/widgets/vertical_place_item.dart';
 import 'package:emusic/ui/util/places.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
