@@ -69,6 +69,7 @@ flutter:
   assets:
     - assets/sample/
     - assets/icon/
+    - assets/emotions/
 
   fonts:
     - family: NanumGothic
