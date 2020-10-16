@@ -85,6 +85,12 @@ class BaseTheme {
     caption: caption,
   );
 
+  static TextStyle widgetTextStyle = TextStyle(
+      fontFamily: fontName,
+      color: darkText,
+      fontWeight: FontWeight.w600,
+      fontSize: ScreenUtil().setSp(50));
+
   static TextStyle appBarTextStyle = TextStyle(
       fontFamily: fontName,
       color: darkText,

@@ -39,6 +39,7 @@ dependencies:
   loading_indicator: ^1.2.0
   extended_image: ^1.1.1
   font_awesome_flutter: ^8.8.1
+  flutter_easyloading: ^2.0.0
 
   #etc
   characters: ^1.0.0

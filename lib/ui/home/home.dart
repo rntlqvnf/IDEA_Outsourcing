@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
               child: TyperAnimatedTextKit(
                   speed: Duration(milliseconds: 100),
                   isRepeatingAnimation: false,
-                  text: ['지금 당신에게 맞는 노래를 추천받아보세요!'],
+                  text: ['사용자님의 현재 감정은 (감정)입니다.'],
                   textStyle: TextStyle(
                     fontSize: ScreenUtil().setSp(60),
                     fontFamily: 'NanumGothic',

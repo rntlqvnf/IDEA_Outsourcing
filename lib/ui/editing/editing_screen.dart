@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:emusic/contants/globals.dart';
 import 'package:emusic/service/socket_service.dart';
 import 'package:extended_image/extended_image.dart';
@@ -10,6 +11,8 @@ import 'package:emusic/routes.dart';
 import 'package:emusic/ui/editing/widget/aspect_items.dart';
 import 'package:emusic/ui/theme.dart';
 import 'package:emusic/ui/util/crop_editor_helper.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ImageScreen extends StatefulWidget {
   ImageScreen({Key key}) : super(key: key);
@@ -57,10 +60,41 @@ class _ImageScreenState extends State<ImageScreen> {
                     child: InkWell(
                         onTap: () {
                           SocketService service = locator<SocketService>();
-                          service
+                          locator<SocketService>()
                               .setConnection('192.168.58.1', 9000)
-                              .then((_) => service.sendImage(image));
-                          //Navigator.of(context).pushNamed(Routes.home);
+                              .then((_) => service.sendImage(image, (data) {
+                                    Navigator.of(context).pushNamed(Routes.temp,
+                                        arguments: data);
+                                  }));
+                          BotToast.showCustomLoading(
+                              toastBuilder: (cancelFunc) {
+                                return Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 25,
+                                          child: LoadingIndicator(
+                                            color: Colors.grey,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text('분석중...',
+                                            style: BaseTheme.widgetTextStyle)
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              clickClose: false,
+                              allowClick: false,
+                              duration: Duration(seconds: 1));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -263,5 +297,65 @@ class _EditingScreenState extends State<EditingScreen> {
         ),
       ),
     );
+  }
+}
+
+class TempScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: <Widget>[
+            Material(
+                color: Colors.transparent,
+                child: Center(
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(Routes.home);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 15, right: 20),
+                          child: Text('추천받기',
+                              style: BaseTheme.appBarTextStyle
+                                  .copyWith(color: BaseTheme.darkBlue)),
+                        ))))
+          ],
+        ),
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: ScreenUtil().setHeight(150),
+            ),
+            SizedBox(
+              width: ScreenUtil().setWidth(200),
+              child: Image(image: AssetImage('assets/emotions/angry.gif')),
+            ),
+            Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                    child: StatefulBuilder(
+                      builder: (BuildContext context, setState) {
+                        return InkWell(
+                            onTap: () => setState(() {}),
+                            child: FadeInImage(
+                                fadeInDuration: Duration(milliseconds: 1000),
+                                fit: BoxFit.cover,
+                                placeholder: MemoryImage(kTransparentImage),
+                                image: MemoryImage(ModalRoute.of(context)
+                                    .settings
+                                    .arguments)));
+                      },
+                    ),
+                  )),
+            )
+          ],
+        ));
   }
 }

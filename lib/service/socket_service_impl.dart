@@ -11,10 +11,11 @@ class SocketServiceImpl implements SocketService {
   int _port;
 
   @override
-  void sendImage(Uint8List image) {
+  void sendImage(Uint8List image, Function(Uint8List) onData) {
     print('connected to server!');
     _socket.listen((data) {
-      print(data);
+      onData(data);
+      _socket.destroy();
     });
     _socket.add(image);
     _socket.close();
@@ -30,7 +31,4 @@ class SocketServiceImpl implements SocketService {
 
   @override
   int get port => _port;
-
-  @override
-  StreamSubscription<Uint8List> get receivedImage => _receivedImage;
 }
