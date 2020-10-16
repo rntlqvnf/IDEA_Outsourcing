@@ -1,4 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:emusic/service/socket_service.dart';
+import 'package:emusic/service/socket_service_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:emusic/contants/globals.dart';
@@ -24,6 +26,7 @@ void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
   locator.registerSingleton<CameraService>(CameraServiceImpl());
+  locator.registerSingleton<SocketService>(SocketServiceImpl());
 }
 
 class MyApp extends StatefulWidget {
