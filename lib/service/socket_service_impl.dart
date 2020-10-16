@@ -12,10 +12,12 @@ class SocketServiceImpl implements SocketService {
 
   @override
   void sendImage(Uint8List image) {
+    print('connected to server!');
     _socket.listen((data) {
-      print("Data arrived");
+      print(data);
     });
-    _socket.writeAll(image);
+    _socket.add(image);
+    _socket.close();
   }
 
   @override

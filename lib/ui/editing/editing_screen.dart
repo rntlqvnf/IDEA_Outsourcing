@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:emusic/contants/globals.dart';
+import 'package:emusic/service/socket_service.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,11 @@ class _ImageScreenState extends State<ImageScreen> {
                 child: Center(
                     child: InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed(Routes.home);
+                          SocketService service = locator<SocketService>();
+                          service
+                              .setConnection('192.168.58.1', 9000)
+                              .then((_) => service.sendImage(image));
+                          //Navigator.of(context).pushNamed(Routes.home);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
