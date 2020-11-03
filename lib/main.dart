@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:emusic/contants/globals.dart';
 import 'package:emusic/routes.dart';
-import 'package:emusic/service/camera_service.dart';
-import 'package:emusic/service/camera_service_impl.dart';
 import 'package:emusic/service/flush_service.dart';
 import 'package:emusic/service/flush_service_impl.dart';
 import 'package:emusic/service/navigation_service.dart';
@@ -17,15 +15,15 @@ void main() async {
   setupLocator();
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight
   ]).then((_) => runApp(MyApp()));
 }
 
 void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
-  locator.registerSingleton<CameraService>(CameraServiceImpl());
+  // locator.registerSingleton<CameraService>(CameraServiceImpl());
   locator.registerSingleton<SocketService>(SocketServiceImpl());
 }
 

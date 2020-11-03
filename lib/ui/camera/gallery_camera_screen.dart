@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -15,7 +15,6 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../routes.dart';
-import '../../store/camera/camera_store.dart';
 import '../../store/gallery/gallery_store.dart';
 import '../theme.dart';
 import 'grid_image.dart';
@@ -29,7 +28,7 @@ class GalleryCameraScreen extends StatefulWidget {
 
 class _GalleryCameraScreenState extends State<GalleryCameraScreen>
     with WidgetsBindingObserver, AnimationMixin {
-  CameraStore cameraStore;
+  // CameraStore cameraStore;
   GalleryStore galleryStore;
   Animation<double> toggleAnimation;
   TabController _tabController;
@@ -68,7 +67,7 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    cameraStore = context.read<CameraStore>();
+    // cameraStore = context.read<CameraStore>();
     galleryStore = context.read<GalleryStore>();
     _promptPermissionSetting().then((granted) {
       if (granted) {
@@ -82,7 +81,7 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
   @override
   void dispose() {
     super.dispose();
-    cameraStore.dispose();
+    // cameraStore.dispose();
     galleryStore.dispose();
   }
 
@@ -252,16 +251,9 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
   }
 
   Widget _cameraPreviewScreen() {
-    return Observer(builder: (_) {
-      return cameraStore.loading
-          ? Container(
-              decoration: BoxDecoration(color: Colors.black),
-            )
-          : AspectRatio(
-              aspectRatio: cameraStore.aspectRatio,
-              child: CameraPreview(cameraStore.controller),
-            );
-    });
+    return Container(
+      decoration: BoxDecoration(color: Colors.black),
+    );
   }
 
   Widget _takePictureScreen() {
@@ -294,7 +286,7 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
                                 controller.isDismissed
                                     ? controller.play()
                                     : controller.playReverse();
-                                cameraStore.toggleCamera();
+                                // cameraStore.toggleCamera();
                               },
                             ),
                           ),
@@ -312,11 +304,6 @@ class _GalleryCameraScreenState extends State<GalleryCameraScreen>
                       color: Colors.transparent,
                       child: InkWell(
                         customBorder: new CircleBorder(),
-                        onTap: () => cameraStore.takePicture().then((image) {
-                          //TODO : 이전 갤러리 저장.
-                          Navigator.of(context)
-                              .pushNamed(Routes.image, arguments: image);
-                        }),
                         child: Container(
                           width: ScreenUtil().setWidth(300),
                           height: ScreenUtil().setWidth(300),

@@ -20,7 +20,7 @@ dependencies:
   # Service
   get_it: ^4.0.4
   bot_toast: ^3.0.4
-  camera: ^0.5.8+5
+  # camera: ^0.5.8+5
   path_provider: ^1.6.14
   transparent_image: ^1.0.0
   permission_handler: ^5.0.1+1

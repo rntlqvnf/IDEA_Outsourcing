@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:emusic/store/camera/camera_store.dart';
 import 'package:emusic/store/gallery/gallery_store.dart';
 import 'package:emusic/ui/camera/gallery_camera_screen.dart';
 import 'package:emusic/ui/editing/editing_screen.dart';
@@ -22,7 +21,6 @@ class Routes {
     home: (BuildContext context) => MainScreen(),
     camera: (BuildContext context) => MultiProvider(
           providers: [
-            Provider<CameraStore>(create: (_) => CameraStore()),
             Provider<GalleryStore>(create: (_) => GalleryStore()),
           ],
           child: GalleryCameraScreen(),
