@@ -1,3 +1,4 @@
+import 'package:emusic/ui/gallery/gallery_screen.dart';
 import 'package:emusic/ui/main_menu/main_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class Routes {
   static const String greeting = '/homescreen';
   static const String temp = '/temp';
   static const String mainMenu = '/mainMenu';
+  static const String gallery = '/gallery';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => MainScreen(),
@@ -31,6 +33,12 @@ class Routes {
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen(),
     temp: (BuildContext context) => TempScreen(),
-    mainMenu: (BuildContext context) => MainMenuScreen()
+    mainMenu: (BuildContext context) => MainMenuScreen(),
+    gallery: (BuildContext context) => MultiProvider(
+          providers: [
+            Provider<GalleryStore>(create: (_) => GalleryStore()),
+          ],
+          child: GalleryScreen(),
+        )
   };
 }

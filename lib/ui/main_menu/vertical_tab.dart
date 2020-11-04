@@ -94,15 +94,6 @@ class _VerticalTabsState extends State<VerticalTabs>
 
   @override
   Widget build(BuildContext context) {
-//    Border border = Border(
-//        right: BorderSide(
-//            width: 0.5, color: widget.dividerColor));
-//    if (widget.direction == TextDirection.rtl) {
-//      border = Border(
-//          left: BorderSide(
-//              width: 0.5, color: widget.dividerColor));
-//    }
-
     return Directionality(
       textDirection: widget.direction,
       child: Container(
@@ -132,28 +123,20 @@ class _VerticalTabsState extends State<VerticalTabs>
                           } else {
                             child = Container(
                                 padding: EdgeInsets.all(10),
-                                child: Row(
+                                child: Column(
                                   children: <Widget>[
-                                    (tab.icon != null)
-                                        ? Row(
-                                            children: <Widget>[
-                                              tab.icon,
-                                              SizedBox(
-                                                width: 5,
-                                              )
-                                            ],
-                                          )
-                                        : Container(),
+                                    (tab.icon != null) ? tab.icon : Container(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                     (tab.text != null)
-                                        ? Container(
-                                            width: widget.tabsWidth - 50,
-                                            child: Text(
-                                              tab.text,
-                                              softWrap: true,
-                                              style: _selectedIndex == index
-                                                  ? widget.selectedTabTextStyle
-                                                  : widget.tabTextStyle,
-                                            ))
+                                        ? Text(
+                                            tab.text,
+                                            softWrap: true,
+                                            style: _selectedIndex == index
+                                                ? widget.selectedTabTextStyle
+                                                : widget.tabTextStyle,
+                                          )
                                         : Container(),
                                   ],
                                 ));
@@ -218,7 +201,7 @@ class _VerticalTabsState extends State<VerticalTabs>
                                   ),
                                   alignment: alignment,
                                   padding: EdgeInsets.all(5),
-                                  child: child,
+                                  child: Center(child: child),
                                 ),
                               ),
                             ],
