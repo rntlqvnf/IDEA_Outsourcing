@@ -52,7 +52,7 @@ class _GreetingScreenState extends State<GreetingScreen>
                   isRepeatingAnimation: false,
                   text: ['나에게 맞는 노래를 추천받아보세요!'],
                   textStyle: TextStyle(
-                    fontSize: ScreenUtil().setSp(70),
+                    fontSize: ScreenUtil().setSp(50),
                     fontFamily: 'NanumGothic',
                     fontWeight: FontWeight.w700,
                   ),
@@ -76,15 +76,15 @@ class _GreetingScreenState extends State<GreetingScreen>
                       child: InkWell(
                           customBorder: new CircleBorder(),
                           onTap: () {
-                            Navigator.pushNamed(context, Routes.camera);
+                            Navigator.pushNamed(context, Routes.mainMenu);
                           },
                           child: Container(
-                              padding: EdgeInsets.all(27),
+                              padding: EdgeInsets.all(45),
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle, color: Colors.black),
                               child: Icon(
                                 Icons.arrow_forward_ios,
-                                size: 18,
+                                size: 30,
                                 color: Colors.white,
                               ))))),
             ))

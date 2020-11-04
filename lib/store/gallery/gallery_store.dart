@@ -43,7 +43,7 @@ abstract class _GalleryStore with BaseStore, Store {
   @action
   Future<void> initGallery() async {
     await refreshGalleryList();
-    await changeGallery(galleries[0]);
+    galleries.isEmpty ? print("?") : await changeGallery(galleries[0]);
     _isInitGallery = true;
   }
 

@@ -1,3 +1,4 @@
+import 'package:emusic/ui/main_menu/main_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emusic/store/gallery/gallery_store.dart';
@@ -16,6 +17,7 @@ class Routes {
   static const String editing = '/camera/image/editing';
   static const String greeting = '/homescreen';
   static const String temp = '/temp';
+  static const String mainMenu = '/mainMenu';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => MainScreen(),
@@ -28,6 +30,7 @@ class Routes {
     image: (BuildContext context) => ImageScreen(),
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen(),
-    temp: (BuildContext context) => TempScreen()
+    temp: (BuildContext context) => TempScreen(),
+    mainMenu: (BuildContext context) => MainMenuScreen()
   };
 }
