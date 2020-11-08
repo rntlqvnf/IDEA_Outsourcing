@@ -26,52 +26,56 @@ class VerticalPlaceItem extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 15.0),
-              Container(
-                  height: 80.0,
-                  width: MediaQuery.of(context).size.width - 130.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "${place["name"]}",
-                            style: TextStyle(
-                              fontFamily: 'NanumGothic',
-                              fontWeight: FontWeight.w700,
-                              fontSize: ScreenUtil().setSp(60),
+              Expanded(
+                child: Container(
+                    height: 80.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "${place["name"]}",
+                              style: TextStyle(
+                                fontFamily: 'NanumGothic',
+                                fontWeight: FontWeight.w700,
+                                fontSize: ScreenUtil().setSp(10),
+                              ),
+                              maxLines: 2,
+                              textAlign: TextAlign.left,
                             ),
-                            maxLines: 2,
-                            textAlign: TextAlign.left,
-                          ),
-                          SizedBox(
-                            height: ScreenUtil().setHeight(35),
-                          ),
-                          Text(
-                            "${place["price"]}",
-                            style: TextStyle(
-                              fontFamily: 'NanumGothic',
-                              fontWeight: FontWeight.w600,
-                              fontSize: ScreenUtil().setSp(50),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(35),
                             ),
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      ),
-                      Center(
-                        child: Text(
-                          '3:23',
-                          style: TextStyle(
-                            fontFamily: 'NanumGothic',
-                            fontSize: ScreenUtil().setSp(50),
-                          ),
+                            Text(
+                              "${place["price"]}",
+                              style: TextStyle(
+                                fontFamily: 'NanumGothic',
+                                fontWeight: FontWeight.w600,
+                                fontSize: ScreenUtil().setSp(15),
+                              ),
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
                         ),
-                      )
-                    ],
-                  )),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(
+                              '3:23',
+                              style: TextStyle(
+                                fontFamily: 'NanumGothic',
+                                fontSize: ScreenUtil().setSp(15),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    )),
+              ),
             ],
           ),
         ),

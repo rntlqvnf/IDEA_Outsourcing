@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:emusic/ui/camera/grid_image.dart';
+import 'package:emusic/ui/gallery/grid_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -152,8 +151,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     if (snapshot.hasError) {
                       return ErrorWidget(snapshot.error);
                     } else {
-                      //TODO : Java.lang.UnsuppotedOperaionException
-                      // Caller must hold ACCESS_MEDIA_LOCATION permission to access
                       return ExtendedImage.memory(
                         snapshot.data,
                         fit: BoxFit.cover,

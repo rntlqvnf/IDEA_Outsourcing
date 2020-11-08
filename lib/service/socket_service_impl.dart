@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:emusic/service/socket_service.dart';
 
 class SocketServiceImpl implements SocketService {
-  StreamSubscription<Uint8List> _receivedImage;
   Socket _socket;
   String _host;
   int _port;
@@ -13,11 +12,9 @@ class SocketServiceImpl implements SocketService {
   @override
   void sendImage(Uint8List image, Function(Uint8List) onData) {
     print('connected to server!');
-    _socket.listen((data) {
-      onData(data);
-      _socket.destroy();
-    });
+    _socket.listen((data) => onData(data), onDone: () => _socket.destroy());
     _socket.add(image);
+    _socket.flush();
     _socket.close();
   }
 

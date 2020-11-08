@@ -23,7 +23,7 @@ class VerticalTabs extends StatefulWidget {
   final Curve changePageCurve;
   final Color tabsShadowColor;
   final double tabsElevation;
-  final Function(int tabIndex) onSelect;
+  final Future<void> Function(int tabIndex) onSelect;
   final Color backgroundColor;
 
   VerticalTabs(
@@ -252,10 +252,12 @@ class _VerticalTabsState extends State<VerticalTabs>
     for (AnimationController animationController in animationControllers) {
       animationController.reset();
     }
-    animationControllers[index].forward();
-
     if (widget.onSelect != null) {
-      widget.onSelect(_selectedIndex);
+      widget
+          .onSelect(_selectedIndex)
+          .then((value) => animationControllers[index].forward());
+    } else {
+      animationControllers[index].forward();
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:emusic/ui/main_menu/main_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:emusic/routes.dart';
@@ -6,75 +7,53 @@ import 'package:emusic/ui/home/widgets/search_bar.dart';
 import 'package:emusic/ui/home/widgets/vertical_place_item.dart';
 import 'package:emusic/ui/util/places.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => new _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class Home extends StatelessWidget {
+  const Home({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
+        body: Row(
+      children: [
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: TyperAnimatedTextKit(
+                      speed: Duration(milliseconds: 100),
+                      isRepeatingAnimation: false,
+                      text: [
+                        '사용자님의 현재 감정은 ${Provider.of<EmotionProvider>(context).emotion} 입니다'
+                      ],
+                      textStyle: TextStyle(
+                        fontSize: ScreenUtil().setSp(20),
+                        fontFamily: 'NanumGothic',
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.start,
+                      alignment:
+                          AlignmentDirectional.topStart // or Alignment.topLeft
+                      ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: SearchBar(),
+              ),
+              buildVerticalList(),
+            ],
           ),
-          onPressed: () {
-            Navigator.popUntil(
-                context, (route) => route.settings.name == Routes.camera);
-          },
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.camera,
-            ),
-            onPressed: () {
-              Navigator.popUntil(
-                  context, (route) => route.settings.name == Routes.camera);
-            },
-          ),
-        ],
-      ),
-      body: ListView(
-        children: <Widget>[
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: TyperAnimatedTextKit(
-                  speed: Duration(milliseconds: 100),
-                  isRepeatingAnimation: false,
-                  text: ['사용자님의 현재 감정은 (감정)입니다.'],
-                  textStyle: TextStyle(
-                    fontSize: ScreenUtil().setSp(60),
-                    fontFamily: 'NanumGothic',
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.start,
-                  alignment:
-                      AlignmentDirectional.topStart // or Alignment.topLeft
-                  ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: SearchBar(),
-          ),
-          buildHorizontalList(context),
-          buildVerticalList(),
-        ],
-      ),
-    );
+        Expanded(child: buildHorizontalList(context)),
+      ],
+    ));
   }
 
-  buildHorizontalList(BuildContext context) {
+  Widget buildHorizontalList(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 10.0, left: 20.0),
       height: 250.0,

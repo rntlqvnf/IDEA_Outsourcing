@@ -28,12 +28,12 @@ class Routes {
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen(),
     temp: (BuildContext context) => TempScreen(),
-    mainMenu: (BuildContext context) => MainMenuScreen(),
-    gallery: (BuildContext context) => MultiProvider(
-          providers: [
-            Provider<GalleryStore>(create: (_) => GalleryStore()),
-          ],
-          child: GalleryScreen(),
-        )
+    mainMenu: (BuildContext context) => MultiProvider(providers: [
+          Provider<GalleryStore>(create: (_) => GalleryStore()),
+          ChangeNotifierProvider<EmotionProvider>(
+            create: (_) => EmotionProvider(),
+          )
+        ], child: MainMenuScreen()),
+    gallery: (BuildContext context) => GalleryScreen(),
   };
 }
