@@ -1,12 +1,9 @@
 import 'package:emusic/routes.dart';
-import 'package:emusic/store/gallery/gallery_store.dart';
-import 'package:emusic/ui/camera/gallery_camera_screen.dart';
 import 'package:emusic/ui/main_menu/vertical_tab.dart';
 import 'package:emusic/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({Key key}) : super(key: key);
@@ -34,30 +31,12 @@ class MainMenuScreen extends StatelessWidget {
                   Builder(
                     builder: Routes.routes[Routes.gallery],
                   ),
-                  Container(
-                      color: Colors.black12,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemExtent: 100,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.all(10),
-                              color: Colors.white30,
-                            );
-                          })),
-                  Container(
-                      color: Colors.black12,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemExtent: 100,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.all(10),
-                              color: Colors.white30,
-                            );
-                          })),
+                  Builder(
+                    builder: Routes.routes[Routes.camera],
+                  ),
+                  Builder(
+                    builder: Routes.routes[Routes.editing],
+                  ),
                   Container(
                       color: Colors.black12,
                       child: ListView.builder(

@@ -27,6 +27,7 @@ dependencies:
   photo_manager: ^0.5.8
   gallery_saver: ^2.0.1
   image_editor: ^0.1.2
+  flutter_appavailability: ^0.0.21
 
   # UI
   cupertino_icons: ^0.1.2
