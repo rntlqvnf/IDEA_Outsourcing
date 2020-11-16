@@ -1,3 +1,4 @@
+import 'package:emusic/ui/main_menu/column_builder.dart';
 import 'package:flutter/material.dart';
 
 enum IndicatorSide { start, end }
@@ -11,7 +12,6 @@ class VerticalTabs extends StatefulWidget {
   final IndicatorSide indicatorSide;
   final List<Tab> tabs;
   final List<Widget> contents;
-  final TextDirection direction;
   final Color indicatorColor;
   final bool disabledChangePageFromContentView;
   final Axis contentScrollAxis;
@@ -34,7 +34,6 @@ class VerticalTabs extends StatefulWidget {
       this.indicatorWidth = 3,
       this.indicatorSide,
       this.initialIndex = 0,
-      this.direction = TextDirection.ltr,
       this.indicatorColor = Colors.green,
       this.disabledChangePageFromContentView = false,
       this.contentScrollAxis = Axis.horizontal,
@@ -94,77 +93,92 @@ class _VerticalTabsState extends State<VerticalTabs>
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: widget.direction,
-      child: Container(
-        color: widget.backgroundColor ?? Theme.of(context).canvasColor,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                children: <Widget>[
-                  Material(
-                    child: Container(
-                      width: widget.tabsWidth,
-                      child: ListView.builder(
-                        itemCount: widget.tabs.length,
-                        itemBuilder: (context, index) {
-                          Tab tab = widget.tabs[index];
+    return Container(
+      color: widget.backgroundColor ?? Theme.of(context).canvasColor,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: PageView.builder(
+                    scrollDirection: widget.contentScrollAxis,
+                    physics: pageScrollPhysics,
+                    onPageChanged: (index) {
+                      if (_changePageByTapView == false ||
+                          _changePageByTapView == null) {
+                        _selectTab(index);
+                      }
+                      if (_selectedIndex == index) {
+                        _changePageByTapView = null;
+                      }
+                      setState(() {});
+                    },
+                    controller: pageController,
 
-                          Alignment alignment = Alignment.centerLeft;
-                          if (widget.direction == TextDirection.rtl) {
-                            alignment = Alignment.centerRight;
-                          }
+                    // the number of pages
+                    itemCount: widget.contents.length,
 
-                          Widget child;
-                          if (tab.child != null) {
-                            child = tab.child;
-                          } else {
-                            child = Container(
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  children: <Widget>[
-                                    (tab.icon != null) ? tab.icon : Container(),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    (tab.text != null)
-                                        ? Text(
-                                            tab.text,
-                                            softWrap: true,
-                                            style: _selectedIndex == index
-                                                ? widget.selectedTabTextStyle
-                                                : widget.tabTextStyle,
-                                          )
-                                        : Container(),
-                                  ],
-                                ));
-                          }
+                    // building pages
+                    itemBuilder: (BuildContext context, int index) {
+                      return widget.contents[index];
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Material(
+                  child: Container(
+                    width: widget.tabsWidth,
+                    child: ColumnBuilder(
+                      itemCount: widget.tabs.length,
+                      itemBuilder: (context, index) {
+                        Tab tab = widget.tabs[index];
 
-                          Color itemBGColor = widget.tabBackgroundColor;
-                          if (_selectedIndex == index)
-                            itemBGColor = widget.selectedTabBackgroundColor;
+                        Alignment alignment = Alignment.centerLeft;
 
-                          double left, right;
-                          if (widget.direction == TextDirection.rtl) {
-                            left = (widget.indicatorSide == IndicatorSide.end)
-                                ? 0
-                                : null;
-                            right =
-                                (widget.indicatorSide == IndicatorSide.start)
-                                    ? 0
-                                    : null;
-                          } else {
-                            left = (widget.indicatorSide == IndicatorSide.start)
-                                ? 0
-                                : null;
-                            right = (widget.indicatorSide == IndicatorSide.end)
-                                ? 0
-                                : null;
-                          }
+                        Widget child;
+                        if (tab.child != null) {
+                          child = tab.child;
+                        } else {
+                          child = Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  (tab.icon != null) ? tab.icon : Container(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  (tab.text != null)
+                                      ? Text(
+                                          tab.text,
+                                          softWrap: true,
+                                          style: _selectedIndex == index
+                                              ? widget.selectedTabTextStyle
+                                              : widget.tabTextStyle,
+                                        )
+                                      : Container(),
+                                ],
+                              ));
+                        }
 
-                          return Stack(
+                        Color itemBGColor = widget.tabBackgroundColor;
+                        if (_selectedIndex == index)
+                          itemBGColor = widget.selectedTabBackgroundColor;
+
+                        double left, right;
+                        left = (widget.indicatorSide == IndicatorSide.start)
+                            ? 0
+                            : null;
+                        right = (widget.indicatorSide == IndicatorSide.end)
+                            ? 0
+                            : null;
+
+                        return Expanded(
+                          child: Stack(
                             children: <Widget>[
                               Positioned(
                                 top: 2,
@@ -205,44 +219,19 @@ class _VerticalTabsState extends State<VerticalTabs>
                                 ),
                               ),
                             ],
-                          );
-                        },
-                      ),
-                    ),
-                    elevation: widget.tabsElevation,
-                    shadowColor: widget.tabsShadowColor,
-                    shape: BeveledRectangleBorder(),
-                  ),
-                  Expanded(
-                    child: PageView.builder(
-                      scrollDirection: widget.contentScrollAxis,
-                      physics: pageScrollPhysics,
-                      onPageChanged: (index) {
-                        if (_changePageByTapView == false ||
-                            _changePageByTapView == null) {
-                          _selectTab(index);
-                        }
-                        if (_selectedIndex == index) {
-                          _changePageByTapView = null;
-                        }
-                        setState(() {});
-                      },
-                      controller: pageController,
-
-                      // the number of pages
-                      itemCount: widget.contents.length,
-
-                      // building pages
-                      itemBuilder: (BuildContext context, int index) {
-                        return widget.contents[index];
+                          ),
+                        );
                       },
                     ),
                   ),
-                ],
-              ),
+                  elevation: widget.tabsElevation,
+                  shadowColor: widget.tabsShadowColor,
+                  shape: BeveledRectangleBorder(),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

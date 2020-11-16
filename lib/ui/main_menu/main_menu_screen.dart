@@ -15,7 +15,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 
 class EmotionProvider extends ChangeNotifier {
-  String emotion = 'Angry';
+  String emotion = 'Happy';
 
   void setEmotion(String newEmotion) {
     emotion = newEmotion;
@@ -36,9 +36,10 @@ class MainMenuScreen extends StatelessWidget {
             child: Container(
               child: VerticalTabs(
                 tabsWidth: ScreenUtil().setWidth(150),
-                direction: TextDirection.ltr,
-                tabTextStyle: BaseTheme.bottomBarTextStyle,
-                selectedTabTextStyle: BaseTheme.bottomBarTextStyle,
+                tabTextStyle: BaseTheme.bottomBarTextStyle
+                    .copyWith(fontSize: ScreenUtil().setSp(14)),
+                selectedTabTextStyle: BaseTheme.bottomBarTextStyle
+                    .copyWith(fontSize: ScreenUtil().setSp(14)),
                 onSelect: (tabIndex) async {
                   switch (tabIndex) {
                     case 1:
@@ -92,10 +93,30 @@ class MainMenuScreen extends StatelessWidget {
                   }
                 },
                 tabs: <Tab>[
-                  Tab(text: '갤러리', icon: Icon(Icons.photo)),
-                  Tab(text: '카메라', icon: Icon(Icons.camera)),
-                  Tab(text: '편집', icon: Icon(Icons.edit)),
-                  Tab(text: '다음', icon: Icon(Icons.arrow_forward_ios)),
+                  Tab(
+                      text: '갤러리',
+                      icon: Icon(
+                        Icons.photo,
+                        size: 50,
+                      )),
+                  Tab(
+                      text: '카메라',
+                      icon: Icon(
+                        Icons.camera,
+                        size: 50,
+                      )),
+                  Tab(
+                      text: '편집',
+                      icon: Icon(
+                        Icons.edit,
+                        size: 50,
+                      )),
+                  Tab(
+                      text: '다음',
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 50,
+                      )),
                 ],
                 contents: <Widget>[
                   Builder(

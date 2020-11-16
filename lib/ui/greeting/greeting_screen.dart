@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:emusic/routes.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class GreetingScreen extends StatefulWidget {
   _GreetingScreenState createState() => _GreetingScreenState();
@@ -22,6 +25,7 @@ class _GreetingScreenState extends State<GreetingScreen>
     bottomButtonAnimation =
         CurvedAnimation(curve: Curves.easeInOut, parent: animationController);
 
+    _promptPermissionSetting();
     Future.delayed(Duration(seconds: 2), () => animationController.forward());
   }
 
@@ -29,6 +33,19 @@ class _GreetingScreenState extends State<GreetingScreen>
   void dispose() {
     animationController.dispose();
     super.dispose();
+  }
+
+  Future<bool> _promptPermissionSetting() async {
+    if (Platform.isIOS &&
+            await Permission.storage.request().isGranted &&
+            await Permission.camera.request().isGranted &&
+            await Permission.photos.request().isGranted ||
+        Platform.isAndroid &&
+            await Permission.storage.request().isGranted &&
+            await Permission.camera.request().isGranted) {
+      return true;
+    }
+    return false;
   }
 
   @override

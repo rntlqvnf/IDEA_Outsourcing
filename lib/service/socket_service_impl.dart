@@ -11,10 +11,8 @@ class SocketServiceImpl implements SocketService {
 
   @override
   void sendImage(Uint8List image, Function(Uint8List) onData) {
-    print('connected to server!');
     _socket.listen((data) => onData(data), onDone: () => _socket.destroy());
     _socket.add(image);
-    _socket.flush();
     _socket.close();
   }
 

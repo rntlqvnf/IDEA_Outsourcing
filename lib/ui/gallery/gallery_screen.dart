@@ -24,13 +24,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = context.read<GalleryStore>();
-    _promptPermissionSetting().then((granted) {
-      if (granted) {
-        galleryStore.initGallery();
-      } else {
-        Navigator.pop(context);
-      }
-    });
+    galleryStore.initGallery();
   }
 
   @override
@@ -39,26 +33,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
     galleryStore.dispose();
   }
 
-  Future<bool> _promptPermissionSetting() async {
-    if (Platform.isIOS &&
-            await Permission.storage.request().isGranted &&
-            await Permission.camera.request().isGranted &&
-            await Permission.photos.request().isGranted ||
-        Platform.isAndroid &&
-            await Permission.storage.request().isGranted &&
-            await Permission.camera.request().isGranted) {
-      return true;
-    }
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
+          Expanded(child: _selectedImageScreen()),
           Expanded(child: _galleryGridView()),
-          Expanded(child: _selectedImageScreen())
         ],
       ),
     );
