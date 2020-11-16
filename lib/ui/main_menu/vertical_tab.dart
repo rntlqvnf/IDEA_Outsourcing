@@ -12,6 +12,7 @@ class VerticalTabs extends StatefulWidget {
   final IndicatorSide indicatorSide;
   final List<Tab> tabs;
   final List<Widget> contents;
+  final Widget nextButton;
   final Color indicatorColor;
   final bool disabledChangePageFromContentView;
   final Axis contentScrollAxis;
@@ -30,6 +31,7 @@ class VerticalTabs extends StatefulWidget {
       {this.key,
       @required this.tabs,
       @required this.contents,
+      @required this.nextButton,
       this.tabsWidth = 200,
       this.indicatorWidth = 3,
       this.indicatorSide,
@@ -104,7 +106,7 @@ class _VerticalTabsState extends State<VerticalTabs>
                 Expanded(
                   child: PageView.builder(
                     scrollDirection: widget.contentScrollAxis,
-                    physics: pageScrollPhysics,
+                    physics: NeverScrollableScrollPhysics(),
                     onPageChanged: (index) {
                       if (_changePageByTapView == false ||
                           _changePageByTapView == null) {
@@ -116,11 +118,7 @@ class _VerticalTabsState extends State<VerticalTabs>
                       setState(() {});
                     },
                     controller: pageController,
-
-                    // the number of pages
                     itemCount: widget.contents.length,
-
-                    // building pages
                     itemBuilder: (BuildContext context, int index) {
                       return widget.contents[index];
                     },
@@ -132,96 +130,104 @@ class _VerticalTabsState extends State<VerticalTabs>
                 Material(
                   child: Container(
                     width: widget.tabsWidth,
-                    child: ColumnBuilder(
-                      itemCount: widget.tabs.length,
-                      itemBuilder: (context, index) {
-                        Tab tab = widget.tabs[index];
+                    child: Column(
+                      children: [
+                        ColumnBuilder(
+                          itemCount: widget.tabs.length,
+                          itemBuilder: (context, index) {
+                            Tab tab = widget.tabs[index];
 
-                        Alignment alignment = Alignment.centerLeft;
+                            Alignment alignment = Alignment.centerLeft;
 
-                        Widget child;
-                        if (tab.child != null) {
-                          child = tab.child;
-                        } else {
-                          child = Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                            Widget child;
+                            if (tab.child != null) {
+                              child = tab.child;
+                            } else {
+                              child = Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      (tab.icon != null)
+                                          ? tab.icon
+                                          : Container(),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      (tab.text != null)
+                                          ? Text(
+                                              tab.text,
+                                              softWrap: true,
+                                              style: _selectedIndex == index
+                                                  ? widget.selectedTabTextStyle
+                                                  : widget.tabTextStyle,
+                                            )
+                                          : Container(),
+                                    ],
+                                  ));
+                            }
+
+                            Color itemBGColor = widget.tabBackgroundColor;
+                            if (_selectedIndex == index)
+                              itemBGColor = widget.selectedTabBackgroundColor;
+
+                            double left, right;
+                            left = (widget.indicatorSide == IndicatorSide.start)
+                                ? 0
+                                : null;
+                            right = (widget.indicatorSide == IndicatorSide.end)
+                                ? 0
+                                : null;
+
+                            return Expanded(
+                              child: Stack(
                                 children: <Widget>[
-                                  (tab.icon != null) ? tab.icon : Container(),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  (tab.text != null)
-                                      ? Text(
-                                          tab.text,
-                                          softWrap: true,
-                                          style: _selectedIndex == index
-                                              ? widget.selectedTabTextStyle
-                                              : widget.tabTextStyle,
-                                        )
-                                      : Container(),
-                                ],
-                              ));
-                        }
-
-                        Color itemBGColor = widget.tabBackgroundColor;
-                        if (_selectedIndex == index)
-                          itemBGColor = widget.selectedTabBackgroundColor;
-
-                        double left, right;
-                        left = (widget.indicatorSide == IndicatorSide.start)
-                            ? 0
-                            : null;
-                        right = (widget.indicatorSide == IndicatorSide.end)
-                            ? 0
-                            : null;
-
-                        return Expanded(
-                          child: Stack(
-                            children: <Widget>[
-                              Positioned(
-                                top: 2,
-                                bottom: 2,
-                                width: widget.indicatorWidth,
-                                left: left,
-                                right: right,
-                                child: ScaleTransition(
-                                  child: Container(
-                                    color: widget.indicatorColor,
-                                  ),
-                                  scale: Tween(begin: 0.0, end: 1.0).animate(
-                                    new CurvedAnimation(
-                                      parent: animationControllers[index],
-                                      curve: Curves.elasticOut,
+                                  Positioned(
+                                    top: 2,
+                                    bottom: 2,
+                                    width: widget.indicatorWidth,
+                                    left: left,
+                                    right: right,
+                                    child: ScaleTransition(
+                                      child: Container(
+                                        color: widget.indicatorColor,
+                                      ),
+                                      scale:
+                                          Tween(begin: 0.0, end: 1.0).animate(
+                                        new CurvedAnimation(
+                                          parent: animationControllers[index],
+                                          curve: Curves.elasticOut,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _changePageByTapView = true;
-                                  setState(() {
-                                    _selectTab(index);
-                                  });
+                                  GestureDetector(
+                                    onTap: () {
+                                      _changePageByTapView = true;
+                                      setState(() {
+                                        _selectTab(index);
+                                      });
 
-                                  pageController.animateToPage(index,
-                                      duration: widget.changePageDuration,
-                                      curve: widget.changePageCurve);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: itemBGColor,
+                                      pageController.animateToPage(index,
+                                          duration: widget.changePageDuration,
+                                          curve: widget.changePageCurve);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: itemBGColor,
+                                      ),
+                                      alignment: alignment,
+                                      padding: EdgeInsets.all(5),
+                                      child: Center(child: child),
+                                    ),
                                   ),
-                                  alignment: alignment,
-                                  padding: EdgeInsets.all(5),
-                                  child: Center(child: child),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        );
-                      },
+                            );
+                          },
+                        ),
+                        if (widget.nextButton != null) widget.nextButton
+                      ],
                     ),
                   ),
                   elevation: widget.tabsElevation,

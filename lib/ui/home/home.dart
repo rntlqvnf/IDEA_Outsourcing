@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
                       speed: Duration(milliseconds: 100),
                       isRepeatingAnimation: false,
                       text: [
-                        '사용자님의 현재 감정은 ${Provider.of<EmotionProvider>(context).emotion} 입니다'
+                        '사용자님의 현재 감정은 ${ModalRoute.of(context).settings.arguments} 입니다'
                       ],
                       textStyle: TextStyle(
                         fontSize: ScreenUtil().setSp(20),

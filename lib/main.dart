@@ -23,7 +23,6 @@ void main() async {
 void setupLocator() {
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
-  // locator.registerSingleton<CameraService>(CameraServiceImpl());
   locator.registerSingleton<SocketService>(SocketServiceImpl());
 }
 

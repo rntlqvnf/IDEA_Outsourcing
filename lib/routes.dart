@@ -14,7 +14,6 @@ class Routes {
   //static variables
   static const String home = '/home';
   static const String camera = '/camera';
-  static const String image = '/camera/image';
   static const String editing = '/camera/image/editing';
   static const String greeting = '/homescreen';
   static const String mainMenu = '/mainMenu';
@@ -23,14 +22,10 @@ class Routes {
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => MainScreen(),
     camera: (BuildContext context) => CameraScreen(),
-    image: (BuildContext context) => ImageScreen(),
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen(),
     mainMenu: (BuildContext context) => MultiProvider(providers: [
           Provider<GalleryStore>(create: (_) => GalleryStore()),
-          ChangeNotifierProvider<EmotionProvider>(
-            create: (_) => EmotionProvider(),
-          )
         ], child: MainMenuScreen()),
     gallery: (BuildContext context) => GalleryScreen(),
   };

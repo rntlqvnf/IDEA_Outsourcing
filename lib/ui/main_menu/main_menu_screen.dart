@@ -14,15 +14,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 
-class EmotionProvider extends ChangeNotifier {
-  String emotion = 'Happy';
-
-  void setEmotion(String newEmotion) {
-    emotion = newEmotion;
-    notifyListeners();
-  }
-}
-
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({Key key}) : super(key: key);
 
@@ -40,54 +31,15 @@ class MainMenuScreen extends StatelessWidget {
                     .copyWith(fontSize: ScreenUtil().setSp(14)),
                 selectedTabTextStyle: BaseTheme.bottomBarTextStyle
                     .copyWith(fontSize: ScreenUtil().setSp(14)),
-                onSelect: (tabIndex) async {
+                onSelect: (tabIndex) {
                   switch (tabIndex) {
                     case 1:
-                      AppAvailability.launchApp("com.jiangdg.usbcamera");
-                      break;
-                    case 3:
-                      BotToast.showCustomLoading(
-                          toastBuilder: (cancelFunc) {
-                            return Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 25,
-                                      child: LoadingIndicator(
-                                        color: Colors.grey,
-                                        indicatorType:
-                                            Indicator.lineSpinFadeLoader,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Text('분석중...',
-                                        style: BaseTheme.widgetTextStyle)
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                          clickClose: false,
-                          allowClick: false,
-                          duration: Duration(seconds: 1));
-
-                      SocketService service = locator<SocketService>();
-                      var galleryStore =
-                          Provider.of<GalleryStore>(context, listen: false);
-                      var data = await galleryStore
-                          .currentGalleryData.titleImage.originBytes;
-                      await locator<SocketService>()
-                          .setConnection('211.57.9.212', 9000);
-                      service.sendImage(data, (result) {
-                        print(utf8.decode(result));
-                        Provider.of<EmotionProvider>(context, listen: false)
-                            .setEmotion(utf8.decode(result));
-                      });
+                      AppAvailability.launchApp("com.jiangdg.usbcamera")
+                          .catchError(BotToast.showCustomText(
+                        toastBuilder: (cancelFunc) {
+                          return Text('카메라를 여는데 실패했습니다');
+                        },
+                      ));
                       break;
                     default:
                   }
@@ -111,12 +63,6 @@ class MainMenuScreen extends StatelessWidget {
                         Icons.edit,
                         size: 50,
                       )),
-                  Tab(
-                      text: '다음',
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 50,
-                      )),
                 ],
                 contents: <Widget>[
                   Builder(
@@ -128,15 +74,65 @@ class MainMenuScreen extends StatelessWidget {
                   Builder(
                     builder: Routes.routes[Routes.editing],
                   ),
-                  Builder(
-                    builder: Routes.routes[Routes.home],
-                  ),
                 ],
+                nextButton: IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 50,
+                    ),
+                    onPressed: () {
+                      _showLoadingOnSendingImage();
+                      _sendImageAndReceiveResult(context).then((result) =>
+                          Navigator.pushNamed(context, Routes.home,
+                              arguments: result));
+                    }),
               ),
             ),
           ),
         ],
       )),
     );
+  }
+
+  void _showLoadingOnSendingImage() {
+    BotToast.showCustomLoading(
+        toastBuilder: (cancelFunc) {
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    width: 25,
+                    child: LoadingIndicator(
+                      color: Colors.grey,
+                      indicatorType: Indicator.lineSpinFadeLoader,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text('분석중...', style: BaseTheme.widgetTextStyle)
+                ],
+              ),
+            ),
+          );
+        },
+        clickClose: false,
+        allowClick: false,
+        duration: Duration(seconds: 1));
+  }
+
+  Future<String> _sendImageAndReceiveResult(BuildContext context) async {
+    SocketService service = locator<SocketService>();
+    var galleryStore = Provider.of<GalleryStore>(context, listen: false);
+    var data = await galleryStore.currentGalleryData.titleImage.originBytes;
+    Future.delayed(Duration(seconds: 2));
+    return 'Angry';
+    /*
+    await locator<SocketService>().setConnection('211.57.9.212', 9000);
+    service.sendImage(data, (result) {});
+    */
   }
 }
