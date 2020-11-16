@@ -42,7 +42,7 @@ class AspectRatioPainter extends CustomPainter {
         isSelected ? BaseTheme.lightBlue : BaseTheme.nearlyWhite;
     final Rect rect = Offset.zero & size;
     final Paint paint = Paint()
-      ..strokeWidth = 2
+      ..strokeWidth = 4
       ..color = color
       ..style = PaintingStyle.stroke;
     final double aspectRatioResult =
@@ -57,7 +57,7 @@ class AspectRatioPainter extends CustomPainter {
 
     if (drawVertexCircle) {
       paint.style = PaintingStyle.fill;
-      double radius = 4;
+      double radius = 6;
       canvas.drawCircle(rectToDraw.bottomLeft, radius, paint);
       canvas.drawCircle(rectToDraw.bottomRight, radius, paint);
       canvas.drawCircle(rectToDraw.topLeft, radius, paint);

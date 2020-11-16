@@ -110,7 +110,7 @@ class BaseTheme {
       fontFamily: fontName,
       color: nearlyWhite,
       fontWeight: FontWeight.w600,
-      fontSize: ScreenUtil().setSp(40));
+      fontSize: ScreenUtil().setSp(20));
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
