@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:emusic/routes.dart';
 import 'package:emusic/ui/editing/widget/aspect_items.dart';
 import 'package:emusic/ui/theme.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -312,30 +313,32 @@ class _EditingScreenState extends State<EditingScreen> {
   Widget _editingImagePreviewScreen() {
     var galleryStore = Provider.of<GalleryStore>(context, listen: false);
 
-    return StreamBuilder(
-      initialData: kTransparentImage,
-      stream: Stream.fromFuture(
-          galleryStore.currentGalleryData.titleImage.originBytes),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error);
-        } else {
-          return ExtendedImage.memory(snapshot.data,
-              fit: BoxFit.contain,
-              mode: ExtendedImageMode.editor,
-              enableLoadState: true,
-              extendedImageEditorKey: editorKey,
-              initEditorConfigHandler: (ExtendedImageState state) {
-            return EditorConfig(
-                cornerColor: BaseTheme.black,
-                maxScale: 8.0,
-                cropRectPadding: const EdgeInsets.all(20.0),
-                initCropRectType: InitCropRectType.imageRect,
-                cropAspectRatio: _aspectRatio.value);
-          });
-        }
-      },
-    );
+    return Observer(builder: (_) {
+      return StreamBuilder(
+        initialData: kTransparentImage,
+        stream: Stream.fromFuture(
+            galleryStore.currentGalleryData.titleImage.originBytes),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error);
+          } else {
+            return ExtendedImage.memory(snapshot.data,
+                fit: BoxFit.contain,
+                mode: ExtendedImageMode.editor,
+                enableLoadState: true,
+                extendedImageEditorKey: editorKey,
+                initEditorConfigHandler: (ExtendedImageState state) {
+              return EditorConfig(
+                  cornerColor: BaseTheme.black,
+                  maxScale: 8.0,
+                  cropRectPadding: const EdgeInsets.all(20.0),
+                  initCropRectType: InitCropRectType.imageRect,
+                  cropAspectRatio: _aspectRatio.value);
+            });
+          }
+        },
+      );
+    });
   }
 
   Widget _editOptionGridMenu() {

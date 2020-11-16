@@ -14,6 +14,9 @@ abstract class _GalleryStore with BaseStore, Store {
   List<ReactionDisposer> disposers = [];
 
   // constructor:---------------------------------------------------------------
+  _GalleryStore() {
+    initGallery();
+  }
   // services:------------------------------------------------------------------
 
   // store variables:-----------------------------------------------------------

@@ -23,13 +23,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = context.read<GalleryStore>();
-    galleryStore.initGallery();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    galleryStore.dispose();
   }
 
   @override
