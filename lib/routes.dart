@@ -17,7 +17,6 @@ class Routes {
   static const String image = '/camera/image';
   static const String editing = '/camera/image/editing';
   static const String greeting = '/homescreen';
-  static const String temp = '/temp';
   static const String mainMenu = '/mainMenu';
   static const String gallery = '/gallery';
 
@@ -27,7 +26,6 @@ class Routes {
     image: (BuildContext context) => ImageScreen(),
     editing: (BuildContext context) => EditingScreen(),
     greeting: (BuildContext context) => GreetingScreen(),
-    temp: (BuildContext context) => TempScreen(),
     mainMenu: (BuildContext context) => MultiProvider(providers: [
           Provider<GalleryStore>(create: (_) => GalleryStore()),
           ChangeNotifierProvider<EmotionProvider>(

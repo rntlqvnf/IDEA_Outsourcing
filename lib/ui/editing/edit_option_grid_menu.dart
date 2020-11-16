@@ -18,6 +18,7 @@ class EditOptionGridMenu extends StatelessWidget {
         crossAxisSpacing: 1.5,
         childAspectRatio: 1,
       ),
+      itemCount: editOptions.length,
       itemBuilder: (context, index) => editOptions[index],
     );
   }

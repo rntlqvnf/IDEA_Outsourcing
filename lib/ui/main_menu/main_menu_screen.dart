@@ -126,7 +126,7 @@ class MainMenuScreen extends StatelessWidget {
                     builder: Routes.routes[Routes.gallery],
                   ),
                   Builder(
-                    builder: Routes.routes[Routes.gallery],
+                    builder: Routes.routes[Routes.editing],
                   ),
                   Builder(
                     builder: Routes.routes[Routes.home],

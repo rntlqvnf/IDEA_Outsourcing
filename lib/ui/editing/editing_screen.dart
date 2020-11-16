@@ -3,15 +3,17 @@ import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:emusic/contants/globals.dart';
 import 'package:emusic/service/socket_service.dart';
+import 'package:emusic/store/gallery/gallery_store.dart';
+import 'package:emusic/ui/editing/edit_option.dart';
+import 'package:emusic/ui/editing/edit_option_grid_menu.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:emusic/routes.dart';
 import 'package:emusic/ui/editing/widget/aspect_items.dart';
 import 'package:emusic/ui/theme.dart';
-import 'package:emusic/ui/util/crop_editor_helper.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ImageScreen extends StatefulWidget {
@@ -63,7 +65,7 @@ class _ImageScreenState extends State<ImageScreen> {
                           locator<SocketService>()
                               .setConnection('192.168.58.1', 9000)
                               .then((_) => service.sendImage(image, (data) {
-                                    Navigator.of(context).pushNamed(Routes.temp,
+                                    Navigator.of(context).pushNamed(Routes.home,
                                         arguments: data);
                                   }));
                           BotToast.showCustomLoading(
@@ -150,8 +152,16 @@ class _EditingScreenState extends State<EditingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final image = ModalRoute.of(context).settings.arguments;
+    return Scaffold(
+      body: Row(
+        children: [
+          Expanded(child: _editingImagePreviewScreen()),
+          Expanded(child: _editOptionGridMenu())
+        ],
+      ),
+    );
 
+    /*
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -296,6 +306,68 @@ class _EditingScreenState extends State<EditingScreen> {
           ],
         ),
       ),
+    ); */
+  }
+
+  Widget _editingImagePreviewScreen() {
+    var galleryStore = Provider.of<GalleryStore>(context, listen: false);
+
+    return StreamBuilder(
+      initialData: kTransparentImage,
+      stream: Stream.fromFuture(
+          galleryStore.currentGalleryData.titleImage.originBytes),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return ErrorWidget(snapshot.error);
+        } else {
+          return ExtendedImage.memory(snapshot.data,
+              fit: BoxFit.contain,
+              mode: ExtendedImageMode.editor,
+              enableLoadState: true,
+              extendedImageEditorKey: editorKey,
+              initEditorConfigHandler: (ExtendedImageState state) {
+            return EditorConfig(
+                cornerColor: BaseTheme.black,
+                maxScale: 8.0,
+                cropRectPadding: const EdgeInsets.all(20.0),
+                initCropRectType: InitCropRectType.imageRect,
+                cropAspectRatio: _aspectRatio.value);
+          });
+        }
+      },
+    );
+  }
+
+  Widget _editOptionGridMenu() {
+    List<EditOption> options = [
+      EditOption(
+        icon: const Icon(
+          Icons.flip,
+          size: 50,
+        ),
+        onTap: () {
+          editorKey.currentState.flip();
+        },
+      ),
+      EditOption(
+        icon: const Icon(
+          Icons.loop,
+          size: 50,
+        ),
+        onTap: () {
+          editorKey.currentState.rotate(right: true);
+        },
+      ),
+      EditOption(
+        icon: const Icon(Icons.restore, size: 50),
+        onTap: () {
+          editorKey.currentState.reset();
+        },
+      ),
+    ];
+
+    return EditOptionGridMenu(
+      editOptions: options,
     );
   }
 }
