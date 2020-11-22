@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:emusic/contants/globals.dart';
 import 'package:emusic/routes.dart';
+import 'package:emusic/service/http_client_service.dart';
 import 'package:emusic/service/socket_service.dart';
 import 'package:emusic/store/gallery/gallery_store.dart';
 import 'package:emusic/ui/main_menu/vertical_tab.dart';
@@ -31,7 +32,7 @@ class MainMenuScreen extends StatelessWidget {
                     .copyWith(fontSize: ScreenUtil().setSp(14)),
                 selectedTabTextStyle: BaseTheme.bottomBarTextStyle
                     .copyWith(fontSize: ScreenUtil().setSp(14)),
-                onSelect: (tabIndex) {
+                onSelect: (tabIndex) async {
                   switch (tabIndex) {
                     case 1:
                       AppAvailability.launchApp("com.jiangdg.usbcamera")
@@ -104,7 +105,7 @@ class MainMenuScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   SizedBox(
-                    width: 25,
+                    width: 35,
                     child: LoadingIndicator(
                       color: Colors.grey,
                       indicatorType: Indicator.lineSpinFadeLoader,
@@ -125,14 +126,19 @@ class MainMenuScreen extends StatelessWidget {
   }
 
   Future<String> _sendImageAndReceiveResult(BuildContext context) async {
-    SocketService service = locator<SocketService>();
     var galleryStore = Provider.of<GalleryStore>(context, listen: false);
-    var data = await galleryStore.currentGalleryData.titleImage.originBytes;
-    Future.delayed(Duration(seconds: 2));
+    var data = base64Encode(
+        await galleryStore.currentGalleryData.titleImage.originBytes);
+    print(data);
+
+    var response = await locator<HttpClientService>().send(
+        method: 'POST',
+        address: '/emotion',
+        host: '10.0.2.2',
+        port: '5000',
+        body: {'image': data});
+
+    print(response);
     return 'Angry';
-    /*
-    await locator<SocketService>().setConnection('211.57.9.212', 9000);
-    service.sendImage(data, (result) {});
-    */
   }
 }

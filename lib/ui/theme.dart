@@ -89,7 +89,7 @@ class BaseTheme {
       fontFamily: fontName,
       color: darkText,
       fontWeight: FontWeight.w600,
-      fontSize: ScreenUtil().setSp(50));
+      fontSize: ScreenUtil().setSp(30));
 
   static TextStyle appBarTextStyle = TextStyle(
       fontFamily: fontName,

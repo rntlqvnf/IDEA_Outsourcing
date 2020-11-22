@@ -1,4 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:emusic/service/http_client_service.dart';
+import 'package:emusic/service/http_client_service_impl.dart';
 import 'package:emusic/service/socket_service.dart';
 import 'package:emusic/service/socket_service_impl.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ void main() async {
 }
 
 void setupLocator() {
+  locator.registerSingleton<HttpClientService>(HttpClientServiceImpl());
   locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<FlushService>(FlushServiceImpl());
   locator.registerSingleton<SocketService>(SocketServiceImpl());
